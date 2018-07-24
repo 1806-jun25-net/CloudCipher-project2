@@ -57,8 +57,8 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="u">Query to add to DB</param>
         public void AddQuery(Query u)
         {
-            if (DBContainsQuery(u.Id) || u.Id != 0)
-                throw new DbUpdateException("Invalid ID. ID should not be set  prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
+            if (DBContainsQuery(u.Id) || u.Id > 0)
+                throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
             _db.Add(u);
         }
 
