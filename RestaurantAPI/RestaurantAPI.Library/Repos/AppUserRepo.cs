@@ -35,17 +35,17 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="includeFavorites">Whether to include the list of favorited restaurants for that user</param>
         /// <param name="includeQueries">Whether to include the list of queries for that user</param>
         /// <param name="includeOwnedRestaurants">Whether to include the list of restaurants registered as owned by that user</param>
-        /// <returns></returns>
+        /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
         public IQueryable<AppUser> GetUsers(bool includeBlacklist, bool includeFavorites, bool includeQueries, bool includeOwnedRestaurants)
         {
             IQueryable<AppUser> result = _db.AppUser.AsNoTracking();
             if (includeBlacklist)
                 result.Include(m => m.Blacklist);
-            if (includeBlacklist)
+            if (includeFavorites)
                 result.Include(m => m.Favorite);
-            if (includeBlacklist)
+            if (includeQueries)
                 result.Include(m => m.Query);
-            if (includeBlacklist)
+            if (includeOwnedRestaurants)
                 result.Include(m => m.Restaurant);
             return result;
         }
