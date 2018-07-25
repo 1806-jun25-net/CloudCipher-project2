@@ -177,6 +177,118 @@ namespace RestaurantAPI.Library.Repos
         }
 
         /// <summary>
+        /// Adds the specified restaurant to the specified user's blacklist
+        /// Throws an exception if specified user or restraunt is not found in DB
+        /// Must still call Save() after to persist changes to DB
+        /// </summary>
+        /// <param name="u">User object who is blaclisting</param>
+        /// <param name="r">Restraunt object to be blacklisted</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void AddRestaurantToBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(u.Username))
+                throw new NotSupportedException($"Username '{u.Username}' not found.");
+            if (!rRepo.DBContainsRestaurant(r.Id))
+                throw new NotSupportedException($"Restaurant ID '{r.Id}' not found.");
+            Blacklist bl = new Blacklist() { Username = u.Username, RestaurantId = r.Id };
+            _db.Add(bl);
+        }
+
+        /// <summary>
+        /// Adds the specified restaurant to the specified user's blacklist
+        /// Throws an exception if specified user or restraunt is not found in DB
+        /// Must still call Save() after to persist changes to DB
+        /// </summary>
+        /// <param name="username">string containing user's username</param>
+        /// <param name="restaurantName">string containing restaurant's name</param>
+        /// <param name="restaurantLocation">string containing restaurant's location</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void AddRestaurantToBlacklist(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(username))
+                throw new NotSupportedException($"Username '{username}' not found.");
+            Restaurant r = rRepo.GetRestaurantByNameAndLocation(restaurantName, restaurantLocation);
+            Blacklist bl = new Blacklist() { Username = username, RestaurantId = r.Id };
+            _db.Add(bl);
+        }
+
+
+        /// <summary>
+        /// Adds the specified restaurant to the specified user's blacklist
+        /// Throws an exception if specified user or restraunt is not found in DB
+        /// Must still call Save() after to persist changes to DB
+        /// </summary>
+        /// <param name="username">string containing user's username</param>
+        /// <param name="restaurantId">int containing restaurant's ID number</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void AddRestaurantToBlacklist(string username, int restaurantId, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(username))
+                throw new NotSupportedException($"Username '{username}' not found.");
+            if (!rRepo.DBContainsRestaurant(restaurantId))
+                throw new NotSupportedException($"Restaurant ID '{restaurantId}' not found.");
+            Blacklist bl = new Blacklist() { Username = username, RestaurantId = restaurantId };
+            _db.Add(bl);
+        }
+
+
+        /// <summary>
+        /// Adds the specified restaurant to the specified user's Favorites
+        /// Throws an exception if specified user or restraunt is not found in DB
+        /// Must still call Save() after to persist changes to DB
+        /// </summary>
+        /// <param name="u">User object who is Favoriting</param>
+        /// <param name="r">Restraunt object to be Favorited</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void AddRestaurantToFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(u.Username))
+                throw new NotSupportedException($"Username '{u.Username}' not found.");
+            if (!rRepo.DBContainsRestaurant(r.Id))
+                throw new NotSupportedException($"Restaurant ID '{r.Id}' not found.");
+            Favorite fav = new Favorite() { Username = u.Username, RestaurantId = r.Id };
+            _db.Add(fav);
+        }
+
+        /// <summary>
+        /// Adds the specified restaurant to the specified user's Favorites
+        /// Throws an exception if specified user or restraunt is not found in DB
+        /// Must still call Save() after to persist changes to DB
+        /// </summary>
+        /// <param name="username">string containing user's username</param>
+        /// <param name="restaurantName">string containing restaurant's name</param>
+        /// <param name="restaurantLocation">string containing restaurant's location</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void AddRestaurantToFavorites(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(username))
+                throw new NotSupportedException($"Username '{username}' not found.");
+            Restaurant r = rRepo.GetRestaurantByNameAndLocation(restaurantName, restaurantLocation);
+            Favorite fav = new Favorite() { Username = username, RestaurantId = r.Id };
+            _db.Add(fav);
+        }
+
+
+        /// <summary>
+        /// Adds the specified restaurant to the specified user's Favorites
+        /// Throws an exception if specified user or restraunt is not found in DB
+        /// Must still call Save() after to persist changes to DB
+        /// </summary>
+        /// <param name="username">string containing user's username</param>
+        /// <param name="restaurantId">int containing restaurant's ID number</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void AddRestaurantToFavorites(string username, int restaurantId, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(username))
+                throw new NotSupportedException($"Username '{username}' not found.");
+            if (!rRepo.DBContainsRestaurant(restaurantId))
+                throw new NotSupportedException($"Restaurant ID '{restaurantId}' not found.");
+            Favorite fav = new Favorite() { Username = username, RestaurantId = restaurantId };
+            _db.Add(fav);
+        }
+
+
+        /// <summary>
         /// Saves changes to DB
         /// </summary>
         public void Save()
