@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RestaurantAPI.Library.Repos
 {
-    class KeywordRepo
+    public class KeywordRepo
     {
         private readonly Project2DBContext _db;
 
