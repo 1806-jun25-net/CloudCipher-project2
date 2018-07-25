@@ -35,7 +35,15 @@ namespace RestaurantAPI.API.Controllers
           //  Qrepo.GetQueries();
           //  Rrepo.GetRestaurants();
 
-            return new string[] { "value1", "value2" };
+            getbyusername UserModel()
+            {
+                 
+
+
+            }
+
+
+            return Mapper.Map(  );
         }
 
         // GET api/<controller>/5
