@@ -72,3 +72,15 @@ CREATE TABLE RestaurantSite.RestaurantKeywordJunction
 	Word nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.Keyword(Word),
 	PRIMARY KEY (RestaurantID, Word)
 );
+
+
+
+
+
+--Inserting test data:
+
+INSERT INTO RestaurantSite.AppUser
+VALUES ('test', 'First', 'Last', 'a@a.com', 0),
+		('admin', 'Tess', 'Est', 'winner@gmail.com', 1);
+
+SELECT * FROM RestaurantSite.AppUser;
