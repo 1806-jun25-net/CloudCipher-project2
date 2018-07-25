@@ -17,7 +17,16 @@ namespace RestaurantAPI.Library.Repos
         }
 
         /// <summary>
-        /// Primary method for retriving all restaurants from the database.  Use parameter to distinguish whether information from junciton tables is required or not.
+        /// Primary method for retriving all restaurants from the database. By default includes no info from junciton tables.
+        /// </summary>
+        /// <returns>Returns an IQueryable containing all restaurants in the database.  Use ToList() on the result to make it a usable list.</returns>
+        public IQueryable<Restaurant> GetRestaurants()
+        {
+            return _db.Restaurant.AsNoTracking();
+        }
+
+        /// <summary>
+        /// Overload for retrieving all restaurants from the database.  Use parameter to distinguish whether information from junciton tables is required or not.
         /// </summary>
         /// <param name="includeAll">Whether to include the information from junction tables or not</param>
         /// <returns>Returns an IQueryable containing all restaurants in the database.  Use ToList() on the result to make it a usable list.</returns>
@@ -29,7 +38,7 @@ namespace RestaurantAPI.Library.Repos
         }
 
         /// <summary>
-        /// Overload for selecting which specific junciton table information is requred for list of restaurants
+        /// Overload for retrieving all restaurants from the database.  Use parameters to distinguish whether information from junciton tables is required or not.
         /// </summary>
         /// <param name="includeBlacklist">Whether to include the list of users blacklisting this restaurant</param>
         /// <param name="includeFavorites">Whether to include the list of users favoriting this restaurant</param>
