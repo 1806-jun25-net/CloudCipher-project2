@@ -16,15 +16,26 @@ namespace RestaurantAPI.Library.Repos
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
+        //Read methods: will retrieve data from DB but not make changes
+
         /// <summary>
-        /// Primary method for retriving all users from the database.  Use parameter to distinguish whether information from junciton tables is required or not.
+        /// Primary method for retriving all users from the database.  By default only returns basic values and none of the data from junction tables.
+        /// </summary>
+        /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
+        public IQueryable<AppUser> GetUsers()
+        {
+            return _db.AppUser.AsNoTracking();
+        }
+
+        /// <summary>
+        /// Overload of method for retriving all users from the database.  Use parameter to distinguish whether information from junciton tables is required or not.
         /// </summary>
         /// <param name="includeAll">Whether to include the information from junction tables or not</param>
         /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
         public IQueryable<AppUser> GetUsers(bool includeAll)
         {
             if (includeAll)
-                return _db.AppUser.AsNoTracking().Include(m => m.Blacklist).Include(m => m.Favorite).Include(m => m.Query).Include(m => m.Restaurant);
+                return _db.AppUser.AsNoTracking().Include(m => m.Blacklist).ThenInclude(k => k.Restaurant).Include(m => m.Favorite).ThenInclude(k => k.Restaurant).Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction).Include(m => m.Restaurant);
             return _db.AppUser.AsNoTracking();
         }
 
@@ -40,38 +51,117 @@ namespace RestaurantAPI.Library.Repos
         {
             IQueryable<AppUser> result = _db.AppUser.AsNoTracking();
             if (includeBlacklist)
-                result.Include(m => m.Blacklist);
+                result.Include(m => m.Blacklist).ThenInclude(k=>k.Restaurant);
             if (includeFavorites)
-                result.Include(m => m.Favorite);
+                result.Include(m => m.Favorite).ThenInclude(k => k.Restaurant);
             if (includeQueries)
-                result.Include(m => m.Query);
+                result.Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction);
             if (includeOwnedRestaurants)
                 result.Include(m => m.Restaurant);
             return result;
         }
 
         /// <summary>
-        /// Given a username, returns the AppUser object with that username from the DB.  By default will include all list data
+        /// Given a username, returns the AppUser object with that username from the DB.  
+        /// By default will not include any list/Juntion table data.  If junction table data is required, use overload below
         /// Throws an exception if username not found in DB
         /// </summary>
         /// <param name="username">Username to look up in database</param>
-        /// <returns>AppUser object with specified useranme</returns>
+        /// <returns>AppUser object with specified username</returns>
         public AppUser GetUserByUsername(string username)
         {
             if (!DBContainsUsername(username))
                 throw new NotSupportedException($"Username '{username}' not found.");
-            return GetUsers(true).First(t => t.Username.Equals(username));
+            return GetUsers().First(t => t.Username.Equals(username));
+        }
+
+        /// <summary>
+        /// Given a username, returns the AppUser object with that username from the DB.  Includes junction table data depending on bool parameter
+        /// Throws an exception if username not found in DB
+        /// </summary>
+        /// <param name="username">Username to look up in database</param>
+        /// <param name="includeAll">Whether to include the information from junction tables or not</param>
+        /// <returns>AppUser object with specified username</returns>
+        public AppUser GetUserByUsername(string username, bool includeAll)
+        {
+            if (!DBContainsUsername(username))
+                throw new NotSupportedException($"Username '{username}' not found.");
+            return GetUsers(includeAll).First(t => t.Username.Equals(username));
+        }
+
+        /// <summary>
+        /// Given a username, returns the AppUser object with that username from the DB.  Overload version to include only the lists you specify
+        /// Throws an exception if username not found in DB
+        /// </summary>
+        /// <param name="username">Username to look up in database</param>
+        /// <param name="includeBlacklist">Whether to include the list of blacklisted restaurants for that user</param>
+        /// <param name="includeFavorites">Whether to include the list of favorited restaurants for that user</param>
+        /// <param name="includeQueries">Whether to include the list of queries for that user</param>
+        /// <param name="includeOwnedRestaurants">Whether to include the list of restaurants registered as owned by that user</param>
+        /// <returns>AppUser object with specified username</returns>
+        public AppUser GetUserByUsername(string username, bool includeBlacklist, bool includeFavorites, bool includeQueries, bool includeOwnedRestaurants)
+        {
+            if (!DBContainsUsername(username))
+                throw new NotSupportedException($"Username '{username}' not found.");
+            return GetUsers(includeBlacklist, includeFavorites, includeQueries, includeOwnedRestaurants).First(t => t.Username.Equals(username));
         }
 
         /// <summary>
         /// Determines whether a user with the given username exists in the DB
         /// </summary>
-        /// <param name="username">name of user to search for</param>
-        /// <returns>true if user is found in DB, false otherwise</returns>
+        /// <param name="username">name of user to retrieve blacklist for</param>
+        /// <returns>collection containing all restaurants listed in the given user's blacklist</returns>
         public bool DBContainsUsername(string username)
         {
             return GetUsers(false).Any(t => t.Username.Equals(username));
         }
+
+        /// <summary>
+        /// Returns a list(IEnumerable) of restaurants the given user has added to their blacklist
+        /// Throws an exception if username not found
+        /// </summary>
+        /// <param name="username">Username to look up blacklist for</param>
+        /// <returns>IEnumerable of restraunt objects</returns>
+        public IEnumerable<Restaurant> GetBlacklistForUser(string username)
+        {
+            return GetUserByUsername(username, true, false, false, false).Blacklist.Select(b => b.Restaurant);
+        }
+
+        /// <summary>
+        /// Returns a list(IEnumerable) of restaurants the given user has added to their favorites
+        /// Throws an exception if username not found
+        /// </summary>
+        /// <param name="username">Username to look up favorites for</param>
+        /// <returns>IEnumerable of restraunt objects</returns>
+        public IEnumerable<Restaurant> GetFavoritesForUser(string username)
+        {
+            return GetUserByUsername(username, false, true, false, false).Favorite.Select(b => b.Restaurant);
+        }
+
+        /// <summary>
+        /// Returns a list(IEnumerable) of queries made by the given user
+        /// Throws an exception if username not found
+        /// </summary>
+        /// <param name="username">Username to look up queries for</param>
+        /// <returns>IEnumerable of query objects</returns>
+        public IEnumerable<Query> GetQueriesForUser(string username)
+        {
+            return GetUserByUsername(username, false, false, true, false).Query;
+        }
+
+        /// <summary>
+        /// Returns a list(IEnumerable) of restaurants a user is listed as owning
+        /// Throws an exception if username not found
+        /// </summary>
+        /// <param name="username">Username to look up owned restaurants for</param>
+        /// <returns>IEnumerable of restaurant objects</returns>
+        public IEnumerable<Restaurant> GetOwnedRestaurantsForUser(string username)
+        {
+            return GetUserByUsername(username, false, false, false, true).Restaurant;
+        }
+
+
+        // Create methods:  add new data to the DB
 
         /// <summary>
         /// Adds a new AppUser object to the DB
