@@ -21,6 +21,7 @@ namespace RestaurantAPI.Library.Repos
 
         /// <summary>
         /// Primary method for retriving all users from the database.  By default only returns basic values and none of the data from junction tables.
+        /// Per Nick, since it returns an IQueryable it does not need an Async version.
         /// </summary>
         /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
         public IQueryable<AppUser> GetUsers()
@@ -314,9 +315,13 @@ namespace RestaurantAPI.Library.Repos
         /// Primary method for retriving all users from the database.  By default only returns basic values and none of the data from junction tables.
         /// </summary>
         /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
-        public async Task<List<AppUser>> GetUsersAsync()
+        public async Task<IQueryable<AppUser>> GetUsersAsync()
         {
-            return await _db.AppUser.AsNoTracking().ToListAsync();
+            //return await _db.AppUser.AsNoTracking().ToListAsync();
+            return await Task.Run(() =>
+             {
+                 return GetUsers();
+             });
         }
 
         /// <summary>
@@ -324,11 +329,17 @@ namespace RestaurantAPI.Library.Repos
         /// </summary>
         /// <param name="includeAll">Whether to include the information from junction tables or not</param>
         /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
-        public async Task<List<AppUser>> GetUsersAsync(bool includeAll)
+        public async Task<IQueryable<AppUser>> GetUsersAsync(bool includeAll)
         {
+            /*
             if (includeAll)
                 return await _db.AppUser.AsNoTracking().Include(m => m.Blacklist).ThenInclude(k => k.Restaurant).Include(m => m.Favorite).ThenInclude(k => k.Restaurant).Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction).Include(m => m.Restaurant).ToListAsync();
             return await _db.AppUser.AsNoTracking().ToListAsync();
+            */
+            return await Task.Run(() =>
+            {
+                return GetUsers(includeAll);
+            });
         }
 
         /// <summary>
@@ -339,8 +350,9 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="includeQueries">Whether to include the list of queries for that user</param>
         /// <param name="includeOwnedRestaurants">Whether to include the list of restaurants registered as owned by that user</param>
         /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
-        public async Task<List<AppUser>> GetUsersAsync(bool includeBlacklist, bool includeFavorites, bool includeQueries, bool includeOwnedRestaurants)
+        public async Task<IQueryable<AppUser>> GetUsersAsync(bool includeBlacklist, bool includeFavorites, bool includeQueries, bool includeOwnedRestaurants)
         {
+            /*
             IQueryable<AppUser> result = _db.AppUser.AsNoTracking();
             if (includeBlacklist)
                 result.Include(m => m.Blacklist).ThenInclude(k=>k.Restaurant);
@@ -351,6 +363,11 @@ namespace RestaurantAPI.Library.Repos
             if (includeOwnedRestaurants)
                 result.Include(m => m.Restaurant);
             return await result.ToListAsync();
+            */
+            return await Task.Run(() =>
+            {
+                return GetUsers();
+            });
         }
 
         /// <summary>
