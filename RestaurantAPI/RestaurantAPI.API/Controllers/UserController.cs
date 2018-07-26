@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantAPI.API.Models;
+using RestaurantAPI.Data;
+using RestaurantAPI.Library;
 using RestaurantAPI.Library.Repos;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +14,7 @@ using RestaurantAPI.Library.Repos;
 namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class UserController : Controller
     {
         public UserController(AppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, RestaurantRepo RestRepo)
@@ -28,30 +33,24 @@ namespace RestaurantAPI.API.Controllers
         
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult <IEnumerable<string>> Get()
         {
             Arepo.GetUsers();
-          //  Krepo.GetKeywords();
-          //  Qrepo.GetQueries();
-          //  Rrepo.GetRestaurants();
+            //  Krepo.GetKeywords();
+            //  Qrepo.GetQueries();
+            //  Rrepo.GetRestaurants();
 
-            getbyusername UserModel()
-            {
-                 
-
-
-            }
-
-
-            return Mapper.Map(  );
+            return StatusCode(StatusCodes.Status501NotImplemented);
         }
 
         // GET api/<controller>/5
+        /*
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
+        */    
 
         // POST api/<controller>
         [HttpPost]
@@ -70,5 +69,27 @@ namespace RestaurantAPI.API.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpGet("{username}")]
+        [Route("api/User")]
+        public ActionResult<UserModel> GetByUsername(string username)
+        {
+            AppUser userVariable;
+            try
+            {
+                userVariable = Arepo.GetUserByUsername(username);
+            }
+
+            catch (Exception x)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            return Mapper.Map(userVariable);
+
+            
+        }
+
+
     }
 }
