@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RestaurantAPI.Library
 {
-    public class Mapper
+    public static class Mapper
     {
         // single object conversions
         public static AppUser Map(UserModel otherUser) => new AppUser
