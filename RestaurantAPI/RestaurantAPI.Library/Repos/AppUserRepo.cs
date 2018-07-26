@@ -300,6 +300,11 @@ namespace RestaurantAPI.Library.Repos
 
 
 
+
+
+
+
+
         //ATTEMPT AT ASCYNC VERSIONS
 
 
@@ -619,9 +624,9 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Saves changes to DB
         /// </summary>
-        public void SaveAsync()
+        public async Task<int> SaveAsync()
         {
-            _db.SaveChanges();
+            return await _db.SaveChangesAsync();
         }
     }
 }
