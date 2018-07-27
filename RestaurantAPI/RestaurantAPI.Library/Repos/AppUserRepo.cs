@@ -49,6 +49,8 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>collection containing all restaurants listed in the given user's blacklist</returns>
         public bool DBContainsUsername(string username)
         {
+            if (username == null)
+                return false;
             return GetUsers().Any(t => t.Username.Equals(username));
         }
 
@@ -292,10 +294,9 @@ namespace RestaurantAPI.Library.Repos
         public async Task<bool> DBContainsUsernameAsync(string username)
         {
             if (username == null)
-                throw new ArgumentNullException();
+                return false;
             return await _db.AppUser.AsNoTracking().AnyAsync(t => t.Username.Equals(username));
         }
-
 
 
         /// <summary>
@@ -329,7 +330,7 @@ namespace RestaurantAPI.Library.Repos
             task.Wait();
             if (!task.Result)
                 throw new NotSupportedException($"Username '{username}' not found.");
-                return await _db.AppUser.AsNoTracking().FirstAsync(t => t.Username.Equals(username));
+            return await _db.AppUser.AsNoTracking().FirstAsync(t => t.Username.Equals(username));
         }
 
         /// <summary>

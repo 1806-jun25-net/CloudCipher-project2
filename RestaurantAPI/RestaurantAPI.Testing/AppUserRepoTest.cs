@@ -231,8 +231,7 @@ namespace RestaurantAPI.Testing
             var options = new DbContextOptionsBuilder<Project2DBContext>()
                 .UseInMemoryDatabase(databaseName: "StaticFilledDB")
                 .Options;
-
-            AppUser u;
+            
             bool result = false;
             AppUserRepo uRepo;
 
@@ -240,10 +239,9 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                //context.Add(new AppUser { Username = "realUser", FirstName= "a", LastName= "b", Email= "e" });
                 try
                 {
-                    u = uRepo.GetUserByUsername(username);
+                    uRepo.GetUserByUsername(username);
                 }
                 catch (NotSupportedException e)
                 {
@@ -265,8 +263,6 @@ namespace RestaurantAPI.Testing
             var options = new DbContextOptionsBuilder<Project2DBContext>()
                 .UseInMemoryDatabase(databaseName: "StaticFilledDB")
                 .Options;
-
-            AppUser u;
             bool result = true;
             AppUserRepo uRepo;
 
@@ -274,7 +270,7 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                u = uRepo.GetUserByUsername(username);
+                uRepo.GetUserByUsername(username);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -691,7 +687,6 @@ namespace RestaurantAPI.Testing
             bool result = false;
             using (var context = new Project2DBContext(options))
             {
-                uRepo = new AppUserRepo(context);
                 context.AppUser.Add(u2);
                 context.SaveChanges();
             }
