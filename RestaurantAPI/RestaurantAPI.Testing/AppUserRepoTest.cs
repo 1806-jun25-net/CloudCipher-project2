@@ -670,5 +670,77 @@ namespace RestaurantAPI.Testing
             //Assert
             Assert.Equal(2, results.Count);
         }
+
+
+        //Testing of AddUser
+        [Theory]
+        [InlineData("realUser")]
+        [InlineData("decoyUser1")]
+        [InlineData("decoyUser2")]
+        [InlineData("decoyUser3")]
+        public void AddUserShouldThrowExceptionIfUsernameAlreadyInDB(string username)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+
+            AppUser u = new AppUser { Username = username, FirstName = "a", LastName = "b", Email = "e" };
+            AppUser u2 = new AppUser { Username = username, FirstName = "blah", LastName = "bleh", Email = "e" };
+            AppUserRepo uRepo;
+            bool result = false;
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                context.AppUser.Add(u2);
+                context.SaveChanges();
+            }
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                try
+                {
+                    uRepo.AddUser(u);
+                }
+                catch (DbUpdateException e)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("realUser")]
+        [InlineData("decoyUser1")]
+        [InlineData("decoyUser2")]
+        [InlineData("decoyUser3")]
+        public void AddUserShouldAddCorrectUsertoDB(string username)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting2DB")
+                .Options;
+
+            AppUser u = new AppUser { Username = username, FirstName = "a", LastName = "b", Email = "e" };
+            AppUserRepo uRepo;
+            AppUser result;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                uRepo.AddUser(u);
+                result = context.AppUser.Find(username);
+            }
+
+            //Assert
+            Assert.Equal(u, result);
+        }
+
     }
 }

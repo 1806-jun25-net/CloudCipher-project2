@@ -139,9 +139,6 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
             _db.Add(u);
         }
-        
-        
-        //Add Methods- store new data in DB
 
         /// <summary>
         /// Adds the specified restaurant to the specified user's blacklist
