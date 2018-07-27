@@ -35,7 +35,7 @@ namespace RestaurantAPI.Library.Repos
         public Query GetQueryByID(int Id)
         {
             if (!DBContainsQuery(Id))
-                throw new NotSupportedException($"Query ID '{Id}' not found."); ;
+                throw new NotSupportedException($"Query ID '{Id}' not found.");
             return GetQueries().First(t => t.Id == Id);
         }
 
