@@ -33,14 +33,17 @@ namespace RestaurantAPI.API.Controllers
         
         // GET: api/<controller>
         [HttpGet]
-        public ActionResult <IEnumerable<string>> Get()
+        public ActionResult <List<AppUser>> Get()
         {
             Arepo.GetUsers();
             //  Krepo.GetKeywords();
             //  Qrepo.GetQueries();
             //  Rrepo.GetRestaurants();
 
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            // return StatusCode(StatusCodes.Status501NotImplemented);
+
+            //SET THIS RETURN MAINLY FOR TESTING CONNECTION TO MVC
+            return Arepo.GetUsers().ToList();
         }
 
         // GET api/<controller>/5
