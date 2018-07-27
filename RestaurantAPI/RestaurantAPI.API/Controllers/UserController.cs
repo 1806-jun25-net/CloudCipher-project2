@@ -33,7 +33,7 @@ namespace RestaurantAPI.API.Controllers
         
         // GET: api/<controller>
         [HttpGet]
-        public ActionResult <IEnumerable<string>> Get()
+        public ActionResult Get()
         {
             Arepo.GetUsers();
             //  Krepo.GetKeywords();
