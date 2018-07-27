@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Data;
 using RestaurantAPI.Library.Repos;
 using System;
@@ -172,72 +171,5 @@ namespace RestaurantAPI.Testing
             Assert.Equal("realUser", u.Username);
         }
 
-
-
-
-
-
-
-
-
-        //Testing of Asynchronous methods
-        //Testing of GetUsers()
-        [Fact]
-        public void GetUsersAsyncShouldNotThrowExceptionIfDBIsEmpty()
-        {
-            //Arrange
-            var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "GetUsersExceptionThrowDB")
-                .Options;
-
-            bool result = true;
-            AppUserRepo uRepo;
-
-            //Act
-            using (var context = new Project2DBContext(options))
-            {
-                uRepo = new AppUserRepo(context);
-                //context.Add(new AppUser { Username = "realUser", FirstName= "a", LastName= "b", Email= "e" });
-                try
-                {
-                    uRepo.GetUsersAsync().Wait();
-                }
-                catch (Exception e)
-                {
-                    result = false;
-                }
-            }
-            //Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void GetUsersAsyncShouldReturnAListWithProperNumberOfUsers()
-        {
-            //Arrange
-            var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "GetUsersAsyncExceptionThrowDB")
-                .Options;
-            AppUserRepo uRepo;
-            List<AppUser> uList;
-
-            using (var context = new Project2DBContext(options))
-            {
-                context.AppUser.Add(new AppUser { Username = "realUser", FirstName = "a", LastName = "b", Email = "e" });
-                context.AppUser.Add(new AppUser { Username = "decoyUser1", FirstName = "a", LastName = "b", Email = "e" });
-                context.AppUser.Add(new AppUser { Username = "decoyUser2", FirstName = "a", LastName = "b", Email = "e" });
-                context.AppUser.Add(new AppUser { Username = "decoyUser3", FirstName = "a", LastName = "b", Email = "e" });
-                context.SaveChanges();
-            }
-
-            //Act
-            using (var context = new Project2DBContext(options))
-            {
-                uRepo = new AppUserRepo(context);
-                uList = uRepo.GetUsersAsync().Result.ToList();
-            }
-            //Assert
-            Assert.Equal(4, uList.Count);
-        }
     }
 }

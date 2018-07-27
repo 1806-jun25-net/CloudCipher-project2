@@ -177,10 +177,14 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
             _db.Add(u);
         }
+        
+        
+        //Add Methods- store new data in DB
 
         /// <summary>
         /// Adds the specified restaurant to the specified user's blacklist
         /// Throws an exception if specified user or restraunt is not found in DB
+        /// Also throws exception if Blacklist already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="u">User object who is blaclisting</param>
@@ -199,6 +203,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Adds the specified restaurant to the specified user's blacklist
         /// Throws an exception if specified user or restraunt is not found in DB
+        /// Also throws exception if Blacklist already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
@@ -218,6 +223,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Adds the specified restaurant to the specified user's blacklist
         /// Throws an exception if specified user or restraunt is not found in DB
+        /// Also throws exception if Blacklist already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
@@ -237,6 +243,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Adds the specified restaurant to the specified user's Favorites
         /// Throws an exception if specified user or restraunt is not found in DB
+        /// Also throws exception if Favorite list already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="u">User object who is Favoriting</param>
@@ -255,6 +262,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Adds the specified restaurant to the specified user's Favorites
         /// Throws an exception if specified user or restraunt is not found in DB
+        /// Also throws exception if Favorite list already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
@@ -274,6 +282,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Adds the specified restaurant to the specified user's Favorites
         /// Throws an exception if specified user or restraunt is not found in DB
+        /// Also throws exception if Favorite list already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
@@ -311,64 +320,22 @@ namespace RestaurantAPI.Library.Repos
 
         //Read methods: will retrieve data from DB but not make changes
 
-        /// <summary>
-        /// Primary method for retriving all users from the database.  By default only returns basic values and none of the data from junction tables.
-        /// </summary>
-        /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
-        public async Task<IQueryable<AppUser>> GetUsersAsync()
-        {
-            //return await _db.AppUser.AsNoTracking().ToListAsync();
-            return await Task.Run(() =>
-             {
-                 return GetUsers();
-             });
-        }
+
+        //Per Nick, don't need async versions of the GetUsers methods or others that return IQueryable
 
         /// <summary>
-        /// Overload of method for retriving all users from the database.  Use parameter to distinguish whether information from junciton tables is required or not.
+        /// Determines whether a user with the given username exists in the DB
         /// </summary>
-        /// <param name="includeAll">Whether to include the information from junction tables or not</param>
-        /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
-        public async Task<IQueryable<AppUser>> GetUsersAsync(bool includeAll)
+        /// <param name="username">name of user to retrieve blacklist for</param>
+        /// <returns>collection containing all restaurants listed in the given user's blacklist</returns>
+        public async Task<bool> DBContainsUsernameAsync(string username)
         {
-            /*
-            if (includeAll)
-                return await _db.AppUser.AsNoTracking().Include(m => m.Blacklist).ThenInclude(k => k.Restaurant).Include(m => m.Favorite).ThenInclude(k => k.Restaurant).Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction).Include(m => m.Restaurant).ToListAsync();
-            return await _db.AppUser.AsNoTracking().ToListAsync();
-            */
-            return await Task.Run(() =>
-            {
-                return GetUsers(includeAll);
-            });
+            if (username == null)
+                throw new ArgumentNullException();
+            return await _db.AppUser.AsNoTracking().AnyAsync(t => t.Username.Equals(username));
         }
 
-        /// <summary>
-        /// Overload for selecting which specific junciton table information is requred for list of users
-        /// </summary>
-        /// <param name="includeBlacklist">Whether to include the list of blacklisted restaurants for that user</param>
-        /// <param name="includeFavorites">Whether to include the list of favorited restaurants for that user</param>
-        /// <param name="includeQueries">Whether to include the list of queries for that user</param>
-        /// <param name="includeOwnedRestaurants">Whether to include the list of restaurants registered as owned by that user</param>
-        /// <returns>Returns an IQueryable containing all users in the database.  Use ToList() on the result to make it a usable list.</returns>
-        public async Task<IQueryable<AppUser>> GetUsersAsync(bool includeBlacklist, bool includeFavorites, bool includeQueries, bool includeOwnedRestaurants)
-        {
-            /*
-            IQueryable<AppUser> result = _db.AppUser.AsNoTracking();
-            if (includeBlacklist)
-                result.Include(m => m.Blacklist).ThenInclude(k=>k.Restaurant);
-            if (includeFavorites)
-                result.Include(m => m.Favorite).ThenInclude(k => k.Restaurant);
-            if (includeQueries)
-                result.Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction);
-            if (includeOwnedRestaurants)
-                result.Include(m => m.Restaurant);
-            return await result.ToListAsync();
-            */
-            return await Task.Run(() =>
-            {
-                return GetUsers();
-            });
-        }
+
 
         /// <summary>
         /// Given a username, returns the AppUser object with that username from the DB.  
@@ -379,9 +346,9 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>AppUser object with specified username</returns>
         public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
-            var taskResult = DBContainsUsernameAsync(username);
-            taskResult.Wait();
-            if (!taskResult.Result)
+            var task = DBContainsUsernameAsync(username);
+            task.Wait();
+            if (!task.Result)
                 throw new NotSupportedException($"Username '{username}' not found.");
             return await _db.AppUser.AsNoTracking().FirstAsync(t => t.Username.Equals(username));
         }
@@ -397,9 +364,9 @@ namespace RestaurantAPI.Library.Repos
         {
             if (!includeAll)
                 return await GetUserByUsernameAsync(username);
-            var taskResult = DBContainsUsernameAsync(username);
-            taskResult.Wait();
-            if (!taskResult.Result)
+            var task = DBContainsUsernameAsync(username);
+            task.Wait();
+            if (!task.Result)
                 throw new NotSupportedException($"Username '{username}' not found.");
                 return await _db.AppUser.AsNoTracking().FirstAsync(t => t.Username.Equals(username));
         }
@@ -416,9 +383,9 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>AppUser object with specified username</returns>
         public async Task<AppUser> GetUserByUsernameAsync(string username, bool includeBlacklist, bool includeFavorites, bool includeQueries, bool includeOwnedRestaurants)
         {
-            var taskResult = DBContainsUsernameAsync(username);
-            taskResult.Wait();
-            if (!taskResult.Result)
+            var task = DBContainsUsernameAsync(username);
+            task.Wait();
+            if (!task.Result)
                 throw new NotSupportedException($"Username '{username}' not found.");
             IQueryable<AppUser> result = _db.AppUser.AsNoTracking();
             if (includeBlacklist)
@@ -432,17 +399,6 @@ namespace RestaurantAPI.Library.Repos
             return await result.FirstAsync(t => t.Username.Equals(username));
         }
 
-        /// <summary>
-        /// Determines whether a user with the given username exists in the DB
-        /// </summary>
-        /// <param name="username">name of user to retrieve blacklist for</param>
-        /// <returns>collection containing all restaurants listed in the given user's blacklist</returns>
-        public async Task<bool> DBContainsUsernameAsync(string username)
-        {
-            if (username==null)
-                throw new ArgumentNullException();
-            return await _db.AppUser.AsNoTracking().AnyAsync(t => t.Username.Equals(username));
-        }
 
         /// <summary>
         /// Returns a list(IEnumerable) of restaurants the given user has added to their blacklist
@@ -505,13 +461,13 @@ namespace RestaurantAPI.Library.Repos
         /// Must still call Save() after all DB updates are finished.
         /// </summary>
         /// <param name="u">AppUser object to be added to DB</param>
-        public void AddUserAsync(AppUser u)
+        public async Task AddUserAsync(AppUser u)
         {
             var taskResult = DBContainsUsernameAsync(u.Username);
             taskResult.Wait();
             if (taskResult.Result)
                 throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
-            _db.Add(u);
+            await _db.AddAsync(u);
         }
 
         /// <summary>
@@ -522,7 +478,7 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="u">User object who is blaclisting</param>
         /// <param name="r">Restraunt object to be blacklisted</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToBlacklistAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
+        public async Task AddRestaurantToBlacklistAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
         {
             var taskResult = DBContainsUsernameAsync(u.Username);
             taskResult.Wait();
@@ -531,7 +487,7 @@ namespace RestaurantAPI.Library.Repos
             if (!rRepo.DBContainsRestaurant(r.Id))
                 throw new NotSupportedException($"Restaurant ID '{r.Id}' not found.");
             Blacklist bl = new Blacklist() { Username = u.Username, RestaurantId = r.Id };
-            _db.Add(bl);
+            await _db.AddAsync(bl);
         }
 
         /// <summary>
@@ -543,15 +499,16 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="restaurantName">string containing restaurant's name</param>
         /// <param name="restaurantLocation">string containing restaurant's location</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToBlacklistAsync(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
+        public async Task AddRestaurantToBlacklistAsync(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
         {
             var taskResult = DBContainsUsernameAsync(username);
             taskResult.Wait();
             if (!taskResult.Result)
                 throw new NotSupportedException($"Username '{username}' not found.");
             Restaurant r = rRepo.GetRestaurantByNameAndLocation(restaurantName, restaurantLocation);
+            //TODO:  change to async once it exists
             Blacklist bl = new Blacklist() { Username = username, RestaurantId = r.Id };
-            _db.Add(bl);
+            await _db.AddAsync(bl);
         }
 
 
@@ -563,7 +520,7 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="username">string containing user's username</param>
         /// <param name="restaurantId">int containing restaurant's ID number</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToBlacklistAsync(string username, int restaurantId, RestaurantRepo rRepo)
+        public async Task AddRestaurantToBlacklistAsync(string username, int restaurantId, RestaurantRepo rRepo)
         {
             var taskResult = DBContainsUsernameAsync(username);
             taskResult.Wait();
@@ -572,7 +529,7 @@ namespace RestaurantAPI.Library.Repos
             if (!rRepo.DBContainsRestaurant(restaurantId))
                 throw new NotSupportedException($"Restaurant ID '{restaurantId}' not found.");
             Blacklist bl = new Blacklist() { Username = username, RestaurantId = restaurantId };
-            _db.Add(bl);
+            await _db.AddAsync(bl);
         }
 
 
@@ -584,7 +541,7 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="u">User object who is Favoriting</param>
         /// <param name="r">Restraunt object to be Favorited</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToFavoritesAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
+        public async Task AddRestaurantToFavoritesAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
         {
             var taskResult = DBContainsUsernameAsync(u.Username);
             taskResult.Wait();
@@ -593,7 +550,7 @@ namespace RestaurantAPI.Library.Repos
             if (!rRepo.DBContainsRestaurant(r.Id))
                 throw new NotSupportedException($"Restaurant ID '{r.Id}' not found.");
             Favorite fav = new Favorite() { Username = u.Username, RestaurantId = r.Id };
-            _db.Add(fav);
+            await _db.AddAsync(fav);
         }
 
         /// <summary>
@@ -605,7 +562,7 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="restaurantName">string containing restaurant's name</param>
         /// <param name="restaurantLocation">string containing restaurant's location</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToFavoritesAsync(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
+        public async Task AddRestaurantToFavoritesAsync(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
         {
             var taskResult = DBContainsUsernameAsync(username);
             taskResult.Wait();
@@ -613,7 +570,7 @@ namespace RestaurantAPI.Library.Repos
                 throw new NotSupportedException($"Username '{username}' not found.");
             Restaurant r = rRepo.GetRestaurantByNameAndLocation(restaurantName, restaurantLocation);
             Favorite fav = new Favorite() { Username = username, RestaurantId = r.Id };
-            _db.Add(fav);
+            await _db.AddAsync(fav);
         }
 
 
@@ -625,7 +582,7 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="username">string containing user's username</param>
         /// <param name="restaurantId">int containing restaurant's ID number</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToFavoritesAsync(string username, int restaurantId, RestaurantRepo rRepo)
+        public async Task AddRestaurantToFavoritesAsync(string username, int restaurantId, RestaurantRepo rRepo)
         {
             var taskResult = DBContainsUsernameAsync(username);
             taskResult.Wait();
@@ -634,7 +591,7 @@ namespace RestaurantAPI.Library.Repos
             if (!rRepo.DBContainsRestaurant(restaurantId))
                 throw new NotSupportedException($"Restaurant ID '{restaurantId}' not found.");
             Favorite fav = new Favorite() { Username = username, RestaurantId = restaurantId };
-            _db.Add(fav);
+            await _db.AddAsync(fav);
         }
 
 
