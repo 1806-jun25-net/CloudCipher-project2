@@ -28,13 +28,36 @@ namespace RestaurantAPI.Library
             UserType = otherUser.UserType
         };
 
+        public static RestaurantModel Map(Restaurant other) => new RestaurantModel
+        {
+            Id = other.Id,
+            Name = other.Name,
+            Phone = other.Phone,
+            Hours = other.Hours,
+            Location = other.Location,
+            Location2 = other.Location2,
+            Owner = other.Owner
+        };
+
+        public static Restaurant Map(RestaurantModel other) => new Restaurant
+        {
+            Id = other.Id,
+            Name = other.Name,
+            Phone = other.Phone,
+            Hours = other.Hours,
+            Location = other.Location,
+            Location2 = other.Location2,
+            Owner = other.Owner
+        };
 
 
         // collection of objects conversions
 
-        public static IEnumerable<UserModel> Map(IEnumerable<AppUser> otherUsers) => otherUsers.Select(Map);
+        public static IEnumerable<UserModel> Map(IEnumerable<AppUser> others) => others.Select(Map);
+        public static IEnumerable<AppUser> Map(IEnumerable<UserModel> others) => others.Select(Map);
 
-        public static IEnumerable<AppUser> Map(IEnumerable<UserModel> otherUsers) => otherUsers.Select(Map);
+        public static IEnumerable<RestaurantModel> Map(IEnumerable<Restaurant> others) => others.Select(Map);
+        public static IEnumerable<Restaurant> Map(IEnumerable<RestaurantModel> others) => others.Select(Map);
 
 
     }
