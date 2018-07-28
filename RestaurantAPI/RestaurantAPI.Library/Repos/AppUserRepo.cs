@@ -17,6 +17,9 @@ namespace RestaurantAPI.Library.Repos
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
+        //parameterless contstructor to enable moq-ing
+        public AppUserRepo(){ }
+
         //ORIGINAL NON ASYNC VERSIONS
 
         /// <summary>

@@ -16,6 +16,8 @@ namespace RestaurantAPI.Library.Repos
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
+        //parameterless contstructor to enable moq-ing
+        public QueryRepo() { }
 
         /// <summary>
         /// Default method for retriving all Queries from the DB.
