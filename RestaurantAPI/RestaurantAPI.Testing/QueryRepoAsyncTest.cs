@@ -9,12 +9,12 @@ using Xunit;
 
 namespace RestaurantAPI.Testing
 {
-    public class QueryRepoTest
+    public class QueryRepoAsyncTest
     {
-        public QueryRepoTest()
+        public QueryRepoAsyncTest()
         {
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
                 .Options;
             using (var context = new Project2DBContext(options))
             {
@@ -62,62 +62,13 @@ namespace RestaurantAPI.Testing
                     context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "breakfast" });
                     context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "fast" });
                     context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "food" });
-                    
+
                     context.SaveChanges();
                 }
             }
         }
 
-        //Testing of GetQueries()
-        [Fact]
-        public void GetQueriesShouldNotThrowExceptionIfDBIsEmpty()
-        {
-            //Arrange
-            var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB1")
-                .Options;
-
-            bool result = true;
-            QueryRepo qRepo;
-
-            //Act
-            using (var context = new Project2DBContext(options))
-            {
-                qRepo = new QueryRepo(context);
-                try
-                {
-                    qRepo.GetQueries();
-                }
-                catch
-                {
-                    result = false;
-                }
-            }
-            //Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void GetQueriesShouldReturnAListWithProperNumberOfQueriess()
-        {
-            //Arrange
-            var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
-                .Options;
-            QueryRepo qRepo;
-            List<Query> qList;
-
-            //Act
-            using (var context = new Project2DBContext(options))
-            {
-                qRepo = new QueryRepo(context);
-                qList = qRepo.GetQueries().ToList();
-            }
-            //Assert
-            Assert.Equal(8, qList.Count);
-        }
-
-        //Testing of DBContainsQuery
+        //Testing of DBContainsQueryAsync
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -127,11 +78,11 @@ namespace RestaurantAPI.Testing
         [InlineData(4232)]
         [InlineData(67)]
         [InlineData(324)]
-        public void DBContainsQueryShouldNotThrowExceptionIfDBIsEmpty(int Id)
+        public void DBContainsAsyncQueryShouldNotThrowExceptionIfDBIsEmpty(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyQueryDB2")
+                .UseInMemoryDatabase(databaseName: "EmptyQueryAsyncDB2")
                 .Options;
 
             bool result = true;
@@ -141,7 +92,7 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                qRepo.DBContainsQuery(Id);
+                qRepo.DBContainsQueryAsync(Id).Wait();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -155,13 +106,13 @@ namespace RestaurantAPI.Testing
         [InlineData(4)]
         [InlineData(11)]
         [InlineData(4232)]
-        [InlineData(66)]
+        [InlineData(67)]
         [InlineData(324)]
-        public void DBContainsQueryShouldReturnFalseIfIfDBIsEmpty(int Id)
+        public void DBContainsQueryAsyncShouldReturnFalseIfIfDBIsEmpty(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyQueryDB3")
+                .UseInMemoryDatabase(databaseName: "EmptyQueryAsyncDB3")
                 .Options;
             bool result;
             QueryRepo qRepo;
@@ -170,7 +121,7 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                result = qRepo.DBContainsQuery(Id);
+                result = qRepo.DBContainsQueryAsync(Id).Result;
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -182,11 +133,11 @@ namespace RestaurantAPI.Testing
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        public void DBContainsQueryShouldReturnTrueIfRestaurantIdInDB(int Id)
+        public void DBContainsQueryAsyncShouldReturnTrueIfRestaurantIdInDB(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
                 .Options;
             bool result;
             QueryRepo qRepo;
@@ -195,22 +146,22 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                result = qRepo.DBContainsQuery(Id);
+                result = qRepo.DBContainsQueryAsync(Id).Result;
             }
             //Assert
             Assert.True(result);
         }
 
         [Theory]
-        [InlineData(12)]
+        [InlineData(11)]
         [InlineData(4232)]
-        [InlineData(67)]
+        [InlineData(66)]
         [InlineData(324)]
-        public void DBContainsQueryShouldReturnFalseIfQueryIdNotInDB(int Id)
+        public void DBContainsQueryAsyncShouldReturnFalseIfRestaurantIdNotInDB(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
                 .Options;
             bool result;
             QueryRepo qRepo;
@@ -219,23 +170,23 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                result = qRepo.DBContainsQuery(Id);
+                result = qRepo.DBContainsQueryAsync(Id).Result;
             }
             //Assert
             Assert.False(result);
         }
 
-        //Testing of GetQueryByID
+        //Testing of GetQueryByIDAsync
         [Theory]
         [InlineData(11)]
         [InlineData(4232)]
         [InlineData(66)]
         [InlineData(324)]
-        public void GetQueryByIDShouldThrowExceptionIfIdNotFound(int Id)
+        public void GetQueryByIDAsyncShouldThrowExceptionIfIdNotFound(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
                 .Options;
 
             bool result = false;
@@ -247,9 +198,9 @@ namespace RestaurantAPI.Testing
                 qRepo = new QueryRepo(context);
                 try
                 {
-                    qRepo.GetQueryByID(Id);
+                    qRepo.GetQueryByIDAsync(Id).Wait();
                 }
-                catch (NotSupportedException)
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -263,11 +214,11 @@ namespace RestaurantAPI.Testing
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        public void GetQueryByIDShouldNotThrowExceptionIfIdIsInDB(int Id)
+        public void GetQueryByIDAsyncShouldNotThrowExceptionIfIdIsInDB(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
                 .Options;
             bool result = true;
             QueryRepo qRepo;
@@ -276,7 +227,7 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                qRepo.GetQueryByID(Id);
+                qRepo.GetQueryByIDAsync(Id).Wait();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -288,11 +239,11 @@ namespace RestaurantAPI.Testing
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        public void GetQueryByIDShouldReturnRestaurantWithMatchingId(int Id)
+        public void GetQueryByIDAsyncShouldReturnRestaurantWithMatchingId(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
                 .Options;
 
             Query q;
@@ -302,7 +253,7 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                q = qRepo.GetQueryByID(Id);
+                q = qRepo.GetQueryByIDAsync(Id).Result;
             }
 
             //Assert
@@ -315,14 +266,14 @@ namespace RestaurantAPI.Testing
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        public void AddQueryShouldThrowExceptionIfIdIsPreset(int Id)
+        public void AddQueryAsyncShouldThrowExceptionIfIdIsPreset(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyQueryAddTesting1DB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting3DB")
                 .Options;
 
-            Query q =  new Query { Id = Id, Username = "tester", QueryTime = DateTime.Now };
+            Query q = new Query { Id = Id, Username = "tester", QueryTime = DateTime.Now };
             Query q2 = new Query { Id = Id, Username = "tester", QueryTime = DateTime.Now };
             QueryRepo qRepo;
             KeywordRepo kRepo;
@@ -340,9 +291,9 @@ namespace RestaurantAPI.Testing
                 kRepo = new KeywordRepo(context);
                 try
                 {
-                    qRepo.AddQuery(q, kRepo);
+                    qRepo.AddQueryAsync(q, kRepo).Wait();
                 }
-                catch (DbUpdateException)
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -352,17 +303,17 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        
+
         [Theory]
         [InlineData("realUser")]
         [InlineData("decoyUser1")]
         [InlineData("decoyUser2")]
         [InlineData("decoyUser3")]
-        public void AddQueryShouldAddCorrectQueryToDB(string username)
+        public void AddQueryAsyncShouldAddCorrectQueryToDB(string username)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyQueryAddTesting2DB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting3DB")
                 .Options;
 
             Query q = new Query { Username = username, QueryTime = DateTime.Now };
@@ -375,12 +326,15 @@ namespace RestaurantAPI.Testing
             {
                 qRepo = new QueryRepo(context);
                 kRepo = new KeywordRepo(context);
-                qRepo.AddQuery(q, kRepo);
+                qRepo.AddQueryAsync(q, kRepo).Wait();
                 result = context.Query.Find(q.Id);
             }
 
             //Assert
             Assert.Equal(q, result);
         }
+
+
+
     }
 }

@@ -588,7 +588,7 @@ namespace RestaurantAPI.Testing
         }
 
 
-        //Testing of AddUser
+        //Testing of AddRestaurant
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -598,7 +598,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting1DB")
                 .Options;
 
             Restaurant r = new Restaurant { Id = Id, Name = Id.ToString(), Location = "loc" };
@@ -638,7 +638,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting2DB")
                 .Options;
 
             Restaurant r = new Restaurant { Id = 10, Name = Id.ToString(), Location = "loc" };
@@ -677,7 +677,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTesting2DB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting3DB")
                 .Options;
 
             Restaurant r = new Restaurant {Name = Id.ToString(), Location = "loc" };

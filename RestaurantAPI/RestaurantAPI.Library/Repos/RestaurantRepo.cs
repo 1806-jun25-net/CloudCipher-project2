@@ -266,5 +266,13 @@ namespace RestaurantAPI.Library.Repos
                 throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
             return await GetRestaurants().Where(t => t.Name.Equals(name) && t.Location.Equals(location)).Select(t => t.Id).FirstAsync();
         }
+
+        /// <summary>
+        /// Saves changes to DB
+        /// </summary>
+        public async Task<int> SaveAsync()
+        {
+            return await _db.SaveChangesAsync();
+        }
     }
 }
