@@ -65,7 +65,6 @@ namespace RestaurantAPI.Testing
             }
         }
 
-        //Testing of Synchronous methods
         //Testing of GetUsers()
         [Fact]
         public void GetUsersShouldNotThrowExceptionIfDBIsEmpty()
@@ -86,7 +85,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetUsers();
                 }
-                catch (Exception e)
+                catch 
                 {
                     result = false;
                 }
@@ -243,7 +242,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetUserByUsername(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -331,7 +330,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetBlacklistForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -363,7 +362,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetBlacklistForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -421,7 +420,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetFavoritesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -453,7 +452,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetFavoritesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -513,7 +512,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetQueriesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -545,7 +544,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetQueriesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -604,7 +603,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetOwnedRestaurantsForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -636,7 +635,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetOwnedRestaurantsForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -699,7 +698,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddUser(u);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -762,7 +761,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddRestaurantToBlacklist(username, 1, rRepo);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -796,7 +795,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -863,7 +862,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -899,7 +898,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddRestaurantToFavorites(username, 1, rRepo);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -933,7 +932,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddRestaurantToFavorites(username, rId, rRepo);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -1000,7 +999,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddRestaurantToFavorites(username, rId, rRepo);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
