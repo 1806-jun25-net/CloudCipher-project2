@@ -65,7 +65,6 @@ namespace RestaurantAPI.Testing
             }
         }
 
-        //Testing of Synchronous methods
         //Testing of GetUsers()
         [Fact]
         public void GetUsersShouldNotThrowExceptionIfDBIsEmpty()
@@ -86,7 +85,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetUsers();
                 }
-                catch (Exception e)
+                catch 
                 {
                     result = false;
                 }
@@ -231,8 +230,7 @@ namespace RestaurantAPI.Testing
             var options = new DbContextOptionsBuilder<Project2DBContext>()
                 .UseInMemoryDatabase(databaseName: "StaticFilledDB")
                 .Options;
-
-            AppUser u;
+            
             bool result = false;
             AppUserRepo uRepo;
 
@@ -240,12 +238,11 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                //context.Add(new AppUser { Username = "realUser", FirstName= "a", LastName= "b", Email= "e" });
                 try
                 {
-                    u = uRepo.GetUserByUsername(username);
+                    uRepo.GetUserByUsername(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -265,8 +262,6 @@ namespace RestaurantAPI.Testing
             var options = new DbContextOptionsBuilder<Project2DBContext>()
                 .UseInMemoryDatabase(databaseName: "StaticFilledDB")
                 .Options;
-
-            AppUser u;
             bool result = true;
             AppUserRepo uRepo;
 
@@ -274,7 +269,7 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                u = uRepo.GetUserByUsername(username);
+                uRepo.GetUserByUsername(username);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -335,7 +330,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetBlacklistForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -367,7 +362,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetBlacklistForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -425,7 +420,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetFavoritesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -457,7 +452,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetFavoritesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -517,7 +512,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetQueriesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -549,7 +544,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetQueriesForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -608,7 +603,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetOwnedRestaurantsForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -640,7 +635,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.GetOwnedRestaurantsForUser(username);
                 }
-                catch (NotSupportedException e)
+                catch (NotSupportedException)
                 {
                     result = true;
                 }
@@ -691,7 +686,6 @@ namespace RestaurantAPI.Testing
             bool result = false;
             using (var context = new Project2DBContext(options))
             {
-                uRepo = new AppUserRepo(context);
                 context.AppUser.Add(u2);
                 context.SaveChanges();
             }
@@ -704,7 +698,7 @@ namespace RestaurantAPI.Testing
                 {
                     uRepo.AddUser(u);
                 }
-                catch (DbUpdateException e)
+                catch (DbUpdateException)
                 {
                     result = true;
                 }
@@ -740,6 +734,279 @@ namespace RestaurantAPI.Testing
 
             //Assert
             Assert.Equal(u, result);
+        }
+
+        //Testing of AddRestaurantToBlacklist
+        [Theory]
+        [InlineData("fakeUser")]
+        [InlineData("totallyNotAUser")]
+        [InlineData("zzzzzZZefea")]
+        [InlineData("SoooooManyTestsToCome")]
+        public void AddRestaurantToBlacklistShouldThrowExceptionIfUserNotInDB(string username)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            bool result = false;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    uRepo.AddRestaurantToBlacklist(username, 1, rRepo);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+        
+        [Theory]
+        [InlineData("realUser", 1000)]
+        [InlineData("decoyUser1", 98)]
+        [InlineData("decoyUser2", 52)]
+        [InlineData("decoyUser3", 18)]
+        public void AddRestaurantToBlacklistShouldThrowExceptionIfRestaurantNotInDB(string username, int rId)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            bool result = false;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("realUser", 1)]
+        [InlineData("decoyUser1", 2)]
+        [InlineData("decoyUser2", 3)]
+        [InlineData("decoyUser3", 4)]
+        public void AddRestaurantToBlacklistShouldSucceedIfUserAndRestaurantAreValid(string username, int rId)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            Blacklist result;
+            
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                result = context.Blacklist.Find(rId, username);
+            }
+
+            //Assert
+            Assert.Equal(username, result.Username);
+            Assert.Equal(rId, result.RestaurantId);
+        }
+
+        [Theory]
+        [InlineData("realUser", 1)]
+        [InlineData("decoyUser1", 2)]
+        [InlineData("decoyUser2", 3)]
+        [InlineData("decoyUser3", 4)]
+        public void AddRestaurantToBlacklistShouldThrowExceptionIfRestrauntAlreadyInUsersBlacklist(string username, int rId)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            bool result = false;
+            using (var context = new Project2DBContext(options))
+            {
+                context.Blacklist.Add(new Blacklist { Username = username, RestaurantId = rId });
+            }
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+
+        //Testing of AddRestaurantToFavorites
+        [Theory]
+        [InlineData("fakeUser")]
+        [InlineData("totallyNotAUser")]
+        [InlineData("zzzzzZZefea")]
+        [InlineData("SoooooManyTestsToCome")]
+        public void AddRestaurantToFavoritesShouldThrowExceptionIfUserNotInDB(string username)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            bool result = false;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    uRepo.AddRestaurantToFavorites(username, 1, rRepo);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("realUser", 1000)]
+        [InlineData("decoyUser1", 98)]
+        [InlineData("decoyUser2", 52)]
+        [InlineData("decoyUser3", 18)]
+        public void AddRestaurantToFavoritesShouldThrowExceptionIfRestaurantNotInDB(string username, int rId)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            bool result = false;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("realUser", 1)]
+        [InlineData("decoyUser1", 2)]
+        [InlineData("decoyUser2", 3)]
+        [InlineData("decoyUser3", 4)]
+        public void AddRestaurantToFavoritesShouldSucceedIfUserAndRestaurantAreValid(string username, int rId)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            Favorite result;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                result = context.Favorite.Find(rId, username);
+            }
+
+            //Assert
+            Assert.Equal(username, result.Username);
+            Assert.Equal(rId, result.RestaurantId);
+        }
+
+        [Theory]
+        [InlineData("realUser", 1)]
+        [InlineData("decoyUser1", 2)]
+        [InlineData("decoyUser2", 3)]
+        [InlineData("decoyUser3", 4)]
+        public void AddRestaurantToFavoritesShouldThrowExceptionIfRestrauntAlreadyInUsersBlacklist(string username, int rId)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+            AppUserRepo uRepo;
+            RestaurantRepo rRepo;
+            bool result = false;
+            using (var context = new Project2DBContext(options))
+            {
+                context.Favorite.Add(new Favorite { Username = username, RestaurantId = rId });
+            }
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                uRepo = new AppUserRepo(context);
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
         }
 
     }
