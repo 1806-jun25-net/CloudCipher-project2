@@ -15,7 +15,7 @@ namespace RestaurantAPI.Testing
         public AppUserRepoTest()
         {
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             using (var context = new Project2DBContext(options))
             {
@@ -71,7 +71,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB1")
                 .Options;
 
             bool result = true;
@@ -99,7 +99,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             List<AppUser> uList;
@@ -121,7 +121,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB2")
                 .Options;
 
             bool result = true;
@@ -144,14 +144,14 @@ namespace RestaurantAPI.Testing
         [InlineData("decoyUser2")]
         [InlineData("decoyUser3")]
         [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
+        [InlineData("totallyNotAUserr")]
         [InlineData("zzzzzZZefea")]
         [InlineData("SoooooManyTestsToCome")]
         public void DBContainsUsernameShouldReturnFalseIfIfDBIsEmpty(string username)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB3")
                 .Options;
             bool result;
             AppUserRepo uRepo;
@@ -176,7 +176,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result;
             AppUserRepo uRepo;
@@ -200,7 +200,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result;
             AppUserRepo uRepo;
@@ -227,7 +227,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             
             bool result = false;
@@ -259,7 +259,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result = true;
             AppUserRepo uRepo;
@@ -284,7 +284,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
 
             AppUser u;
@@ -316,7 +316,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB4")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -348,7 +348,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -376,7 +376,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             List<Restaurant> results;
@@ -406,7 +406,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB5")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -438,7 +438,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -466,7 +466,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             List<Restaurant> results;
@@ -498,7 +498,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB6")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -530,7 +530,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -558,7 +558,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             List<Query> results;
@@ -568,6 +568,7 @@ namespace RestaurantAPI.Testing
             {
                 uRepo = new AppUserRepo(context);
                 results = uRepo.GetQueriesForUser("realUser").ToList();
+                context.Dispose();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -589,7 +590,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB7")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -621,7 +622,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             bool result = false;
             AppUserRepo uRepo;
@@ -649,7 +650,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             List<Restaurant> results;
@@ -745,7 +746,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB8")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -813,7 +814,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -882,7 +883,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB9")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -950,7 +951,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;

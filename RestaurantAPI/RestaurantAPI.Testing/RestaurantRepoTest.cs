@@ -14,7 +14,7 @@ namespace RestaurantAPI.Testing
         public RestaurantRepoTest()
         {
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             using (var context = new Project2DBContext(options))
             {
@@ -71,7 +71,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB1")
                 .Options;
 
             bool result = true;
@@ -99,7 +99,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             RestaurantRepo rRepo;
             List<Restaurant> rList;
@@ -122,13 +122,13 @@ namespace RestaurantAPI.Testing
         [InlineData(4)]
         [InlineData(11)]
         [InlineData(4232)]
-        [InlineData(66)]
+        [InlineData(67)]
         [InlineData(324)]
         public void DBContainsRestaurantShouldNotThrowExceptionIfDBIsEmpty(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB2")
                 .Options;
 
             bool result = true;
@@ -158,7 +158,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB3")
                 .Options;
             bool result;
             RestaurantRepo rRepo;
@@ -183,7 +183,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             bool result;
             RestaurantRepo rRepo;
@@ -207,7 +207,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             bool result;
             RestaurantRepo rRepo;
@@ -237,7 +237,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB4")
                 .Options;
 
             bool result = true;
@@ -267,7 +267,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDB")
+                .UseInMemoryDatabase(databaseName: "EmptyDB5")
                 .Options;
             bool result;
             RestaurantRepo rRepo;
@@ -292,7 +292,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             bool result;
             RestaurantRepo rRepo;
@@ -317,7 +317,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             bool result;
             RestaurantRepo rRepo;
@@ -342,7 +342,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
 
             bool result = false;
@@ -374,7 +374,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             bool result = true;
             RestaurantRepo rRepo;
@@ -399,7 +399,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
 
             Restaurant r;
@@ -427,7 +427,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
 
             bool result = false;
@@ -459,7 +459,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
             bool result = true;
             RestaurantRepo rRepo;
@@ -484,7 +484,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
                 .Options;
 
             Restaurant r;
