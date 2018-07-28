@@ -39,10 +39,10 @@ namespace RestaurantAPI.Testing
 
 
             //Act
-            ActionResult result = controller.Get();
+            var result = controller.Get();
 
             //Assert
-            var statusCode = (StatusCodeResult)result;
+            var statusCode = (StatusCodeResult)result.Result;
             Assert.Equal(501, statusCode.StatusCode);
         }
 
@@ -54,10 +54,10 @@ namespace RestaurantAPI.Testing
 
 
             //Act
-            ActionResult result = controller.Get();
+            var result = controller.Get();
 
             //Assert
-            var statusCode = (StatusCodeResult)result;
+            var statusCode = (StatusCodeResult)result.Result;
             Assert.Equal(501, statusCode.StatusCode);
         }
 

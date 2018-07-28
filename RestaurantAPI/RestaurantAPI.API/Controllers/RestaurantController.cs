@@ -33,11 +33,11 @@ namespace RestaurantAPI.API.Controllers
 
         // GET: api/<controller>
         [HttpGet]
-        public ActionResult <IEnumerable<RestaurantModel>> Get()
+        public ActionResult<List<RestaurantModel>> Get()
         {
             Rrepo.GetRestaurants();
 
-            return Mapper.Map(Rrepo.GetRestaurants().ToList());
+            return Mapper.Map(Rrepo.GetRestaurants().ToList()).ToList();
             
         }
 
