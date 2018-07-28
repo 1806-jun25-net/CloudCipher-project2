@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantAPI.Library.Repos
 {
-    public class RestaurantRepo
+    public class RestaurantRepo : IRestaurantRepo
     {
         private readonly Project2DBContext _db;
 
