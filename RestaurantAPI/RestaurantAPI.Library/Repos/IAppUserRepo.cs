@@ -31,6 +31,6 @@ namespace RestaurantAPI.Library.Repos
         IQueryable<AppUser> GetUsers();
         IQueryable<AppUser> GetUsers(bool includeAll);
         void Save();
-        Task<int> SaveAsync();
+        Task SaveAsync();
     }
 }

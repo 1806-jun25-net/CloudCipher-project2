@@ -388,9 +388,9 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Saves changes to DB
         /// </summary>
-        public async Task<int> SaveAsync()
+        public async Task SaveAsync()
         {
-            return await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RestaurantAPI.Library.Repos
 {
@@ -35,6 +36,8 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>true if Keyword found in DB, falase otherwise</returns>
         public bool DBContainsKeyword(Keyword kw)
         {
+            if (kw == null)
+                return false;
             return GetKeywords().Any(t => t.Word.Equals(kw.Word));
         }
 
@@ -45,6 +48,8 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>true if keyword string found in DB, falase otherwise</returns>
         public bool DBContainsKeyword(string kw)
         {
+            if (kw == null)
+                return false;
             return GetKeywords().Any(t => t.Word.Equals(kw));
         }
 
@@ -53,12 +58,14 @@ namespace RestaurantAPI.Library.Repos
         /// Throws an exception if the Keyword already exists in the DB to avoid violating PK constraint.
         /// Still need to call Save() afterwards to keep changes.
         /// </summary>
-        /// <param name="u">Keyword object to add to DB</param>
-        public void AddKeyword(Keyword u)
+        /// <param name="kw">Keyword object to add to DB</param>
+        public void AddKeyword(Keyword kw)
         {
-            if (DBContainsKeyword(u))
+            if (kw == null)
+                throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            if (DBContainsKeyword(kw))
                 throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
-            _db.Add(u);
+            _db.Add(kw);
         }
 
         /// <summary>
@@ -66,12 +73,14 @@ namespace RestaurantAPI.Library.Repos
         /// Throws an exception if the given string has a Keyword already in the DB to avoid violating PK constraint.
         /// Still need to call Save() afterwards to keep changes.
         /// </summary>
-        /// <param name="u">keyword string to add to DB</param>
-        public void AddKeyword(string u)
+        /// <param name="kw">keyword string to add to DB</param>
+        public void AddKeyword(string kw)
         {
-            if (DBContainsKeyword(u))
+            if (kw == null)
+                throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            if (DBContainsKeyword(kw))
                 throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
-            _db.Add(new Keyword() { Word = u } );
+            _db.Add(new Keyword() { Word = kw } );
         }
 
         /// <summary>
@@ -80,6 +89,72 @@ namespace RestaurantAPI.Library.Repos
         public void Save()
         {
             _db.SaveChanges();
+        }
+
+
+        //Async versions
+        /// <summary>
+        /// Checks whether the given Keyword already exists in the DB or not.  Overload which takes a Keyword object.
+        /// </summary>
+        /// <param name="kw">Keyword object who's .Word is to be checked for existence in the DB</param>
+        /// <returns>true if Keyword found in DB, falase otherwise</returns>
+        public async Task<bool> DBContainsKeywordAsync(Keyword kw)
+        {
+            if (kw == null)
+                return false;
+            return await GetKeywords().AnyAsync(t => t.Word.Equals(kw.Word));
+        }
+
+        /// <summary>
+        /// Checks whether the given Keyword already exists in the DB or not.  Overload which takes a string.
+        /// </summary>
+        /// <param name="kw">string to be checked for existence in the DB as a Keyword</param>
+        /// <returns>true if keyword string found in DB, falase otherwise</returns>
+        public async Task<bool> DBContainsKeywordAsync(string kw)
+        {
+            if (kw == null)
+                return false;
+            return await GetKeywords().AnyAsync(t => t.Word.Equals(kw));
+        }
+
+        /// <summary>
+        /// Adds the given Keyword object to the DB.  Overload which takes the Keyword object.
+        /// Throws an exception if the Keyword already exists in the DB to avoid violating PK constraint.
+        /// Still need to call Save() afterwards to keep changes.
+        /// </summary>
+        /// <param name="kw">Keyword object to add to DB</param>
+        public async Task AddKeywordAsync(Keyword kw)
+        {
+            if (kw == null)
+                throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            bool contains = await DBContainsKeywordAsync(kw);
+            if (contains)
+                throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
+            _db.Add(kw);
+        }
+
+        /// <summary>
+        /// Adds the given keyword string to the DB.  Overload which takes a string of keyword to be added.
+        /// Throws an exception if the given string has a Keyword already in the DB to avoid violating PK constraint.
+        /// Still need to call Save() afterwards to keep changes.
+        /// </summary>
+        /// <param name="kw">keyword string to add to DB</param>
+        public async Task AddKeywordAsync(string kw)
+        {
+            if (kw == null)
+                throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            bool contains = await DBContainsKeywordAsync(kw);
+            if (contains)
+                throw new DbUpdateException($"The keyword {kw} is already in the database.  Keywords must be unique.", new NotSupportedException());
+            _db.Add(new Keyword() { Word = kw });
+        }
+
+        /// <summary>
+        /// Saves changes to DB
+        /// </summary>
+        public async Task SaveAsync()
+        {
+            await _db.SaveChangesAsync();
         }
     }
 }
