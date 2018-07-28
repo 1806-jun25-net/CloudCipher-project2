@@ -502,5 +502,198 @@ namespace RestaurantAPI.Testing
             Assert.Equal(loc, r.Location);
         }
 
+        //Testing of GetRestaurantIDByNameAndLocation
+        [Theory]
+        [InlineData("7", "lol")]
+        [InlineData("8", "not a real location")]
+        [InlineData("88", "loc")]
+        [InlineData("790", "loc")]
+        [InlineData("103", "loc")]
+        public void GetRestaurantIDByNameAndLocationShouldThrowExceptionIfNameAndLocationNotFound(string name, string loc)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
+                .Options;
+
+            bool result = false;
+            RestaurantRepo rRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    rRepo.GetRestaurantIDByNameAndLocation(name, loc);
+                }
+                catch (NotSupportedException)
+                {
+                    result = true;
+                }
+            }
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("1", "loc")]
+        [InlineData("2", "loc")]
+        [InlineData("3", "loc")]
+        [InlineData("4", "loc")]
+        public void GetRestaurantIDByNameAndLocationShouldNotThrowExceptionIfNameAndLocationIsInDB(string name, string loc)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
+                .Options;
+            bool result = true;
+            RestaurantRepo rRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                rRepo.GetRestaurantIDByNameAndLocation(name, loc);
+            }
+            //If exception is throw, test will exit before reaching Assert
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData("1", "loc")]
+        [InlineData("2", "loc")]
+        [InlineData("3", "loc")]
+        [InlineData("4", "loc")]
+        public void GetRestaurantIDByNameAndLocationShouldReturnIdMatchingNameAndLocation(string name, string loc)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledRestaurantDB")
+                .Options;
+
+            int result;
+            RestaurantRepo rRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                result = rRepo.GetRestaurantIDByNameAndLocation(name, loc);
+            }
+
+            //Assert
+            Assert.Equal(result, Int32.Parse(name));
+        }
+
+
+        //Testing of AddUser
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void AddRestaurantShouldThrowExceptionIfIdAlreadyInDB(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+
+            Restaurant r = new Restaurant { Id = Id, Name = Id.ToString(), Location = "loc" };
+            Restaurant r2 = new Restaurant { Id = Id, Name = Id.ToString(), Location = "loc" };
+            RestaurantRepo rRepo;
+            bool result = false;
+            using (var context = new Project2DBContext(options))
+            {
+                context.Restaurant.Add(r2);
+                context.SaveChanges();
+            }
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    rRepo.AddRestaurant(r);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void AddRestaurantShouldThrowExceptionIfNameAndLocAlreadyInDB(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .Options;
+
+            Restaurant r = new Restaurant { Id = 10, Name = Id.ToString(), Location = "loc" };
+            Restaurant r2 = new Restaurant { Id = 11, Name = Id.ToString(), Location = "loc" };
+            RestaurantRepo rRepo;
+            bool result = false;
+            using (var context = new Project2DBContext(options))
+            {
+                context.Restaurant.Add(r2);
+            }
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    rRepo.AddRestaurant(r);
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void AddRestrauntShouldAddCorrectRestauranttoDB(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting2DB")
+                .Options;
+
+            Restaurant r = new Restaurant {Name = Id.ToString(), Location = "loc" };
+            RestaurantRepo rRepo;
+            Restaurant result;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                rRepo.AddRestaurant(r);
+                result = context.Restaurant.Find(r.Id);
+            }
+
+            //Assert
+            Assert.Equal(r, result);
+        }
     }
 }

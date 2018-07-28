@@ -687,7 +687,6 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 context.AppUser.Add(u2);
-                context.SaveChanges();
             }
 
             //Act
