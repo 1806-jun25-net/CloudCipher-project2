@@ -33,14 +33,17 @@ namespace RestaurantAPI.API.Controllers
         
         // GET: api/<controller>
         [HttpGet]
-        public ActionResult <IEnumerable<string>> Get()
+        public ActionResult <List<AppUser>> Get()
         {
             Arepo.GetUsers();
             //  Krepo.GetKeywords();
             //  Qrepo.GetQueries();
             //  Rrepo.GetRestaurants();
 
-            return StatusCode(StatusCodes.Status501NotImplemented);
+            // return StatusCode(StatusCodes.Status501NotImplemented);
+
+            //SET THIS RETURN MAINLY FOR TESTING CONNECTION TO MVC
+            return Arepo.GetUsers().ToList();
         }
 
         // GET api/<controller>/5
@@ -54,8 +57,27 @@ namespace RestaurantAPI.API.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult Create([FromBody]UserModel value)
         {
+            AppUser createVariable;
+
+            createVariable = Mapper.Map(value);
+
+            try
+            {
+                Arepo.AddUser(createVariable);
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            Arepo.Save();
+
+            return CreatedAtRoute("GetUser", new { username = value.Username }, value);
+           
+
         }
 
         // PUT api/<controller>/5
@@ -70,7 +92,7 @@ namespace RestaurantAPI.API.Controllers
         {
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("{username}", Name = "GetUser")]
         [Route("api/User")]
         public ActionResult<UserModel> GetByUsername(string username)
         {
@@ -89,6 +111,9 @@ namespace RestaurantAPI.API.Controllers
 
             
         }
+
+        
+
 
 
     }
