@@ -2,33 +2,83 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantAPI.API.Models;
+using RestaurantAPI.Data;
+using RestaurantAPI.Library;
+using RestaurantAPI.Library.Repos;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class RestaurantController : Controller
     {
+        public RestaurantController(AppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, RestaurantRepo RestRepo)
+        {
+            Arepo = AppRepo;
+            Krepo = KeyRepo;
+            Qrepo = QRepo;
+            Rrepo = RestRepo;
+        }
+
+        public AppUserRepo Arepo { get; set; }
+        public KeywordRepo Krepo { get; set; }
+        public QueryRepo Qrepo { get; set; }
+        public RestaurantRepo Rrepo { get; set; }
+
+
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<List<RestaurantModel>> Get()
         {
-            return new string[] { "value1", "value2" };
+            Rrepo.GetRestaurants();
+
+            return Mapper.Map(Rrepo.GetRestaurants().ToList()).ToList();
+            
         }
 
         // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetRestaurant")]
+        public ActionResult<RestaurantModel> Get(int id)
         {
-            return "value";
+            Restaurant grabVariable;
+            try
+            {
+                grabVariable = Rrepo.GetRestaurantByID(id);
+            }
+            catch(Exception g)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            return Mapper.Map(grabVariable);
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult Create([FromBody]RestaurantModel value)
         {
+            Restaurant createVariable;
+
+            createVariable = Mapper.Map(value);
+
+            try
+            {
+                Rrepo.AddRestaurant(createVariable);
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            Rrepo.Save();
+
+            return CreatedAtRoute("GetRestaurant", new { Id = value.Id }, value);
         }
 
         // PUT api/<controller>/5
