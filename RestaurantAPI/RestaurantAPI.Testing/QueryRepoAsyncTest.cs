@@ -334,7 +334,40 @@ namespace RestaurantAPI.Testing
             Assert.Equal(q, result);
         }
 
+        [Theory]
+        [InlineData("food")]
+        [InlineData("fast")]
+        [InlineData("breakfast")]
+        [InlineData("fish")]
+        public void AddQueryAsyncShouldAddNewKeywordsToDB(string keyword)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyQueryAddTesting3DB")
+                .Options;
 
+            Query q = new Query { Username = "realUser", QueryTime = DateTime.Now };
+            q.QueryKeywordJunction = new List<QueryKeywordJunction>() { new QueryKeywordJunction() { QueryId = q.Id, Word = keyword } };
+            QueryRepo qRepo;
+            KeywordRepo kRepo;
+            Query result;
+            QueryKeywordJunction result2;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                kRepo = new KeywordRepo(context);
+                qRepo.AddQueryAsync(q, kRepo).Wait();
+                result = context.Query.Find(q.Id);
+                result2 = context.QueryKeywordJunction.Find(q.Id, keyword);
+            }
+
+            //Assert
+            Assert.Equal(q, result);
+            Assert.Equal(q.Id, result2.QueryId);
+            Assert.Equal(keyword, result2.Word);
+        }
 
     }
 }

@@ -62,7 +62,7 @@ namespace RestaurantAPI.Testing
                     context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "breakfast" });
                     context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "fast" });
                     context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "food" });
-                    
+
                     context.SaveChanges();
                 }
             }
@@ -322,7 +322,7 @@ namespace RestaurantAPI.Testing
                 .UseInMemoryDatabase(databaseName: "EmptyQueryAddTesting1DB")
                 .Options;
 
-            Query q =  new Query { Id = Id, Username = "tester", QueryTime = DateTime.Now };
+            Query q = new Query { Id = Id, Username = "tester", QueryTime = DateTime.Now };
             Query q2 = new Query { Id = Id, Username = "tester", QueryTime = DateTime.Now };
             QueryRepo qRepo;
             KeywordRepo kRepo;
@@ -352,7 +352,7 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        
+
         [Theory]
         [InlineData("realUser")]
         [InlineData("decoyUser1")]
@@ -381,6 +381,41 @@ namespace RestaurantAPI.Testing
 
             //Assert
             Assert.Equal(q, result);
+        }
+
+        [Theory]
+        [InlineData("food")]
+        [InlineData("fast")]
+        [InlineData("breakfast")]
+        [InlineData("fish")]
+        public void AddQueryShouldAddNewKeywordsToDB(string keyword)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyQueryAddTesting3DB")
+                .Options;
+
+            Query q = new Query { Username = "realUser", QueryTime = DateTime.Now };
+            q.QueryKeywordJunction = new List<QueryKeywordJunction>() {  new QueryKeywordJunction() { QueryId = q.Id, Word = keyword } };
+            QueryRepo qRepo;
+            KeywordRepo kRepo;
+            Query result;
+            QueryKeywordJunction result2;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                kRepo = new KeywordRepo(context);
+                qRepo.AddQuery(q, kRepo);
+                result = context.Query.Find(q.Id);
+                result2 = context.QueryKeywordJunction.Find( q.Id, keyword);
+            }
+
+            //Assert
+            Assert.Equal(q, result);
+            Assert.Equal(q.Id, result2.QueryId);
+            Assert.Equal(keyword, result2.Word);
         }
     }
 }
