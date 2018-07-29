@@ -11,28 +11,28 @@ using RestaurantFrontEnd.Library.API_Models;
 
 namespace RestaurantFrontEnd.MVC.Controllers
 {
-    public class UserController : Controller
+    public class UserController : AServiceController
     {
-        public HttpClient HttpClient {get;set;}
-        private readonly static string apiserviceuri= "http://localhost:58756/api/";
+        //public HttpClient HttpClient {get;set;}
+        //private readonly static string apiserviceuri= "http://localhost:58756/api/";
         
-        public UserController(HttpClient httpClient)
+        public UserController(HttpClient httpClient) :base(httpClient)
         {
-            HttpClient = httpClient;
+           
         }
         
         // GET: User/Users
         //feel free to modify the if statements if you have a simpler
         //solution( switch statement?)
         public async Task<ActionResult> Index([FromQuery] string search = "")
-
-
         {
-            var uri = apiserviceuri + "user/";
+            var request = CreateRequestService(HttpMethod.Get, "api/user");
+
+            //var uri = apiserviceuri + "user/";
             if(search != null && search != "")
             {
-                var search_uri = apiserviceuri + "user/" + search;
-                var request = new HttpRequestMessage(HttpMethod.Get, search_uri);
+                //var search_uri = apiserviceuri + "user/" + search;
+                request = CreateRequestService(HttpMethod.Get, "api/user/"+search);
 
                 try
                 {
@@ -63,7 +63,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
             else
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, uri);
+                
 
                 try
                 {
@@ -112,11 +112,11 @@ namespace RestaurantFrontEnd.MVC.Controllers
             try
             {
                 string jsonString = JsonConvert.SerializeObject(user);
-                var uri = apiserviceuri + "user";
-                var request = new HttpRequestMessage(HttpMethod.Post, uri)
-                {
-                    Content = new StringContent(jsonString,Encoding.UTF8,"application/json")
-                };
+                //var uri = apiserviceuri + "user";
+                var request = CreateRequestService(HttpMethod.Post, "api/user");
+
+                request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                
 
                 var response = await HttpClient.SendAsync(request);
 

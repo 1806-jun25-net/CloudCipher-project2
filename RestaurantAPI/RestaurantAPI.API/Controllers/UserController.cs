@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.API.Models;
@@ -15,10 +16,11 @@ namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : Controller
     {
-        public UserController(IAppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, IRestaurantRepo RestRepo)
-        {
+        public UserController(AppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, RestaurantRepo RestRepo)
+        {//Issues with using interfaces in th parameters(IAppUserRepo/IRestaurantRepo)
            Arepo = AppRepo;
            Krepo = KeyRepo;
            Qrepo  = QRepo;
@@ -33,10 +35,11 @@ namespace RestaurantAPI.API.Controllers
         
         // GET: api/<controller>
         [HttpGet]
+        [Authorize(Roles = "admin")]//checking if you are in some role, to access something
         public ActionResult <List<UserModel>> Get()
         {
             var userlist = Arepo.GetUsers();
-            if(userlist == null)
+            if (userlist == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -58,6 +61,7 @@ namespace RestaurantAPI.API.Controllers
 
         // POST api/<controller>
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Create([FromBody]UserModel value)
         {
             AppUser createVariable;
@@ -95,8 +99,14 @@ namespace RestaurantAPI.API.Controllers
 
         [HttpGet("{username}", Name = "GetUser")]
         [Route("api/User")]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public ActionResult<UserModel> GetByUsername(string username)
         {
+            if(User.Identity.Name != username && User.IsInRole("admin") != true)
+            {
+                return StatusCode(403);//Forbidden
+            }
             AppUser userVariable;
             try
             {
