@@ -123,8 +123,7 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
             foreach (var kwj in u.QueryKeywordJunction)
             {
-                //TODO: change to async once async version is added to KeywordRepo
-                contains = kRepo.DBContainsKeyword(kwj.Word);
+                contains = await kRepo.DBContainsKeywordAsync(kwj.Word);
                 if (!contains)
                     kRepo.AddKeyword(new Keyword() { Word = kwj.Word });
                 _db.Add(kwj);

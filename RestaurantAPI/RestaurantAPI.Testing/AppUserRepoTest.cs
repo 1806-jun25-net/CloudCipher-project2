@@ -568,7 +568,6 @@ namespace RestaurantAPI.Testing
             {
                 uRepo = new AppUserRepo(context);
                 results = uRepo.GetQueriesForUser("realUser").ToList();
-                context.Dispose();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert

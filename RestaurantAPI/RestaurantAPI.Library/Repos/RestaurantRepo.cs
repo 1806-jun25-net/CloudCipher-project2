@@ -175,14 +175,20 @@ namespace RestaurantAPI.Library.Repos
                         {
                             _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k });
                         }
-                        catch { }
+                        catch
+                        {
+                            //Exception is thrown if RestaurantKeyword pair is already in DB.  If so no need to add it or take any action 
+                        }
                     }
                 }
                 try
                 {
                     AddRestaurant(r);
                 }
-                catch {}
+                catch
+                {
+                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
+                }
             }
         }
 
