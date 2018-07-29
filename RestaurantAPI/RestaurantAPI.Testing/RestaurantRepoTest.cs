@@ -588,7 +588,7 @@ namespace RestaurantAPI.Testing
         }
 
 
-        //Testing of AddUser
+        //Testing of AddRestaurant
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
@@ -598,7 +598,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting1DB")
                 .Options;
 
             Restaurant r = new Restaurant { Id = Id, Name = Id.ToString(), Location = "loc" };
@@ -638,7 +638,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting2DB")
                 .Options;
 
             Restaurant r = new Restaurant { Id = 10, Name = Id.ToString(), Location = "loc" };
@@ -677,7 +677,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTesting2DB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting3DB")
                 .Options;
 
             Restaurant r = new Restaurant {Name = Id.ToString(), Location = "loc" };
@@ -694,6 +694,127 @@ namespace RestaurantAPI.Testing
 
             //Assert
             Assert.Equal(r, result);
+        }
+
+        //Testing of AddNewRestaurants
+        [Fact]
+        public void AddAllRestaurantsShouldThrowExceptionIfRestaurantListIsNull()
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting4DB")
+                .Options;
+            RestaurantRepo rRepo;
+            bool result = false;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                try
+                {
+                    rRepo.AddNewRestaurants(null, new List<string>());
+                }
+                catch (DbUpdateException)
+                {
+                    result = true;
+                }
+            }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void AddAllRestaurantsShouldNotThrowExceptionIfKeywordListIsNull()
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting5DB")
+                .Options;
+            RestaurantRepo rRepo;
+            bool result = true;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                rRepo.AddNewRestaurants(new List<Restaurant>(), null);
+            }
+            //Test will fail and not reach this point if Exception is thrown
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void AddAllRestaurantsShouldAddMultipleRestaurantsToDB()
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting6DB")
+                .Options;
+            RestaurantRepo rRepo;
+            List<Restaurant> resultList;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                rRepo.AddNewRestaurants(new List<Restaurant>() {
+                    new Restaurant { Name = "1", Location = "loc", Owner = "realUser" },
+                    new Restaurant { Name = "2", Location = "loc" },
+                    new Restaurant { Name = "3", Location = "loc" },
+                    new Restaurant { Name = "4", Location = "loc" },
+                    new Restaurant { Name = "5", Location = "loc" },
+                    new Restaurant { Name = "6", Location = "loc" },
+                    new Restaurant { Name = "7", Location = "loc" }
+                }, new List<string>());
+                context.SaveChanges();
+                resultList = context.Restaurant.AsNoTracking().ToList();
+            }
+            //Test will fail and not reach this point if Exception is thrown
+            //Assert
+            Assert.Equal(7, resultList.Count);
+        }
+
+        [Fact]
+        public void AddAllRestaurantsShouldAddOnlyNewRestaurantsToDB()
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting7DB")
+                .Options;
+            RestaurantRepo rRepo;
+            List<Restaurant> resultList;
+            using (var context = new Project2DBContext(options))
+            {
+                context.Restaurant.Add(new Restaurant { Name = "1", Location = "loc", Owner = "realUser" });
+                context.Restaurant.Add(new Restaurant { Name = "6", Location = "loc" });
+                context.Restaurant.Add(new Restaurant { Name = "7", Location = "loc" });
+                context.SaveChanges();
+            }
+            
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                rRepo = new RestaurantRepo(context);
+                
+                rRepo.AddNewRestaurants( new List<Restaurant>() { 
+                    new Restaurant { Name = "1", Location = "loc", Owner = "realUser" },
+                    new Restaurant { Name = "2", Location = "loc" },
+                    new Restaurant { Name = "3", Location = "loc" },
+                    new Restaurant { Name = "4", Location = "loc" },
+                    new Restaurant { Name = "5", Location = "loc" },
+                    new Restaurant { Name = "6", Location = "loc" },
+                    new Restaurant { Name = "7", Location = "loc" }
+                }, new List<string>());
+                
+                context.SaveChanges();
+                resultList = context.Restaurant.AsNoTracking().ToList();
+            }
+
+            //Assert
+            Assert.Equal(7, resultList.Count);
         }
     }
 }

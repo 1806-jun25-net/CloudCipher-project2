@@ -677,7 +677,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting1DB")
                 .Options;
 
             AppUser u = new AppUser { Username = username, FirstName = "a", LastName = "b", Email = "e" };
@@ -780,7 +780,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting3DB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -843,7 +843,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting4DB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -917,7 +917,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting5DB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;

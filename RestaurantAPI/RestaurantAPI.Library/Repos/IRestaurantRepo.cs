@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using RestaurantAPI.Data;
 
@@ -7,6 +8,7 @@ namespace RestaurantAPI.Library.Repos
     public interface IRestaurantRepo
     {
         void AddRestaurant(Restaurant r);
+        void AddNewRestaurants(List<Restaurant> rList, List<string> keywords);
         bool DBContainsRestaurant(int Id);
         bool DBContainsRestaurant(string name, string location);
         Task<bool> DBContainsRestaurantAsync(int Id);
