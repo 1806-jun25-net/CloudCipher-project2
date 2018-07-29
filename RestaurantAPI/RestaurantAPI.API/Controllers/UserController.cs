@@ -36,17 +36,18 @@ namespace RestaurantAPI.API.Controllers
         // GET: api/<controller>
         [HttpGet]
         [Authorize(Roles = "admin")]//checking if you are in some role, to access something
-        public ActionResult <List<AppUser>> Get()
+        public ActionResult <List<UserModel>> Get()
         {
-            Arepo.GetUsers();
-            //  Krepo.GetKeywords();
-            //  Qrepo.GetQueries();
-            //  Rrepo.GetRestaurants();
+            var userlist = Arepo.GetUsers();
+            if (userlist == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             // return StatusCode(StatusCodes.Status501NotImplemented);
 
             //SET THIS RETURN MAINLY FOR TESTING CONNECTION TO MVC
-            return Arepo.GetUsers().ToList();
+            return Mapper.Map(userlist).ToList();
         }
 
         // GET api/<controller>/5
