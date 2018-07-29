@@ -17,58 +17,72 @@ namespace RestaurantAPI.Testing
     {
         public UserControllerTest()
         {
-            mockARepo = new Mock<AppUserRepo>();
+            mockARepo = new Mock<IAppUserRepo>();
             mockKRepo = new Mock<KeywordRepo>();
             mockQRepo = new Mock<QueryRepo>();
-            mockRRepo = new Mock<RestaurantRepo>();
+            mockRRepo = new Mock<IRestaurantRepo>();
             controller = new UserController(
                mockARepo.Object, mockKRepo.Object, mockQRepo.Object, mockRRepo.Object);
         }
 
-        Mock<AppUserRepo> mockARepo;
+        Mock<IAppUserRepo> mockARepo;
         Mock<KeywordRepo> mockKRepo;
         Mock<QueryRepo> mockQRepo;
-        Mock<RestaurantRepo> mockRRepo;
+        Mock<IRestaurantRepo> mockRRepo;
         UserController controller;
 
+
         [Fact]
-        public void GetTestpasses()
+        public void GetTestfailsifnull()
         {
             //Arrange
             mockARepo.Setup(x => x.GetUsers()).Returns((IQueryable<AppUser>)null);
-
+            
 
             //Act
             var result = controller.Get();
 
             //Assert
             var statusCode = (StatusCodeResult)result.Result;
-            Assert.Equal(501, statusCode.StatusCode);
+            Assert.Equal(500, statusCode.StatusCode);
         }
 
         [Fact]
-        public void GetTestfails()
+        public void Getreturnsmodelifempty()
         {
             //Arrange
-            mockARepo.Setup(x => x.GetUsers()).Returns((IQueryable<AppUser>)null);
+            mockARepo.Setup(x => x.GetUsers()).Returns((new List<AppUser>().AsQueryable()));
 
 
             //Act
             var result = controller.Get();
 
             //Assert
-            var statusCode = (StatusCodeResult)result.Result;
-            Assert.Equal(501, statusCode.StatusCode);
+            Assert.IsType<ActionResult<List<UserModel>>>(result);
         }
 
 
+        [Fact]
+        public void Getreturnmodeliflistnonempty()
+        {
+            //Arrange
+            mockARepo.Setup(x => x.GetUsers()).Returns((new List<AppUser>() { new AppUser(){Username = "u" } }).AsQueryable());
+
+
+            //Act
+            var result = controller.Get();
+
+            //Assert
+            Assert.IsType<ActionResult<List<UserModel>>>(result);
+        }
         [Fact]
         public void Getbyusernametestsucceeds()
         {
             AppUser Appobject = new AppUser();
 
+
             //Arrange
-            mockARepo.Setup(x => x.GetUserByUsername("block")).Returns(Appobject);
+            mockARepo.Setup(x => x.GetUserByUsername("block")).Returns(new AppUser() { Username = "block" });
 
             //Act
             ActionResult<UserModel> result = controller.GetByUsername("block");
@@ -94,7 +108,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Fact]
-        public void createtest()
+        public void createsucceedsifaddissuccessful()
         {
             UserModel userobject = new UserModel();
 
@@ -106,11 +120,11 @@ namespace RestaurantAPI.Testing
             IActionResult result = controller.Create(userobject);
 
             //Assert
-            Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<CreatedAtRouteResult>(result);
         }
 
         [Fact]
-        public void createtestfails()
+        public void createreturnsstatuscodeifexceptionthrown()
         {
             //Arrange
             UserModel userobject = new UserModel();

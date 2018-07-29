@@ -17,7 +17,7 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class RestaurantController : Controller
     {
-        public RestaurantController(AppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, RestaurantRepo RestRepo)
+        public RestaurantController(IAppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, IRestaurantRepo RestRepo)
         {
             Arepo = AppRepo;
             Krepo = KeyRepo;
@@ -25,10 +25,10 @@ namespace RestaurantAPI.API.Controllers
             Rrepo = RestRepo;
         }
 
-        public AppUserRepo Arepo { get; set; }
+        public IAppUserRepo Arepo { get; set; }
         public KeywordRepo Krepo { get; set; }
         public QueryRepo Qrepo { get; set; }
-        public RestaurantRepo Rrepo { get; set; }
+        public IRestaurantRepo Rrepo { get; set; }
 
 
         // GET: api/<controller>
