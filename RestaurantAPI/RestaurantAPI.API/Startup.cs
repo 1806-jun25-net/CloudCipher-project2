@@ -27,10 +27,10 @@ namespace RestaurantAPI.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped<Library.Repos.AppUserRepo>();
-            services.AddScoped<Library.Repos.KeywordRepo>();
-            services.AddScoped<Library.Repos.QueryRepo>();
-            services.AddScoped<Library.Repos.RestaurantRepo>();
+            services.AddScoped<Library.Repos.IAppUserRepo, Library.Repos.AppUserRepo>();
+            services.AddScoped<Library.Repos.IKeywordRepo, Library.Repos.KeywordRepo>();
+            services.AddScoped<Library.Repos.IQueryRepo, Library.Repos.QueryRepo>();
+            services.AddScoped<Library.Repos.IRestaurantRepo, Library.Repos.RestaurantRepo >();
             services.AddDbContext<Data.Project2DBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Project2DB")));
         }
