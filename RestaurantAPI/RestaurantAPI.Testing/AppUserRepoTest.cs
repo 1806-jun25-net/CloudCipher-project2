@@ -568,7 +568,6 @@ namespace RestaurantAPI.Testing
             {
                 uRepo = new AppUserRepo(context);
                 results = uRepo.GetQueriesForUser("realUser").ToList();
-                context.Dispose();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -677,7 +676,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting1DB")
                 .Options;
 
             AppUser u = new AppUser { Username = username, FirstName = "a", LastName = "b", Email = "e" };
@@ -780,7 +779,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting3DB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -843,7 +842,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting4DB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -917,7 +916,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddTesting5DB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -980,7 +979,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddTestingDB")
+                .UseInMemoryDatabase(databaseName: "EmptyAddFavoritesTestingDB")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
