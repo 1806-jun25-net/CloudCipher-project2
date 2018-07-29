@@ -26,6 +26,7 @@ namespace RestaurantAPI.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //empty now that connection string moved to user secrets
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

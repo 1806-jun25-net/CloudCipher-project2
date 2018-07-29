@@ -6,9 +6,9 @@ CREATE TABLE RestaurantSite.AppUser
 	Username nvarchar(128) PRIMARY KEY,
 	FirstName nvarchar(128) NOT NULL,
 	LastName nvarchar(128) NOT NULL,
-	Email nvarchar(128) NOT NULL,
-	UserType int NOT NULL DEFAULT 0
+	Email nvarchar(128) NOT NULL
 );
+--ALTER TABLE RestaurantSite.AppUser DROP COLUMN UserType ;
 
 --DROP TABLE RestaurantSite.Restaurant
 CREATE TABLE RestaurantSite.Restaurant
