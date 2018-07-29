@@ -19,8 +19,8 @@ namespace RestaurantAPI.API.Controllers
     [Authorize]
     public class UserController : Controller
     {
-        public UserController(IAppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, IRestaurantRepo RestRepo)
-        {
+        public UserController(AppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, RestaurantRepo RestRepo)
+        {//Issues with using interfaces in th parameters(IAppUserRepo/IRestaurantRepo)
            Arepo = AppRepo;
            Krepo = KeyRepo;
            Qrepo  = QRepo;
