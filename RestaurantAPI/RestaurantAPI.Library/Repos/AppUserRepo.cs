@@ -262,8 +262,15 @@ namespace RestaurantAPI.Library.Repos
             _db.Add(fav);
         }
 
-
-
+        public void UpdateUser(AppUser u)
+        {
+            if (!DBContainsUsername(u.Username))
+                return;
+            AppUser realUser = _db.AppUser.Find((u.Username));
+            realUser.FirstName = u.FirstName;
+            realUser.LastName = u.LastName;
+            realUser.Email = u.Email;
+        }
 
         /// <summary>
         /// Saves changes to DB

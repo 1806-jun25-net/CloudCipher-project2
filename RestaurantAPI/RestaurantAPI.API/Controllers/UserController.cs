@@ -86,16 +86,36 @@ namespace RestaurantAPI.API.Controllers
         }
 
         // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{username}", Name = "UpdateUser")]
+        public IActionResult Put(string username, [FromBody]UserModel value)
         {
+            AppUser updateVariable;
+
+            updateVariable = Mapper.Map(value);
+
+            try
+            {
+                Arepo.AddUser(updateVariable);
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            Arepo.Save();
+
+            return StatusCode(StatusCodes.Status204NoContent);
         }
 
+        /*
+         * disabling delete user since we do not want users to be deleted
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
         }
+        */
 
         [HttpGet("{username}", Name = "GetUser")]
         [Route("api/User")]
