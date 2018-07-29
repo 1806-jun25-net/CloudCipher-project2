@@ -123,7 +123,7 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         public ActionResult<UserModel> GetByUsername(string username)
         {
-            if(User.Identity.Name != username && User.IsInRole("admin") != true)
+            if( User == null || !(User.Identity.Name.Equals(username) || User.IsInRole("admin")) )
             {
                 return StatusCode(403);//Forbidden
             }
