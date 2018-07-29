@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantAPI.Library.Repos
 {
-    public class QueryRepo
+    public class QueryRepo : IQueryRepo
     {
         private readonly Project2DBContext _db;
 
@@ -64,13 +64,13 @@ namespace RestaurantAPI.Library.Repos
         {
             if (DBContainsQuery(u.Id) || u.Id > 0)
                 throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
+            _db.Add(u);
             foreach (var kwj in u.QueryKeywordJunction)
             {
                 if (!kRepo.DBContainsKeyword(kwj.Word))
                     kRepo.AddKeyword(new Keyword() { Word = kwj.Word });
                 _db.Add(kwj);
             }  
-            _db.Add(u);
         }
 
         /// <summary>
@@ -121,6 +121,7 @@ namespace RestaurantAPI.Library.Repos
             bool contains = await DBContainsQueryAsync(u.Id);
             if ( contains || u.Id > 0)
                 throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
+            _db.Add(u);
             foreach (var kwj in u.QueryKeywordJunction)
             {
                 contains = await kRepo.DBContainsKeywordAsync(kwj.Word);
@@ -128,7 +129,6 @@ namespace RestaurantAPI.Library.Repos
                     kRepo.AddKeyword(new Keyword() { Word = kwj.Word });
                 _db.Add(kwj);
             }
-            _db.Add(u);
         }
 
         /// <summary>

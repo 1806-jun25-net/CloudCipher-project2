@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantAPI.Library.Repos
 {
-    public class KeywordRepo
+    public class KeywordRepo : IKeywordRepo
     {
         private readonly Project2DBContext _db;
 
