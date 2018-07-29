@@ -18,16 +18,16 @@ namespace RestaurantAPI.Testing
         public UserControllerTest()
         {
             mockARepo = new Mock<IAppUserRepo>();
-            mockKRepo = new Mock<KeywordRepo>();
-            mockQRepo = new Mock<QueryRepo>();
+            mockKRepo = new Mock<IKeywordRepo>();
+            mockQRepo = new Mock<IQueryRepo>();
             mockRRepo = new Mock<IRestaurantRepo>();
             controller = new UserController(
                mockARepo.Object, mockKRepo.Object, mockQRepo.Object, mockRRepo.Object);
         }
 
         Mock<IAppUserRepo> mockARepo;
-        Mock<KeywordRepo> mockKRepo;
-        Mock<QueryRepo> mockQRepo;
+        Mock<IKeywordRepo> mockKRepo;
+        Mock<IQueryRepo> mockQRepo;
         Mock<IRestaurantRepo> mockRRepo;
         UserController controller;
 

@@ -19,8 +19,8 @@ namespace RestaurantAPI.API.Controllers
     [Authorize]
     public class UserController : Controller
     {
-        public UserController(AppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, RestaurantRepo RestRepo)
-        {//Issues with using interfaces in th parameters(IAppUserRepo/IRestaurantRepo)
+        public UserController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
+        {
            Arepo = AppRepo;
            Krepo = KeyRepo;
            Qrepo  = QRepo;
@@ -28,8 +28,8 @@ namespace RestaurantAPI.API.Controllers
         }
 
         public IAppUserRepo Arepo { get; set; }
-        public KeywordRepo Krepo { get; set; }
-        public QueryRepo Qrepo { get; set; }
+        public IKeywordRepo Krepo { get; set; }
+        public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
 
         
@@ -113,7 +113,7 @@ namespace RestaurantAPI.API.Controllers
                 userVariable = Arepo.GetUserByUsername(username);
             }
 
-            catch (Exception x)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }

@@ -17,7 +17,7 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class RestaurantController : Controller
     {
-        public RestaurantController(IAppUserRepo AppRepo, KeywordRepo KeyRepo, QueryRepo QRepo, IRestaurantRepo RestRepo)
+        public RestaurantController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
         {
             Arepo = AppRepo;
             Krepo = KeyRepo;
@@ -26,8 +26,8 @@ namespace RestaurantAPI.API.Controllers
         }
 
         public IAppUserRepo Arepo { get; set; }
-        public KeywordRepo Krepo { get; set; }
-        public QueryRepo Qrepo { get; set; }
+        public IKeywordRepo Krepo { get; set; }
+        public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
 
 
@@ -50,7 +50,7 @@ namespace RestaurantAPI.API.Controllers
             {
                 grabVariable = Rrepo.GetRestaurantByID(id);
             }
-            catch(Exception g)
+            catch(Exception)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
