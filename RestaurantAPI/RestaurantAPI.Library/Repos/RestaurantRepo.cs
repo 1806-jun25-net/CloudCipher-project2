@@ -151,7 +151,39 @@ namespace RestaurantAPI.Library.Repos
             if (DBContainsRestaurant(r.Name, r.Location))
                 throw new DbUpdateException("Restraunt with that Name and location already exists in the DB.  Cannot add another.", new NotSupportedException());
 
-            _db.Add(r);
+            _db.Restaurant.Add(r);
+        }
+
+        /// <summary>
+        /// Given a list of Restaurants, adds all to DB that are not already in it.
+        /// Will also register the given keywords in the RestaurantKeywordJunctionTable for each Restaurant
+        /// </summary>
+        /// <param name="rList">list of restaurants</param>
+        /// <param name="keywords">list of keywords (pass empty list if none)</param>
+        public void AddNewRestaurants(List<Restaurant> rList, List<string> keywords)
+        {
+            if (rList == null)
+                throw new DbUpdateException("Restaurant list cannot be null.", new ArgumentNullException());
+
+            foreach (Restaurant r in rList)
+            {
+                if (keywords != null)
+                {
+                    foreach (string k in keywords)
+                    {
+                        try
+                        {
+                            _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k });
+                        }
+                        catch { }
+                    }
+                }
+                try
+                {
+                    AddRestaurant(r);
+                }
+                catch {}
+            }
         }
 
         /// <summary>
@@ -266,7 +298,7 @@ namespace RestaurantAPI.Library.Repos
                 throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
             return await GetRestaurants().Where(t => t.Name.Equals(name) && t.Location.Equals(location)).Select(t => t.Id).FirstAsync();
         }
-
+        
         /// <summary>
         /// Saves changes to DB
         /// </summary>
