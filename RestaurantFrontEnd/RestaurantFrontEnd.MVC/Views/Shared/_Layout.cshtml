@@ -31,7 +31,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                     <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Index">User-Index</a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Index">User-Index</a></li>
                     <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Create">User-Create</a></li>
 
                     <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
@@ -53,11 +53,17 @@
             <p>&copy; 2018 - RestaurantFrontEnd.MVC</p>
         </footer>
     </div>
-
+   
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        @RenderSection("query_string", false)
+        @*<script src="~/js/site.js" asp-append-version="true"></script>
+        <script async deferer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
+        </script>*@
+
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
@@ -75,6 +81,6 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
+
 </body>
 </html>
