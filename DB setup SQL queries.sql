@@ -83,7 +83,6 @@ CREATE TABLE RestaurantSite.QueryRestaurantJunction
 );
 
 
-
 --Inserting test data:
 
 INSERT INTO RestaurantSite.AppUser
