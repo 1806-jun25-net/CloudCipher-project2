@@ -93,7 +93,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
         public async Task<ActionResult> Details(string username)
         {
             if (username == null)
-                username = (string)TempData.Peek("Username");
+                return View("Error");
             var request = CreateRequestService(HttpMethod.Get, $"api/user/{username}");
             
             try

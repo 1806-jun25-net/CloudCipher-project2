@@ -37,6 +37,8 @@
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { Model.Username }) | 
-    <a asp-action="Index">Back to List</a>
+    @if (TempData.Peek("Username") != null && Model.Username.Equals(TempData.Peek("Username")))
+    {
+        @Html.ActionLink("Edit Profile", "Edit", new { Model.Username })
+    }
 </div>

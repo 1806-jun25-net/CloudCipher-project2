@@ -42,7 +42,7 @@
                     else
                     {
                         <li><a asp-area="" asp-controller="User" asp-action="Create">User-Create</a></li>
-                        <li><a asp-area="" asp-controller="User" asp-action="Details" >@TempData.Peek("Username")</a></li>
+                        <li><a asp-area="" asp-controller="User" asp-action="Details" asp-route-Username="@TempData.Peek("Username")">@TempData.Peek("Username")</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                     }
                 </ul>

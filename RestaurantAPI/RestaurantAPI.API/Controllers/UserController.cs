@@ -125,7 +125,10 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         public ActionResult<UserModel> GetByUsername(string username)
         {
-            if( User == null || !(User.Identity.Name.Equals(username) || User.IsInRole("admin")) )
+            if (User == null)
+                return StatusCode(401);//unauthorized, in case User is null for some reason like the tests.
+
+            if(!(User.Identity.Name.Equals(username) || User.IsInRole("admin")) )
             {
                 return StatusCode(403);//Forbidden
             }
