@@ -16,7 +16,7 @@ namespace RestaurantAPI.Library
             FirstName = otherUser.FirstName,
             LastName = otherUser.LastName,
             Email = otherUser.Email,
-            UserType = otherUser.UserType
+            
         };
 
         public static UserModel Map(AppUser otherUser) => new UserModel
@@ -25,7 +25,6 @@ namespace RestaurantAPI.Library
             FirstName = otherUser.FirstName,
             LastName = otherUser.LastName,
             Email = otherUser.Email,
-            UserType = otherUser.UserType
         };
 
         public static RestaurantModel Map(Restaurant other) => new RestaurantModel

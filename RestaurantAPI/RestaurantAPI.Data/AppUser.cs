@@ -17,7 +17,7 @@ namespace RestaurantAPI.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public int UserType { get; set; }
+        
 
         public ICollection<Blacklist> Blacklist { get; set; }
         public ICollection<Favorite> Favorite { get; set; }

@@ -3,8 +3,43 @@ for details on configuring this project to bundle and minify static web assets. 
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: white;
 }
 
+button, .btn {
+    border-radius: 50px;
+    border: none;
+    color:white;
+    box-shadow: 0px 0px 2px 1px black;
+    background-color: #8c101f;
+}
+.navi{
+    background-color: #8c101f;
+    box-shadow:2px 0.5px 5px 1px black;
+}
+
+.hoover{
+    font-weight:bold;
+}
+
+@media (max-width: 765px) {
+   
+    .in{background-color:white}
+    .collapse {
+        background-color: white
+    }
+    .navbar-collapse {
+        background-color: white;
+        box-shadow:0px 0px 5px 1px black inset;
+            
+    }
+
+    .hoover:hover {
+        background-color: rgba(104, 103, 103,0.6);
+    }
+     
+
+}
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
