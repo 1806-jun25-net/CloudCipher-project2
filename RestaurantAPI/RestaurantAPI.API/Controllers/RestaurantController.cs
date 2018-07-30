@@ -45,10 +45,10 @@ namespace RestaurantAPI.API.Controllers
             
         }
 
-        // GET api  /<controller>/5
+        // GET api/<controller>/5
         [HttpGet("{id}", Name = "GetRestaurant")]
         [Authorize]
-        public ActionResult<RestaurantModel> Get(int id)
+        public ActionResult<RestaurantModel> Get(string id)
         {
             Restaurant grabVariable;
             try
