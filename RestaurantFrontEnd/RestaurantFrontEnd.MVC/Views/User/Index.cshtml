@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<RestaurantFrontEnd.Library.API_Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "User Index";
 }
 
 <h2>Index</h2>
@@ -30,9 +30,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserType)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -52,12 +49,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserType)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { item.Username }) |
+                @Html.ActionLink("Details", "Details", new { item.Username }) |
+                @Html.ActionLink("Delete", "Delete", new { item.Username })
             </td>
         </tr>
 }
