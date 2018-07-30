@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.API.Models;
@@ -13,8 +14,10 @@ using RestaurantAPI.Library.Repos;
 
 namespace RestaurantAPI.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RestaurantController : Controller
     {
         public RestaurantController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
@@ -33,6 +36,7 @@ namespace RestaurantAPI.API.Controllers
 
         // GET: api/<controller>
         [HttpGet]
+        [Authorize]
         public ActionResult<List<RestaurantModel>> Get()
         {
             Rrepo.GetRestaurants();
@@ -43,6 +47,7 @@ namespace RestaurantAPI.API.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}", Name = "GetRestaurant")]
+        [Authorize]
         public ActionResult<RestaurantModel> Get(int id)
         {
             Restaurant grabVariable;
@@ -60,6 +65,7 @@ namespace RestaurantAPI.API.Controllers
 
         // POST api/<controller>
         [HttpPost]
+        [Authorize]
         public IActionResult Create([FromBody]RestaurantModel value)
         {
             Restaurant createVariable;
@@ -89,6 +95,7 @@ namespace RestaurantAPI.API.Controllers
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public void Delete(int id)
         {
         }

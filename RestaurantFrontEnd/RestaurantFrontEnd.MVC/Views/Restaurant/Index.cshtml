@@ -1,0 +1,76 @@
+﻿@model IEnumerable<RestaurantFrontEnd.Library.API_Models.Restaurant>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+    .test2 {
+        margin-top: 5px;
+    }
+
+    #map {
+        height: 100px;
+        width: 500px;
+    }
+
+
+    #output {
+        font-size: 11px;
+    }
+</style>
+
+@{
+    string query = (string)ViewData["query"];
+}
+
+@section query_string {
+
+    <script type="text/javascript">
+        var query = '@query';
+
+    </script>
+
+}
+
+@if (query != null && query != "")
+{
+    
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script async deferer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
+    </script>
+
+
+}
+
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h2>Index</h2>
+
+<form asp-action="Index" method="get">
+    Search for a Restaurant: <br />
+    <input id="restsrch" type="search" name="search">
+    <button type="submit" class="test2">Submit</button>
+</form>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+
+<div id="map"></div>
+<div id="right-panel">
+    <div>
+        <strong>Results</strong>
+    </div>
+    <div id="output"></div>
+</div>
+<div class="loc"></div>
+
+
+
+
+
+
