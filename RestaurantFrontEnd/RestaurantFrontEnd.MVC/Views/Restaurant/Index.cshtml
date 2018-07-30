@@ -17,23 +17,7 @@
 
         const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
 
-        //$.getJSON(URL, function (json) {
-
-        //    if (json.results == null) {
-        //        $('.loc').html("nope");
-        //    }
-        //    else {
-
-
-        //        var title = json.results[0].geometry.location;
-        //        $('.loc').html(JSON.stringify(title));
-        //    }
-        //})
-
-
-        //GEOLOCATION  SETTER
-        //if(navigator.geolocation) {
-        //if (query!= null&&query!= "") {
+       
 
 
             function initMap() {
@@ -87,103 +71,81 @@
 
 
                             var title = '';
-                            JSON.stringify(title)
                             for (var i = 0; i <= 6; i++) {
 
                                 destinations.push(json.results[i].geometry.location);
-                                title += "<p>"+JSON.stringify(json.results[i].geometry.location)+"</p>";
+                                //title += "<p>"+JSON.stringify(json.results[i].geometry.location)+"</p>";
                                 destinationNames.push(JSON.stringify(json.results[i].name));
 
                             }
 
-                            $('.loc').html(title);
+                            var geocoder = new google.maps.Geocoder;
+
+                            var service = new google.maps.DistanceMatrixService;
+                            service.getDistanceMatrix({
+                                origins: [origin1/*, origin2*/],
+                                destinations: destinations,
+                                travelMode: 'DRIVING',
+                                unitSystem: google.maps.UnitSystem.METRIC,
+                                avoidHighways: false,
+                                avoidTolls: false
+                            }, function (response, status) {
+                                if (status !== 'OK') {
+                                    alert('Error was: ' + status);
+                                } else {
+                                    var originList = response.originAddresses;
+                                    var destinationList = response.destinationAddresses;
+                                    var outputDiv = document.getElementById('output');
+                                    outputDiv.innerHTML = '';
+                                    deleteMarkers(markersArray);
+
+                                    var showGeocodedAddressOnMap = function (asDestination) {
+                                        var icon = asDestination ? destinationIcon : originIcon;
+                                        return function (results, status) {
+                                            if (status === 'OK') {
+                                                map.fitBounds(bounds.extend(results[0].geometry.location));
+                                                markersArray.push(new google.maps.Marker({
+                                                    map: map,
+                                                    position: results[0].geometry.location,
+                                                    icon: icon
+                                                }));
+                                            } else {
+                                                alert('Geocode was not successful due to: ' + status);
+                                            }
+                                        };
+                                    };
+
+                                    for (var i = 0; i < originList.length; i++) {
+                                        var results = response.rows[i].elements;
+                                        geocoder.geocode({ 'address': originList[i] },
+                                            showGeocodedAddressOnMap(false));
+                                        for (var j = 0; j < results.length; j++) {
+                                            geocoder.geocode({ 'address': destinationList[j] },
+                                                showGeocodedAddressOnMap(true));
+                                            outputDiv.innerHTML += "<b>" + destinationNames[j] + ":</b><br/>" + destinationList[j] +
+                                                ' <br/> ' + "<span style='color:red'>" +
+                                                results[j].duration.text + " drive</span>(" +
+                                                results[j].distance.text + ')<br><br>';
+                                        }
+                                    }
+                                }
+                            });
+
+
+
+                            //$('.loc').html(title);
+
+                            
                         }
                     })
 
                     //////////
-                    var geocoder = new google.maps.Geocoder;
-
-                    var service = new google.maps.DistanceMatrixService;
-                    service.getDistanceMatrix({
-                        origins: [origin1/*, origin2*/],
-                        destinations: destinations,
-                        travelMode: 'DRIVING',
-                        unitSystem: google.maps.UnitSystem.METRIC,
-                        avoidHighways: false,
-                        avoidTolls: false
-                    }, function (response, status) {
-                        if (status !== 'OK') {
-                            alert('Error was: ' + status);
-                        } else {
-                            var originList = response.originAddresses;
-                            var destinationList = response.destinationAddresses;
-                            var outputDiv = document.getElementById('output');
-                            outputDiv.innerHTML = '';
-                            deleteMarkers(markersArray);
-
-                            var showGeocodedAddressOnMap = function (asDestination) {
-                                var icon = asDestination ? destinationIcon : originIcon;
-                                return function (results, status) {
-                                    if (status === 'OK') {
-                                        map.fitBounds(bounds.extend(results[0].geometry.location));
-                                        markersArray.push(new google.maps.Marker({
-                                            map: map,
-                                            position: results[0].geometry.location,
-                                            icon: icon
-                                        }));
-                                    } else {
-                                        alert('Geocode was not successful due to: ' + status);
-                                    }
-                                };
-                            };
-
-                            for (var i = 0; i < originList.length; i++) {
-                                var results = response.rows[i].elements;
-                                geocoder.geocode({ 'address': originList[i] },
-                                    showGeocodedAddressOnMap(false));
-                                for (var j = 0; j < results.length; j++) {
-                                    geocoder.geocode({ 'address': destinationList[j] },
-                                        showGeocodedAddressOnMap(true));
-                                    outputDiv.innerHTML += "<b>"+ destinationNames[j]+":</b><br/>"+destinationList[j] +
-                                        ' <br/> ' + "<span style='color:red'>" +
-                                        results[j].duration.text + " drive</span>(" +
-                                        results[j].distance.text+')<br><br>';
-                                }
-                            }
-                        }
-                    });
-
-
+                    
 
 
                 })
 
 
-
-
-
-                //var mapCenter = new google.maps.LatLng(-33.8617374, 151.2021291);
-
-                //map = new google.maps.Map(document.getElementById('map'), {
-                //    center: mapCenter,
-                //    zoom: 15
-                //});
-
-                //var request = {
-                //    query: 'Museum of Contemporary Art Australia',
-                //    fields: ['photos', 'formatted_address', 'name', 'rating', 'opening_hours', 'geometry'],
-                //    service = new google.maps.places.PlacesService(map),
-                //    service.findPlaceFromQuery(request, callback),
-                //}
-
-                //function callback(results, status) {
-                //    if (status == google.maps.places.PlacesServiceStatus.OK) {
-                //        for (var i = 0; i < results.length; i++) {
-                //            var place = results[i];
-                //            createMarker(results[i]);
-                //        }
-                //    }
-                //}
 
 
 
