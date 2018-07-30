@@ -24,7 +24,7 @@ namespace RestaurantAPI.API.Controllers
            Arepo = AppRepo;
            Krepo = KeyRepo;
            Qrepo  = QRepo;
-           Rrepo = RestRepo; 
+           Rrepo = RestRepo;
         }
 
         public IAppUserRepo Arepo { get; set; }
@@ -90,12 +90,14 @@ namespace RestaurantAPI.API.Controllers
         public IActionResult Put(string username, [FromBody]UserModel value)
         {
             AppUser updateVariable;
-
+            if (!username.Equals(value.Username))
+                return StatusCode(StatusCodes.Status400BadRequest);
             updateVariable = Mapper.Map(value);
 
             try
             {
-                Arepo.AddUser(updateVariable);
+                //TODO:  Add capability to edit users to repositories
+                //Arepo.AddUser(updateVariable);
             }
 
             catch

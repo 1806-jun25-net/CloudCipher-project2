@@ -87,10 +87,33 @@ namespace RestaurantFrontEnd.MVC.Controllers
            
         }
 
+        
         // GET: User/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        public async Task<ActionResult> Details(string username)
         {
-            return View();
+            if (username == null)
+                username = (string)TempData.Peek("Username");
+            var request = CreateRequestService(HttpMethod.Get, $"api/user/{username}");
+            
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                User user = JsonConvert.DeserializeObject<User>(jsonString);
+
+                return View(@"..\User\Details", user);
+            }
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // GET: User/Create
@@ -124,7 +147,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 {
                     return View("Error");
                 }
-
+                
                 return Redirect(Url.Action("Index","User") +"?search="+user.Username);
             }
             catch
@@ -134,28 +157,65 @@ namespace RestaurantFrontEnd.MVC.Controllers
         }
 
         // GET: User/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(string username)
         {
-            return View();
+            var request = CreateRequestService(HttpMethod.Get, $"api/user/{username}");
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                User user = JsonConvert.DeserializeObject<User>(jsonString);
+
+                return View(@"..\User\Edit", user);
+            }
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(@"..\User\Edit\"+$"{user.Username}", user);
+            }
+
             try
             {
-                // TODO: Add update logic here
+                string jsonString = JsonConvert.SerializeObject(user);
+                //var uri = apiserviceuri + "user";
+                var request = CreateRequestService(HttpMethod.Put, "api/user/"+user.Username);
 
-                return RedirectToAction(nameof(Index));
+                request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+                return Redirect(Url.Action("Details", "User") + "?Username=" + user.Username);
             }
             catch
             {
-                return View();
+                return View(@"..\User\Edit", user.Username);
             }
         }
 
+
+        /*
+         * Don't need functionality for deleting users
         // GET: User/Delete/5
         public ActionResult Delete(int id)
         {
@@ -178,5 +238,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 return View();
             }
         }
+
+    */
     }
 }
