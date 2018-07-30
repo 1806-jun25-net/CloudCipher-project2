@@ -13,12 +13,14 @@ CREATE TABLE RestaurantSite.AppUser
 --DROP TABLE RestaurantSite.Restaurant
 CREATE TABLE RestaurantSite.Restaurant
 (
-	ID int PRIMARY KEY IDENTITY(1,1),
+	ID nvarchar(128) PRIMARY KEY,
 	Name nvarchar(128) NOT NULL,
-	Phone nvarchar(128),
-	Hours nvarchar(128),
-	Location nvarchar(128) NOT NULL,
-	Location2 nvarchar(128),
+	Hours nvarchar(256),
+	Lat nvarchar(128) NOT NULL,
+	Lon nvarchar(128) NOT NULL,
+	Address nvarchar(128),
+	Rating decimal,
+	PriceLevel decimal,
 	Owner nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username)
 );
 
@@ -27,11 +29,10 @@ CREATE TABLE RestaurantSite.Query
 (
 	ID int PRIMARY KEY IDENTITY(1,1),
 	Username nvarchar(128) NOT NULL FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username),
-	Location nvarchar(128),
-	Location2 nvarchar(128),
+	Lat nvarchar(128),
+	Lon nvarchar(128),
 	Radius int,
-	QueryTime DateTime NOT NULL,
-	ReservationTime DateTime
+	QueryTime DateTime NOT NULL
 );
 
 --DROP TABLE RestaurantSite.Keyword
@@ -44,7 +45,7 @@ CREATE TABLE RestaurantSite.Keyword
 --DROP TABLE RestaurantSite.Favorite
 CREATE TABLE RestaurantSite.Favorite
 (
-	RestaurantID int FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
+	RestaurantID nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
 	Username nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username),
 	PRIMARY KEY (RestaurantID, Username)
 );
@@ -52,7 +53,7 @@ CREATE TABLE RestaurantSite.Favorite
 --DROP TABLE RestaurantSite.Blacklist
 CREATE TABLE RestaurantSite.Blacklist
 (
-	RestaurantID int FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
+	RestaurantID nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
 	Username nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username),
 	PRIMARY KEY (RestaurantID, Username)
 );
@@ -68,12 +69,18 @@ CREATE TABLE RestaurantSite.QueryKeywordJunction
 --DROP TABLE RestaurantSite.RestaurantKeywordJunction
 CREATE TABLE RestaurantSite.RestaurantKeywordJunction
 (
-	RestaurantID int FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
+	RestaurantID nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
 	Word nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.Keyword(Word),
 	PRIMARY KEY (RestaurantID, Word)
 );
 
-
+--DROP TABLE RestaurantSite.QueryRestaurantJunction
+CREATE TABLE RestaurantSite.QueryRestaurantJunction
+(
+	QueryID int FOREIGN KEY REFERENCES RestaurantSite.Query(ID),
+	RestaurantID nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.Restaurant(ID),
+	PRIMARY KEY (QueryID, RestaurantID)
+);
 
 
 

@@ -5,7 +5,7 @@ namespace RestaurantAPI.Data
 {
     public partial class Favorite
     {
-        public int RestaurantId { get; set; }
+        public string RestaurantId { get; set; }
         public string Username { get; set; }
 
         public Restaurant Restaurant { get; set; }
