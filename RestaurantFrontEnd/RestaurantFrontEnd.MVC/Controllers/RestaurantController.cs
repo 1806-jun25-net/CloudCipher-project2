@@ -16,11 +16,31 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         }
         // GET: Restaurant
-        public async Task<ActionResult>Index([FromQuery] string search="")
+        public ActionResult Index([FromQuery] string search="")
         {
-            if(search!=null && search!="")
-             return View(@"..\Restaurant\Index");
-            return View(@"..\Restaurant\Index");
+            var request = CreateRequestService(HttpMethod.Post, "api/Restaurant");
+            //change to Query once you have authorization set up
+
+            if (search==null || search == "")
+            {
+                ///request = CreateRequestService(HttpMethod.Get, "api/restaurant")
+                //SAVE ABOVE FOR LATER//WIll be sending this request to Query
+                //controller in the form of a list
+                return View(@"..\Restaurant\Index");
+            }
+            else
+            {
+                
+                //ISCHECKED FOR CHECKBOXES FEATURE(RESEARCH)
+                string queryString = search;
+                var queryArray = queryString.Split("+");
+                //string firstElem = array.First();
+                string queried = string.Join("&", queryArray);
+                ViewData["query"] = queried;
+                return View(@"..\Restaurant\Index");
+            }
+            
+          
 
         }
 

@@ -1,82 +1,349 @@
 ﻿@model IEnumerable<RestaurantFrontEnd.Library.API_Models.Restaurant>
 
 @{
+    string query = (string)ViewData["query"];
+}
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+@if (query != null && query != "")
+{
+
+
+
+    <script>
+
+        const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
+
+        //$.getJSON(URL, function (json) {
+
+        //    if (json.results == null) {
+        //        $('.loc').html("nope");
+        //    }
+        //    else {
+
+
+        //        var title = json.results[0].geometry.location;
+        //        $('.loc').html(JSON.stringify(title));
+        //    }
+        //})
+
+
+        //GEOLOCATION  SETTER
+        //if(navigator.geolocation) {
+        //if (query!= null&&query!= "") {
+
+
+            function initMap() {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    lat = pos.lat;
+                    lng = pos.lng;
+
+
+                    /////////////////////
+                    ////////////
+                    //GOOGLE MAPS DISTANCE
+
+
+                    var bounds = new google.maps.LatLngBounds;
+                    var markersArray = [];
+
+
+                    // var origin2 = 'Montgomery, Alabama';
+                    var destinationA = 'Manhattan, New York';
+                    // var destinationB = 'Columbus, Ohio';
+
+                    var destinationIcon = 'https://chart.googleapis.com/chart?' +
+                        'chst=d_map_pin_letter&chld=D|FF0000|000000';
+                    var originIcon = 'https://chart.googleapis.com/chart?' +
+                        'chst=d_map_pin_letter&chld=O|FFFF00|000000';
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                        center: { lat: 37.1925852, lng: -123.8105744 },//:38.9706559,"lng":-77.3854458
+                        zoom: 100
+                    });
+                      map.setCenter(pos);
+                    var origin1 = { lat: pos.lat, lng: pos.lng };
+
+
+                    //////////////////\//////////////
+                    //IMPLEMENTING PLACES FUNCTI
+                    const TARGET_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + origin1.lat + "," + origin1.lng + "&radius=2000&type=restaurant&keyword=@query&key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0";
+                    const URL = PROXY_URL + TARGET_URL;
+                    var destinations = [];
+                    var destinationNames = [];
+
+                    $.getJSON(URL, function (json) {
+
+                        if (json.results == null) {
+                            $('.loc').html("nope");
+                        }
+                        else {
+
+
+                            var title = '';
+                            JSON.stringify(title)
+                            for (var i = 0; i <= 6; i++) {
+
+                                destinations.push(json.results[i].geometry.location);
+                                title += "<p>"+JSON.stringify(json.results[i].geometry.location)+"</p>";
+                                destinationNames.push(JSON.stringify(json.results[i].name));
+
+                            }
+
+                            $('.loc').html(title);
+                        }
+                    })
+
+                    //////////
+                    var geocoder = new google.maps.Geocoder;
+
+                    var service = new google.maps.DistanceMatrixService;
+                    service.getDistanceMatrix({
+                        origins: [origin1/*, origin2*/],
+                        destinations: destinations,
+                        travelMode: 'DRIVING',
+                        unitSystem: google.maps.UnitSystem.METRIC,
+                        avoidHighways: false,
+                        avoidTolls: false
+                    }, function (response, status) {
+                        if (status !== 'OK') {
+                            alert('Error was: ' + status);
+                        } else {
+                            var originList = response.originAddresses;
+                            var destinationList = response.destinationAddresses;
+                            var outputDiv = document.getElementById('output');
+                            outputDiv.innerHTML = '';
+                            deleteMarkers(markersArray);
+
+                            var showGeocodedAddressOnMap = function (asDestination) {
+                                var icon = asDestination ? destinationIcon : originIcon;
+                                return function (results, status) {
+                                    if (status === 'OK') {
+                                        map.fitBounds(bounds.extend(results[0].geometry.location));
+                                        markersArray.push(new google.maps.Marker({
+                                            map: map,
+                                            position: results[0].geometry.location,
+                                            icon: icon
+                                        }));
+                                    } else {
+                                        alert('Geocode was not successful due to: ' + status);
+                                    }
+                                };
+                            };
+
+                            for (var i = 0; i < originList.length; i++) {
+                                var results = response.rows[i].elements;
+                                geocoder.geocode({ 'address': originList[i] },
+                                    showGeocodedAddressOnMap(false));
+                                for (var j = 0; j < results.length; j++) {
+                                    geocoder.geocode({ 'address': destinationList[j] },
+                                        showGeocodedAddressOnMap(true));
+                                    outputDiv.innerHTML += "<b>"+ destinationNames[j]+":</b><br/>"+destinationList[j] +
+                                        ' <br/> ' + "<span style='color:red'>" +
+                                        results[j].duration.text + " drive</span>(" +
+                                        results[j].distance.text+')<br><br>';
+                                }
+                            }
+                        }
+                    });
+
+
+
+
+                })
+
+
+
+
+
+                //var mapCenter = new google.maps.LatLng(-33.8617374, 151.2021291);
+
+                //map = new google.maps.Map(document.getElementById('map'), {
+                //    center: mapCenter,
+                //    zoom: 15
+                //});
+
+                //var request = {
+                //    query: 'Museum of Contemporary Art Australia',
+                //    fields: ['photos', 'formatted_address', 'name', 'rating', 'opening_hours', 'geometry'],
+                //    service = new google.maps.places.PlacesService(map),
+                //    service.findPlaceFromQuery(request, callback),
+                //}
+
+                //function callback(results, status) {
+                //    if (status == google.maps.places.PlacesServiceStatus.OK) {
+                //        for (var i = 0; i < results.length; i++) {
+                //            var place = results[i];
+                //            createMarker(results[i]);
+                //        }
+                //    }
+                //}
+
+
+
+            }
+       // }
+        function deleteMarkers(markersArray) {
+            for (var i = 0; i < markersArray.length; i++) {
+                markersArray[i].setMap(null);
+            }
+            markersArray = [];
+        }
+
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
+    </script>
+}
+
+<!--PUSH THIS TO THE SITE.JS FILE-->
+
+<style>
+    .test2 {
+        margin-top: 5px;
+    }
+    /*#right-panel {
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+    }
+
+        #right-panel select, #right-panel input {
+            font-size: 15px;
+        }
+
+        #right-panel select {
+            width: 80%;
+        }
+
+        #right-panel i {
+            font-size: 12px;
+        }*/
+
+    /*html, body {
+        height: 100%;
+        margin: 50px;
+        padding: 0;
+    }*/
+
+    #map {
+        height: 100px;
+        width: 500px;
+    }
+
+    /*#right-panel {
+        float: right;
+        width: 48%;
+        padding-left: 2%;
+    }*/
+
+    #output {
+        font-size: 11px;
+    }
+</style>
+<!--PUSH THIS TO SITE.CSS-->
+
+@{
     ViewData["Title"] = "Index";
 }
+
 
 <h2>Index</h2>
 
 <form asp-action="Index" method="get">
-    Please Enter your username: <br />
+    Search for a Restaurant: <br />
     <input id="restsrch" type="search" name="search">
     <button type="submit" class="test2">Submit</button>
 </form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Hours)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Owner)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null)
-        {
 
-            @foreach (var item in Model)
+
+<div id="map"></div>
+<div id="right-panel">
+    <div>
+        <strong>Results</strong>
+    </div>
+    <div id="output"></div>
+</div>
+<div class="loc"></div>
+
+
+
+
+
+
+<!--COME BACK TO THIS IF YOU NEED IT-->
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Hours)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Location2)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Owner)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Phone)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Hours)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Location)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Location2)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Owner)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>
-                </tr>
-            }
 
-        }
-    </tbody>
-</table>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Hours)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Location)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Location2)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Owner)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        </td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>*@
