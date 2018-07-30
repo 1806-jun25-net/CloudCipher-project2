@@ -8,11 +8,9 @@ namespace RestaurantAPI.Library.Repos
     public interface IAppUserRepo
     {
         void AddRestaurantToBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo);
-        void AddRestaurantToBlacklist(string username, int restaurantId, RestaurantRepo rRepo);
-        void AddRestaurantToBlacklist(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo);
+        void AddRestaurantToBlacklist(string username, string restaurantId, RestaurantRepo rRepo);
         void AddRestaurantToFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo);
-        void AddRestaurantToFavorites(string username, int restaurantId, RestaurantRepo rRepo);
-        void AddRestaurantToFavorites(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo);
+        void AddRestaurantToFavorites(string username, string restaurantId, RestaurantRepo rRepo);
         void AddUser(AppUser u);
         bool DBContainsUsername(string username);
         Task<bool> DBContainsUsernameAsync(string username);
@@ -32,5 +30,6 @@ namespace RestaurantAPI.Library.Repos
         IQueryable<AppUser> GetUsers(bool includeAll);
         void Save();
         Task SaveAsync();
+        void UpdateUser(AppUser u);
     }
 }

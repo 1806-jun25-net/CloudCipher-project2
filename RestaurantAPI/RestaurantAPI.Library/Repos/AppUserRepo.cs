@@ -171,29 +171,9 @@ namespace RestaurantAPI.Library.Repos
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
-        /// <param name="restaurantName">string containing restaurant's name</param>
-        /// <param name="restaurantLocation">string containing restaurant's location</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToBlacklist(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
-        {
-            if (!DBContainsUsername(username))
-                throw new DbUpdateException($"Username '{username}' not found.", new NotSupportedException());
-            Restaurant r = rRepo.GetRestaurantByNameAndLocation(restaurantName, restaurantLocation);
-            Blacklist bl = new Blacklist() { Username = username, RestaurantId = r.Id };
-            _db.Add(bl);
-        }
-
-
-        /// <summary>
-        /// Adds the specified restaurant to the specified user's blacklist
-        /// Throws an exception if specified user or restraunt is not found in DB
-        /// Also throws exception if Blacklist already exists for that user
-        /// Must still call Save() after to persist changes to DB
-        /// </summary>
-        /// <param name="username">string containing user's username</param>
         /// <param name="restaurantId">int containing restaurant's ID number</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToBlacklist(string username, int restaurantId, RestaurantRepo rRepo)
+        public void AddRestaurantToBlacklist(string username, string restaurantId, RestaurantRepo rRepo)
         {
             if (!DBContainsUsername(username))
                 throw new DbUpdateException($"Username '{username}' not found.", new NotSupportedException());
@@ -230,29 +210,9 @@ namespace RestaurantAPI.Library.Repos
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
-        /// <param name="restaurantName">string containing restaurant's name</param>
-        /// <param name="restaurantLocation">string containing restaurant's location</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToFavorites(string username, string restaurantName, string restaurantLocation, RestaurantRepo rRepo)
-        {
-            if (!DBContainsUsername(username))
-                throw new DbUpdateException($"Username '{username}' not found.", new NotSupportedException());
-            Restaurant r = rRepo.GetRestaurantByNameAndLocation(restaurantName, restaurantLocation);
-            Favorite fav = new Favorite() { Username = username, RestaurantId = r.Id };
-            _db.Add(fav);
-        }
-
-
-        /// <summary>
-        /// Adds the specified restaurant to the specified user's Favorites
-        /// Throws an exception if specified user or restraunt is not found in DB
-        /// Also throws exception if Favorite list already exists for that user
-        /// Must still call Save() after to persist changes to DB
-        /// </summary>
-        /// <param name="username">string containing user's username</param>
         /// <param name="restaurantId">int containing restaurant's ID number</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToFavorites(string username, int restaurantId, RestaurantRepo rRepo)
+        public void AddRestaurantToFavorites(string username, string restaurantId, RestaurantRepo rRepo)
         {
             if (!DBContainsUsername(username))
                 throw new DbUpdateException($"Username '{username}' not found.", new NotSupportedException());

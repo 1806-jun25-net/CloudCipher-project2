@@ -30,10 +30,12 @@ namespace RestaurantAPI.Library
         {
             Id = other.Id,
             Name = other.Name,
-            Phone = other.Phone,
             Hours = other.Hours,
-            Location = other.Location,
-            Location2 = other.Location2,
+            Lat = other.Lat,
+            Lon = other.Lon,
+            Address = other.Address,
+            Rating = other.Rating,
+            PriceLevel = other.PriceLevel,
             Owner = other.Owner
         };
 
@@ -41,10 +43,12 @@ namespace RestaurantAPI.Library
         {
             Id = other.Id,
             Name = other.Name,
-            Phone = other.Phone,
             Hours = other.Hours,
-            Location = other.Location,
-            Location2 = other.Location2,
+            Lat = other.Lat,
+            Lon = other.Lon,
+            Address = other.Address,
+            Rating = other.Rating,
+            PriceLevel = other.PriceLevel,
             Owner = other.Owner
         };
 
@@ -52,11 +56,10 @@ namespace RestaurantAPI.Library
         {
             Id = other.Id,
             Username = other.Username,
-            Location = other.Location,
-            Location2 = other.Location2,
+            Lat = other.Lat,
+            Lon = other.Lon,
             Radius = (int)other.Radius,
             QueryTime = other.QueryTime,
-            ReservationTime = (DateTime)other.ReservationTime,
             Keywords = other.QueryKeywordJunction.Select(q => q.Word).ToList()
         };
 
@@ -64,11 +67,10 @@ namespace RestaurantAPI.Library
         {
             Id = other.Id,
             Username = other.Username,
-            Location = other.Location,
-            Location2 = other.Location2,
-            Radius = other.Radius,
+            Lat = other.Lat,
+            Lon = other.Lon,
+            Radius = (int)other.Radius,
             QueryTime = other.QueryTime,
-            ReservationTime = other.ReservationTime,
             QueryKeywordJunction = other.Keywords.Select( k => new QueryKeywordJunction() { Word = k, QueryId = other.Id }).ToList()
         };
 

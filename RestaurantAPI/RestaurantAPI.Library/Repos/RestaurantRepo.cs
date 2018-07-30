@@ -46,24 +46,12 @@ namespace RestaurantAPI.Library.Repos
         /// </summary>
         /// <param name="Id">ID to search DB for</param>
         /// <returns>true if Restaurant is found matching given ID, false otherwise</returns>
-        public bool DBContainsRestaurant(int Id)
+        public bool DBContainsRestaurant(string Id)
         {
-            return GetRestaurants(false).Any(t => t.Id == Id);
+            return GetRestaurants(false).Any(t => t.Id.Equals(Id));
         }
 
-        /// <summary>
-        /// Checks whether DB conatins a restaurant as identified by the given name and location
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <returns>true if Restaurant is found matching given ID, false otherwise</returns>
-        public bool DBContainsRestaurant(string name, string location)
-        {
-            if (name == null || location == null)
-                return false;
-            return GetRestaurants(false).Any(t => t.Name.Equals(name) && t.Location.Equals(location));
-        }
-
+        
         /// <summary>
         /// Given a Restaurant ID, returns the Restaurant object with that ID from the DB.
         /// By default will not include any list/Juntion table data.  If junction table data is required, use overload below
@@ -71,11 +59,11 @@ namespace RestaurantAPI.Library.Repos
         /// </summary>
         /// <param name="Id">ID to look up in database</param>
         /// <returns>Restaurant object with specified ID</returns>
-        public Restaurant GetRestaurantByID(int Id)
+        public Restaurant GetRestaurantByID(string Id)
         {
             if (!DBContainsRestaurant(Id))
                 throw new NotSupportedException($"Restaurant ID '{Id}' not found.");
-            return GetRestaurants().First(t => t.Id == Id);
+            return GetRestaurants().First(t => t.Id.Equals(Id));
         }
 
         /// <summary>
@@ -86,58 +74,13 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="Id">ID to look up in database</param>
         /// <param name="includeAll">Whether to include the information from junction tables or not</param>
         /// <returns>Restaurant object with specified ID</returns>
-        public Restaurant GetRestaurantByID(int Id, bool includeAll)
+        public Restaurant GetRestaurantByID(string Id, bool includeAll)
         {
             if (!DBContainsRestaurant(Id))
                 throw new NotSupportedException($"Restaurant ID '{Id}' not found.");
-            return GetRestaurants(includeAll).First(t => t.Id == Id);
+            return GetRestaurants(includeAll).First(t => t.Id.Equals(Id));
         }
-
-        /// <summary>
-        /// Given a Restaurant's name and location, looks it up in the DB and returns the Restaurant object.
-        /// By default will not include any list/Juntion table data.  If junction table data is required, use overload below
-        /// Throws an exception if name and location do not match any restaurants in DB.
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <returns>the Restaurant object specified</returns>
-        public Restaurant GetRestaurantByNameAndLocation(string name, string location)
-        {
-            if (name == null || location == null || !DBContainsRestaurant(name, location))
-                throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
-            return GetRestaurants().First(t => t.Name.Equals(name) && t.Location.Equals(location));
-        }
-
-        /// <summary>
-        /// Given a Restaurant's name and location, looks it up in the DB and returns the Restaurant object.
-        /// Overload which includes all junction table info depending on bool parameter
-        /// Throws an exception if name and location do not match any restaurants in DB.
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <param name="includeAll">Whether to include the information from junction tables or not</param>
-        /// <returns>the Restaurant object specified</returns>
-        public Restaurant GetRestaurantByNameAndLocation(string name, string location, bool includeAll)
-        {
-            if (name == null || location == null || !DBContainsRestaurant(name, location))
-                throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
-            return GetRestaurants(includeAll).First(t => t.Name.Equals(name) && t.Location.Equals(location));
-        }
-
-        /// <summary>
-        /// Given a Restaurant's name and location, looks it up in the DB and returns its ID number.
-        /// Throws an exception if name and location do not match any restaurants in DB.
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <returns>ID number of specified Restaurant</returns>
-        public int GetRestaurantIDByNameAndLocation(string name, string location)
-        {
-            if (name == null || location==null || !DBContainsRestaurant(name, location))
-                throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
-            return GetRestaurants().First(t => t.Name.Equals(name) && t.Location.Equals(location)).Id;
-        }
-
+        
         /// <summary>
         /// Adds the given Restaurant object to the database
         /// Throws an exception if the Id is already set to some value, as SQL is set to generate a new ID.
@@ -146,11 +89,12 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="r"></param>
         public void AddRestaurant(Restaurant r)
         {
-            if (DBContainsRestaurant(r.Id) || r.Id > 0)
-                throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new Restaurant to the database.  Identity constraint does that for you.", new NotSupportedException());
-            if (DBContainsRestaurant(r.Name, r.Location))
-                throw new DbUpdateException("Restraunt with that Name and location already exists in the DB.  Cannot add another.", new NotSupportedException());
-
+            if (DBContainsRestaurant(r.Id))
+                throw new DbUpdateException("Invalid ID. ID must be unique to add a Restaurant to DB", new NotSupportedException());
+            if(r.Name == null)
+                throw new DbUpdateException("Invalid Name. Restaurant name must be non-null", new ArgumentNullException());
+            if (r.Lon == null || r.Lon == null)
+                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException());
             _db.Restaurant.Add(r);
         }
 
@@ -210,22 +154,9 @@ namespace RestaurantAPI.Library.Repos
         /// </summary>
         /// <param name="Id">ID to search DB for</param>
         /// <returns>true if Restaurant is found matching given ID, false otherwise</returns>
-        public async Task<bool> DBContainsRestaurantAsync(int Id)
+        public async Task<bool> DBContainsRestaurantAsync(string Id)
         {
-            return await GetRestaurants(false).AnyAsync(t => t.Id == Id);
-        }
-
-        /// <summary>
-        /// Checks whether DB conatins a restaurant as identified by the given name and location
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <returns>true if Restaurant is found matching given ID, false otherwise</returns>
-        public async Task<bool> DBContainsRestaurantAsync(string name, string location)
-        {
-            if (name == null || location == null)
-                return false;
-            return await GetRestaurants(false).AnyAsync(t => t.Name.Equals(name) && t.Location.Equals(location));
+            return await GetRestaurants(false).AnyAsync(t => t.Id.Equals(Id));
         }
 
         /// <summary>
@@ -235,7 +166,7 @@ namespace RestaurantAPI.Library.Repos
         /// </summary>
         /// <param name="Id">ID to look up in database</param>
         /// <returns>Restaurant object with specified ID</returns>
-        public async Task<Restaurant> GetRestaurantByIDAsync(int Id)
+        public async Task<Restaurant> GetRestaurantByIDAsync(string Id)
         {
             if (!DBContainsRestaurant(Id))
                 throw new NotSupportedException($"Restaurant ID '{Id}' not found.");
@@ -250,59 +181,11 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="Id">ID to look up in database</param>
         /// <param name="includeAll">Whether to include the information from junction tables or not</param>
         /// <returns>Restaurant object with specified ID</returns>
-        public async Task<Restaurant> GetRestaurantByIDAsync(int Id, bool includeAll)
+        public async Task<Restaurant> GetRestaurantByIDAsync(string Id, bool includeAll)
         {
             if (!DBContainsRestaurant(Id))
                 throw new NotSupportedException($"Restaurant ID '{Id}' not found.");
-            return await GetRestaurants(includeAll).FirstAsync(t => t.Id == Id);
-        }
-
-        /// <summary>
-        /// Given a Restaurant's name and location, looks it up in the DB and returns the Restaurant object.
-        /// By default will not include any list/Juntion table data.  If junction table data is required, use overload below
-        /// Throws an exception if name and location do not match any restaurants in DB.
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <returns>the Restaurant object specified</returns>
-        public async Task<Restaurant> GetRestaurantByNameAndLocationAsync(string name, string location)
-        {
-            var contains = await DBContainsRestaurantAsync(name, location);
-            if (!contains)
-                throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
-            return await GetRestaurants().FirstAsync(t => t.Name.Equals(name) && t.Location.Equals(location));
-        }
-
-        /// <summary>
-        /// Given a Restaurant's name and location, looks it up in the DB and returns the Restaurant object.
-        /// Overload which includes all junction table info depending on bool parameter
-        /// Throws an exception if name and location do not match any restaurants in DB.
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <param name="includeAll">Whether to include the information from junction tables or not</param>
-        /// <returns>the Restaurant object specified</returns>
-        public async Task<Restaurant> GetRestaurantByNameAndLocationAsync(string name, string location, bool includeAll)
-        {
-            var contains = await DBContainsRestaurantAsync(name, location);
-            if (!contains)
-                throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
-            return await GetRestaurants(includeAll).FirstAsync(t => t.Name.Equals(name) && t.Location.Equals(location));
-        }
-
-        /// <summary>
-        /// Given a Restaurant's name and location, looks it up in the DB and returns its ID number.
-        /// Throws an exception if name and location do not match any restaurants in DB.
-        /// </summary>
-        /// <param name="name">Restaurant name</param>
-        /// <param name="location">Restaurant location</param>
-        /// <returns>ID number of specified Restaurant</returns>
-        public async Task<int> GetRestaurantIDByNameAndLocationAsync(string name, string location)
-        {
-            var contains = await DBContainsRestaurantAsync(name, location);
-            if (!contains)
-                throw new NotSupportedException($"Restaurant name '{name}' at location '{location}' not found.");
-            return await GetRestaurants().Where(t => t.Name.Equals(name) && t.Location.Equals(location)).Select(t => t.Id).FirstAsync();
+            return await GetRestaurants(includeAll).FirstAsync(t => t.Id.Equals(Id));
         }
         
         /// <summary>
