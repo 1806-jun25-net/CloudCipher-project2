@@ -34,14 +34,15 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="User" asp-action="Index">User-Index</a></li>
-                    <li><a asp-area="" asp-controller="User" asp-action="Create">User-Create</a></li>
-                    @if (TempData.Peek("LoggedIn") == null)
+                    @if (TempData.Peek("Username") == null)
                     {
                         <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
                     }
                     else
                     {
+                        <li><a asp-area="" asp-controller="User" asp-action="Create">User-Create</a></li>
+                        <li><a asp-area="" asp-controller="User" asp-action="Details" >@TempData.Peek("Username")</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                     }
                 </ul>

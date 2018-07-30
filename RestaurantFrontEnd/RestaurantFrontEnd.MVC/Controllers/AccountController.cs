@@ -63,7 +63,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //GEt: Account/Login
+        //GET: Account/Login
         public ViewResult Login()
         {
             return View();//Might need to use redirecttoaction
@@ -95,7 +95,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
 
             PassCookiesToClient(apiResponse);
-            TempData.Add("LoggedIn", "true");
+            TempData.Add("Username", account.Username);
 
             if (account.Username == "admin.2")
             {
@@ -136,7 +136,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
 
             PassCookiesToClient(apiResponse);
-            TempData.Remove("LoggedIn");
+            TempData.Remove("Username");
             return RedirectToAction("Index", "Home");
         }
 
