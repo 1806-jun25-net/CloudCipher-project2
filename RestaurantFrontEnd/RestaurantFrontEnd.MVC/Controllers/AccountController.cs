@@ -37,7 +37,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return View("Error");
+                return View(account);
             }
 
             HttpRequestMessage apiRequest = CreateRequestService(HttpMethod.Post, "api/Account/Register", account);
@@ -50,12 +50,12 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
             catch
             {
-                return View("Error");
+                return View(account);
             }
 
             if(!apiResponse.IsSuccessStatusCode)
             {
-                return View("Error");
+                return View(account);
             }
 
             PassCookiesToClient(apiResponse);
@@ -80,7 +80,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 apiResponse = await HttpClient.SendAsync(apiRequest);
             }
-            catch(AggregateException ex)
+            catch(AggregateException)
             {
                 return View("Error");
             }
@@ -95,6 +95,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
 
             PassCookiesToClient(apiResponse);
+            TempData.Add("LoggedIn", "true");
 
             if (account.Username == "admin.2")
             {
@@ -124,7 +125,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 apiResponse = await HttpClient.SendAsync(apiRequest);
 
             }
-            catch(AggregateException ex)
+            catch(AggregateException)
             {
                 return View("Error");
             }
@@ -135,7 +136,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
 
             PassCookiesToClient(apiResponse);
-
+            TempData.Remove("LoggedIn");
             return RedirectToAction("Index", "Home");
         }
 
