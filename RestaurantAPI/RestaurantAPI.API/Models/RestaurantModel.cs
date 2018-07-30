@@ -13,8 +13,8 @@ namespace RestaurantAPI.API.Models
         public string Lat { get; set; }
         public string Lon { get; set; }
         public string Address { get; set; }
-        public decimal? Rating { get; set; }
-        public decimal? PriceLevel { get; set; }
+        public decimal Rating { get; set; }
+        public decimal PriceLevel { get; set; }
         public string Owner { get; set; }
     }
 }

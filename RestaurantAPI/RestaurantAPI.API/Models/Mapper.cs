@@ -34,8 +34,8 @@ namespace RestaurantAPI.Library
             Lat = other.Lat,
             Lon = other.Lon,
             Address = other.Address,
-            Rating = other.Rating,
-            PriceLevel = other.PriceLevel,
+            Rating = (decimal)other.Rating,
+            PriceLevel = (decimal)other.PriceLevel,
             Owner = other.Owner
         };
 

@@ -11,7 +11,7 @@ namespace RestaurantAPI.API.Models
         public string Username { get; set; }
         public string Lat { get; set; }
         public string Lon { get; set; }
-        public int? Radius { get; set; }
+        public int Radius { get; set; }
         public DateTime QueryTime { get; set; }
 
         public List<string> Keywords { get; set; }
