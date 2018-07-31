@@ -71,7 +71,7 @@ namespace RestaurantAPI.Library
             Lon = other.Lon,
             Radius = other.Radius,
             QueryTime = other.QueryTime,
-            QueryKeywordJunction = other.Keywords.Select( k => new QueryKeywordJunction() { Word = k, QueryId = other.Id }).ToList()
+            //QueryKeywordJunction = other.Keywords.Select( k => new QueryKeywordJunction() { Word = k, QueryId = other.Id }).ToList()
         };
 
         public static string Map(Keyword other) => other.Word;
