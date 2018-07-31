@@ -15,6 +15,7 @@ namespace RestaurantAPI.Library.Repos
         IQueryable<Query> GetQueries();
         Query GetQueryByID(int Id);
         Task<Query> GetQueryByIDAsync(int Id);
+        List<Restaurant> GetRestaurantsInQuery(int Id);
         void Save();
         Task<int> SaveAsync();
     }

@@ -49,7 +49,7 @@ namespace RestaurantAPI.API.Controllers
             if (!User.IsInRole("admin"))
                 queryList = queryList.Where(q => q.Username.Equals(User.Identity.Name));
 
-            return queryList.Select(m => new QueryResult() { QueryObject = Mapper.Map(m), Restaurants = Mapper.Map(m.QueryRestaurantJunction.Select(o => o.Restaurant)).ToList() } ).ToList();
+            return queryList.Select(m => new QueryResult() { QueryObject = Mapper.Map(m), Restaurants = Mapper.Map(Qrepo.GetRestaurantsInQuery(m.Id)).ToList() } ).ToList();
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace RestaurantAPI.API.Controllers
             {
                 return StatusCode(403);//Forbidden
             }
-            return new QueryResult() { QueryObject = Mapper.Map(q), Restaurants = Mapper.Map(q.QueryRestaurantJunction.Select(k => k.Restaurant)).ToList() };
+            return new QueryResult() { QueryObject = Mapper.Map(q), Restaurants = Mapper.Map(Qrepo.GetRestaurantsInQuery(q.Id)).ToList() };
         }
 
         /// <summary>

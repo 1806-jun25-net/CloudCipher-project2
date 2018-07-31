@@ -53,6 +53,18 @@ namespace RestaurantAPI.Library.Repos
         }
 
         /// <summary>
+        /// Given a Query Id, returns the list of restaurants that were returned for that query as found in the QueryRestaurantJunction table
+        /// Throws an exception if ID not found in DB
+        /// </summary>
+        /// <param name="Id">query Id to lookup</param>
+        /// <returns>list of Restaurant objects</returns>
+        public List<Restaurant> GetRestaurantsInQuery(int Id)
+        {
+            Query q = GetQueryByID(Id);
+            return q.QueryRestaurantJunction.Select(n => n.Restaurant).ToList();
+        }
+
+        /// <summary>
         /// Adds given Query object to the DB.  
         /// Also ensures keywords exist Keyword table and add them to QueryKeywordJunction.
         /// Throws an excpetion if the Id is already set to some value, as SQL is set to generate a new ID
