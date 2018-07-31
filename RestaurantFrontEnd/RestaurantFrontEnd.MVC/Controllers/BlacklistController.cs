@@ -54,7 +54,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 string jsonString = JsonConvert.SerializeObject(id);
                 //var uri = apiserviceuri + "user";
-                var request = CreateRequestService(HttpMethod.Post, "api/favorites");
+                var request = CreateRequestService(HttpMethod.Post, "api/Blacklist");
 
                 request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
@@ -65,7 +65,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 {
                     return View("Error");
                 }
-                TempData["Message"] = "Added to Favorites";
+                TempData["Message"] = "Added to Blacklist";
             }
             catch
             {
