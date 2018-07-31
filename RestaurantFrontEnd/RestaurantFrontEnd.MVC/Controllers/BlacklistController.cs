@@ -11,15 +11,16 @@ using RestaurantFrontEnd.Library.API_Models;
 
 namespace RestaurantFrontEnd.MVC.Controllers
 {
-    public class FavoritesController : AServiceController
+    public class BlacklistController : AServiceController
     {
 
-        public FavoritesController(HttpClient httpClient) : base(httpClient)
+        public BlacklistController(HttpClient httpClient) : base(httpClient)
         {
 
         }
 
-        // GET: Favorites
+
+        // GET: Blacklist
         public async Task<ActionResult> Index([FromQuery] string search = "")
         {
             var request = CreateRequestService(HttpMethod.Get, "api/user");
@@ -36,16 +37,16 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
             return View(@"..\User\Index", user);
 
-             
+
         }
 
-        // GET: Favorites/Details/5
+        // GET: Blacklist/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Favorites/Create
+        // GET: Blacklist/Create
         public async Task<ActionResult> Create(string id)
         {
 
@@ -64,7 +65,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 {
                     return View("Error");
                 }
-                TempData["Message"] = "Added to Favorites"; 
+                TempData["Message"] = "Added to Favorites";
             }
             catch
             {
@@ -73,7 +74,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             return Redirect(Url.Action("Details", "Restaurant") + "/" + id);
         }
 
-        // POST: Favorites/Create
+        // POST: Blacklist/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -90,13 +91,13 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
         }
 
-        // GET: Favorites/Edit/5
+        // GET: Blacklist/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Favorites/Edit/5
+        // POST: Blacklist/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -113,10 +114,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
         }
 
-        // GET: Favorites/Delete/5
+        // GET: Blacklist/Delete/5
         public async Task<ActionResult> Delete(string id)
         {
-            
+
             if (id == null)
                 return View("Error");
             var request = CreateRequestService(HttpMethod.Get, $"api/favorites/{id}");
@@ -130,7 +131,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                     return View("Error");
                 }
 
-                
+
 
                 return View(@"..\restaurant\Details", id);
             }
@@ -139,17 +140,24 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 return View("Error", ex);
             }
 
-           
+
         }
 
-        // POST: Favorites/Delete/5
+        // POST: Blacklist/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
+            try
+            {
+                // TODO: Add delete logic here
 
-            return View();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
-    
 }
