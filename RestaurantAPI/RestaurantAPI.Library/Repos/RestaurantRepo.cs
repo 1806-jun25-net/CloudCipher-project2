@@ -92,11 +92,11 @@ namespace RestaurantAPI.Library.Repos
             if (DBContainsRestaurant(r.Id))
                 throw new DbUpdateException("Invalid ID. ID must be unique to add a Restaurant to DB", new NotSupportedException());
             if(r.Name == null)
-                throw new DbUpdateException("Invalid Name. Restaurant name must be non-null", new ArgumentNullException("Name"));
+                throw new DbUpdateException("Invalid Name. Restaurant name must be non-null", new ArgumentNullException("r.Name"));
             if (r.Lat == null)
-                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException("Lat"));
+                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException("r.Lat"));
             if (r.Lon == null)
-                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException("Lon"));
+                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException("r.Lon"));
             _db.Restaurant.Add(r);
         }
 
