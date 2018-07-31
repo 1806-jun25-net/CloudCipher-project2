@@ -84,6 +84,8 @@ namespace RestaurantAPI.API.Controllers
         /// 1. Adds the query to the DB
         /// 2. Adds any new restaurants to the DB that don't already exist, and register new keyword associations to each restaurant
         /// 3. Adds data to QueryRestaurantJunction table
+        /// Query Id should be 0 for new queries.
+        /// **Not idempotent - will assign a new id to the query each time and add a new query to the DB each time it is called.
         /// </summary>
         /// <param name="queryResult"></param>
         /// <returns></returns>
