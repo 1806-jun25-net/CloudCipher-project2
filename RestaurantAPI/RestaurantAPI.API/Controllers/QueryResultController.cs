@@ -13,9 +13,9 @@ namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QueryController : ControllerBase
+    public class QueryResultController : ControllerBase
     {
-        public QueryController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
+        public QueryResultController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
         {
             Arepo = AppRepo;
             Krepo = KeyRepo;
