@@ -214,6 +214,90 @@ namespace RestaurantAPI.Testing
             Assert.Equal(Id, q.Id);
         }
 
+        //Testing of GetRestaurantsInQueryAsync
+        [Theory]
+        [InlineData(11)]
+        [InlineData(4232)]
+        [InlineData(66)]
+        [InlineData(324)]
+        public void GetRestaurantsInQueryAsyncShouldThrowExceptionIfIdNotFound(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
+                .Options;
+
+            bool result = false;
+            QueryRepo qRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                try
+                {
+                    qRepo.GetRestaurantsInQueryAsync(Id).Wait();
+                }
+                catch (AggregateException)
+                {
+                    result = true;
+                }
+            }
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void GetRestaurantsInQueryAsyncShouldNotThrowExceptionIfIdIsInDB(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
+                .Options;
+            bool result = true;
+            QueryRepo qRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                qRepo.GetRestaurantsInQueryAsync(Id).Wait();
+            }
+            //If exception is throw, test will exit before reaching Assert
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void GetRestaurantsInQueryAsyncShouldReturnAllRestaurantsFromJunctionTable(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryAsyncDB")
+                .Options;
+
+            List<Restaurant> rl;
+            QueryRepo qRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                rl = qRepo.GetRestaurantsInQueryAsync(Id).Result;
+            }
+
+            //Assert
+            Assert.Equal(Id, rl.Count);
+        }
+
         //Testing of AddQuery
         [Theory]
         [InlineData(1)]

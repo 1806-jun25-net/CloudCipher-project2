@@ -242,7 +242,7 @@ namespace RestaurantAPI.Testing
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        public void GetQueryByIDShouldReturnRestaurantWithMatchingId(int Id)
+        public void GetQueryByIDShouldReturnQueryWithMatchingId(int Id)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -262,6 +262,91 @@ namespace RestaurantAPI.Testing
             //Assert
             Assert.Equal(Id, q.Id);
         }
+
+        //Testing of GetRestaurantsInQuery
+        [Theory]
+        [InlineData(11)]
+        [InlineData(4232)]
+        [InlineData(66)]
+        [InlineData(324)]
+        public void GetRestaurantsInQueryShouldThrowExceptionIfIdNotFound(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .Options;
+
+            bool result = false;
+            QueryRepo qRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                try
+                {
+                    qRepo.GetRestaurantsInQuery(Id);
+                }
+                catch (NotSupportedException)
+                {
+                    result = true;
+                }
+            }
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void GetRestaurantsInQueryShouldNotThrowExceptionIfIdIsInDB(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .Options;
+            bool result = true;
+            QueryRepo qRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                qRepo.GetRestaurantsInQuery(Id);
+            }
+            //If exception is throw, test will exit before reaching Assert
+            //Assert
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public void GetRestaurantsInQueryShouldReturnAllRestaurantsFromJunctionTable(int Id)
+        {
+            //Arrange
+            var options = new DbContextOptionsBuilder<Project2DBContext>()
+                .UseInMemoryDatabase(databaseName: "StaticFilledQueryDB")
+                .Options;
+
+            List<Restaurant> rl;
+            QueryRepo qRepo;
+
+            //Act
+            using (var context = new Project2DBContext(options))
+            {
+                qRepo = new QueryRepo(context);
+                rl = qRepo.GetRestaurantsInQuery(Id);
+            }
+
+            //Assert
+            Assert.Equal(Id, rl.Count);
+        }
+
 
         //Testing of AddQuery
         [Theory]

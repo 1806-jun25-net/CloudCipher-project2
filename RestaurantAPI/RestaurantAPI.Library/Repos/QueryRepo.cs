@@ -127,9 +127,22 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>Restaurant object with specified ID</returns>
         public async Task<Query> GetQueryByIDAsync(int Id)
         {
-            if (!DBContainsQuery(Id))
+            var contains = await DBContainsQueryAsync(Id);
+            if (!contains)
                 throw new NotSupportedException($"Query ID '{Id}' not found.");
             return await GetQueries().FirstAsync(t => t.Id == Id);
+        }
+
+        /// <summary>
+        /// Given a Query Id, returns the list of restaurants that were returned for that query as found in the QueryRestaurantJunction table
+        /// Throws an exception if ID not found in DB
+        /// </summary>
+        /// <param name="Id">query Id to lookup</param>
+        /// <returns>list of Restaurant objects</returns>
+        public async Task<List<Restaurant>> GetRestaurantsInQueryAsync(int Id)
+        {
+            Query q = await GetQueryByIDAsync(Id);
+            return q.QueryRestaurantJunction.Select(n => n.Restaurant).ToList();
         }
 
         /// <summary>

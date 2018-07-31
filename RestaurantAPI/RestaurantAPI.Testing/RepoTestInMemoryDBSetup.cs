@@ -55,6 +55,17 @@ namespace RestaurantAPI.Testing
                 context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "fast" });
                 context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "food" });
 
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 1, RestaurantId = "1a" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 2, RestaurantId = "1a" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 2, RestaurantId = "2b" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 3, RestaurantId = "1a" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 3, RestaurantId = "2b" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 3, RestaurantId = "3c" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 4, RestaurantId = "1a" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 4, RestaurantId = "2b" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 4, RestaurantId = "3c" });
+                context.QueryRestaurantJunction.Add(new QueryRestaurantJunction { QueryId = 4, RestaurantId = "4d" });
+
                 context.SaveChanges();
             }
         }
