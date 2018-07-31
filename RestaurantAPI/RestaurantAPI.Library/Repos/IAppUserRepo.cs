@@ -9,8 +9,12 @@ namespace RestaurantAPI.Library.Repos
     {
         void AddRestaurantToBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo);
         void AddRestaurantToBlacklist(string username, string restaurantId, RestaurantRepo rRepo);
+        Task AddRestaurantToBlacklistAsync(AppUser u, Restaurant r, RestaurantRepo rRepo);
+        Task AddRestaurantToBlacklistAsync(string username, string restaurantId, RestaurantRepo rRepo);
         void AddRestaurantToFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo);
         void AddRestaurantToFavorites(string username, string restaurantId, RestaurantRepo rRepo);
+        Task AddRestaurantToFavoritesAsync(AppUser u, Restaurant r, RestaurantRepo rRepo);
+        Task AddRestaurantToFavoritesAsync(string username, string restaurantId, RestaurantRepo rRepo);
         void AddUser(AppUser u);
         bool DBContainsUsername(string username);
         Task<bool> DBContainsUsernameAsync(string username);
@@ -30,8 +34,12 @@ namespace RestaurantAPI.Library.Repos
         IQueryable<AppUser> GetUsers(bool includeAll);
         void RemoveRestaurantFromBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo);
         void RemoveRestaurantFromBlacklist(string username, string restaurantId, RestaurantRepo rRepo);
+        Task RemoveRestaurantFromBlacklistAsync(AppUser u, Restaurant r, RestaurantRepo rRepo);
+        Task RemoveRestaurantFromBlacklistAsync(string username, string restaurantId, RestaurantRepo rRepo);
         void RemoveRestaurantFromFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo);
         void RemoveRestaurantFromFavorites(string username, string restaurantId, RestaurantRepo rRepo);
+        Task RemoveRestaurantFromFavoritesAsync(AppUser u, Restaurant r, RestaurantRepo rRepo);
+        Task RemoveRestaurantFromFavoritesAsync(string username, string restaurantId, RestaurantRepo rRepo);
         void Save();
         Task SaveAsync();
         void UpdateUser(AppUser u);
