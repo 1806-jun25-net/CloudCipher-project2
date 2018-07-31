@@ -26,7 +26,7 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>Returns an IQueryable containing all Query objects in the database.  Use ToList() on the result to make it a usable list. </returns>
         public IQueryable<Query> GetQueries()
         {
-            return _db.Query.AsNoTracking().Include(m =>m.QueryKeywordJunction);
+            return _db.Query.AsNoTracking().Include(m =>m.QueryKeywordJunction).Include(m=>m.QueryRestaurantJunction).ThenInclude(n=>n.Restaurant);
         }
 
         /// <summary>

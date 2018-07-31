@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.API.Models;
@@ -33,33 +34,34 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <returns>list of QueryModels</returns>
         // GET: api/Query
+        [Authorize]
+        [ProducesResponseType(500)]
         [HttpGet]
-        public ActionResult<List<QueryModel>> Get()
+        public ActionResult<List<QueryResult>> Get()
         {
             if (User == null)
                 return StatusCode(401);//unauthorized, in case User is null for some reason like the tests.
             var queryList = Qrepo.GetQueries();
-            List<QueryModel> queryModelList;
             if (queryList == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            if (User.IsInRole("admin"))
-                queryModelList = Mapper.Map(queryList).ToList();
-            else
-                queryModelList = Mapper.Map(queryList.Where(q => q.Username.Equals(User.Identity.Name))).ToList();
+            if (!User.IsInRole("admin"))
+                queryList = queryList.Where(q => q.Username.Equals(User.Identity.Name));
 
-            return queryModelList.ToList();
+            return queryList.Select(m => new QueryResult() { QueryObject = Mapper.Map(m), Restaurants = Mapper.Map(m.QueryRestaurantJunction.Select(o => o.Restaurant)).ToList() } ).ToList();
         }
 
         /// <summary>
         /// Returns a specific query based on its Id only if it matches the current user or they're admin.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">queryId to look up</param>
         /// <returns>A QueryModel object matching the given Id</returns>
         // GET: api/Query/5
+        [ProducesResponseType(400)]
+        [ProducesResponseType(403)]
         [HttpGet("{id}", Name = "Get")]
-        public ActionResult<QueryModel> Get(int id)
+        public ActionResult<QueryResult> Get(int id)
         {
             Query q;
             try
@@ -74,9 +76,19 @@ namespace RestaurantAPI.API.Controllers
             {
                 return StatusCode(403);//Forbidden
             }
-            return Mapper.Map(q);
+            return new QueryResult() { QueryObject = Mapper.Map(q), Restaurants = Mapper.Map(q.QueryRestaurantJunction.Select(k => k.Restaurant)).ToList() };
         }
 
+        /// <summary>
+        /// Used to add new QueryResults to DB.
+        /// 1. Adds the query to the DB
+        /// 2. Adds any new restaurants to the DB that don't already exist, and register new keyword associations to each restaurant
+        /// 3. Adds data to QueryRestaurantJunction table
+        /// </summary>
+        /// <param name="queryResult"></param>
+        /// <returns></returns>
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         // POST: api/Query
         [HttpPost]
         public ActionResult<List<RestaurantModel>> Post([FromBody] QueryResult queryResult)
