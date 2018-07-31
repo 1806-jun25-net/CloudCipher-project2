@@ -28,6 +28,10 @@ namespace RestaurantAPI.Library.Repos
         Task<AppUser> GetUserByUsernameAsync(string username, bool includeAll);
         IQueryable<AppUser> GetUsers();
         IQueryable<AppUser> GetUsers(bool includeAll);
+        void RemoveRestaurantFromBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo);
+        void RemoveRestaurantFromBlacklist(string username, string restaurantId, RestaurantRepo rRepo);
+        void RemoveRestaurantFromFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo);
+        void RemoveRestaurantFromFavorites(string username, string restaurantId, RestaurantRepo rRepo);
         void Save();
         Task SaveAsync();
         void UpdateUser(AppUser u);

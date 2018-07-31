@@ -144,7 +144,7 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
             _db.Add(u);
         }
-
+        
         /// <summary>
         /// Adds the specified restaurant to the specified user's blacklist
         /// Throws an exception if specified user or restraunt is not found in DB
@@ -221,6 +221,71 @@ namespace RestaurantAPI.Library.Repos
             Favorite fav = new Favorite() { Username = username, RestaurantId = restaurantId };
             _db.Add(fav);
         }
+
+        /// <summary>
+        /// Removes the restaurant from a user's favorites list, if it exists
+        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently a favorite
+        /// </summary>
+        /// <param name="u">user object to remove from favorites of</param>
+        /// <param name="r">restaurant to remove from favorites</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void RemoveRestaurantFromFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(u.Username))
+                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
+            if (!rRepo.DBContainsRestaurant(r.Id))
+                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
+            _db.Favorite.Remove(new Favorite { Username = u.Username, RestaurantId = r.Id });
+        }
+
+        /// <summary>
+        /// Removes the restaurant from a user's favorites list, if it exists
+        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently a favorite
+        /// </summary>
+        /// <param name="username">user id to remove from favorites of</param>
+        /// <param name="restaurantId">restaurant id to remove from favorites</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void RemoveRestaurantFromFavorites(string username, string restaurantId, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(username))
+                throw new DbUpdateException($"Username '{username}' not found.", new NotSupportedException());
+            if (!rRepo.DBContainsRestaurant(restaurantId))
+                throw new DbUpdateException($"Restaurant ID '{restaurantId}' not found.", new NotSupportedException());
+            _db.Favorite.Remove(new Favorite { Username = username, RestaurantId = restaurantId });
+        }
+
+        /// <summary>
+        /// Removes the restaurant from a user's blacklist, if it exists
+        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently on the blacklist
+        /// </summary>
+        /// <param name="u">user object to remove from blacklist of</param>
+        /// <param name="r">restaurant to remove from blacklist</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void RemoveRestaurantFromBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(u.Username))
+                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
+            if (!rRepo.DBContainsRestaurant(r.Id))
+                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
+            _db.Blacklist.Remove(new Blacklist { Username = u.Username, RestaurantId = r.Id });
+        }
+
+        /// <summary>
+        /// Removes the restaurant from a user's blacklist, if it exists
+        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently on the blacklist
+        /// </summary>
+        /// <param name="username">user id to remove from blacklist of</param>
+        /// <param name="restaurantId">restaurant id to remove from blacklist</param>
+        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
+        public void RemoveRestaurantFromBlacklist(string username, string restaurantId, RestaurantRepo rRepo)
+        {
+            if (!DBContainsUsername(username))
+                throw new DbUpdateException($"Username '{username}' not found.", new NotSupportedException());
+            if (!rRepo.DBContainsRestaurant(restaurantId))
+                throw new DbUpdateException($"Restaurant ID '{restaurantId}' not found.", new NotSupportedException());
+            _db.Blacklist.Remove(new Blacklist { Username = username, RestaurantId = restaurantId });
+        }
+
 
         /// <summary>
         /// Updates user information in the database.
