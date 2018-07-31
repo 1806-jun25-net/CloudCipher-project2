@@ -33,13 +33,25 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         // POST: Account/Register
         [HttpPost]
-        public async Task<ActionResult> Register(Login account)
+        public async Task<ActionResult> Register(LoginUser loginUser)
         {
-            if(!ModelState.IsValid)
+            if(!ModelState.IsValid || !loginUser.Password.Equals(loginUser.Password2))
             {
-                return View(account);
+                return View(loginUser);
             }
-
+            Login account = new Login()
+            {
+                Username = loginUser.Username,
+                Password = loginUser.Password
+            };
+            User user = new User()
+            {
+                Username = loginUser.Username,
+                FirstName = loginUser.FirstName,
+                LastName = loginUser.LastName,
+                Email = loginUser.Email
+            };
+            //Add Login to identity DB
             HttpRequestMessage apiRequest = CreateRequestService(HttpMethod.Post, "api/Account/Register", account);
 
             HttpResponseMessage apiResponse;
@@ -50,17 +62,34 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
             catch
             {
-                return View(account);
+                return View(loginUser);
             }
 
             if(!apiResponse.IsSuccessStatusCode)
             {
-                return View(account);
+                return View(loginUser);
+            }
+            
+            //Add User to restaurant DB
+            apiRequest = CreateRequestService(HttpMethod.Post, "api/User", user);
+            try
+            {
+                apiResponse = await HttpClient.SendAsync(apiRequest);
+
+            }
+            catch
+            {
+                return View(loginUser);
+            }
+
+            if (!apiResponse.IsSuccessStatusCode)
+            {
+                return View(loginUser);
             }
 
             PassCookiesToClient(apiResponse);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
 
         //GET: Account/Login

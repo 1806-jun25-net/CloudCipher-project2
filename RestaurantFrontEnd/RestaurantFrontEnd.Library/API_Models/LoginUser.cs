@@ -5,11 +5,22 @@ using System.Text;
 
 namespace RestaurantFrontEnd.Library.API_Models
 {
-    public class User
+    public class LoginUser
     {
         [Required]
         [StringLength(20, MinimumLength = 3)]
         public string Username { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
+        public string Password2 { get; set; }
 
         [Required]
         [Display(Name = "First Name")]
@@ -22,6 +33,5 @@ namespace RestaurantFrontEnd.Library.API_Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-
     }
 }
