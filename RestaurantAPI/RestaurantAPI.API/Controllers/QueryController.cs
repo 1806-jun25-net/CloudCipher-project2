@@ -28,21 +28,35 @@ namespace RestaurantAPI.API.Controllers
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
 
-
+        /// <summary>
+        /// Get all queries placed by a username, or all queries in DB if user is an admin.
+        /// </summary>
+        /// <returns>list of QueryModels</returns>
         // GET: api/Query
         [HttpGet]
         public ActionResult<List<QueryModel>> Get()
         {
+            if (User == null)
+                return StatusCode(401);//unauthorized, in case User is null for some reason like the tests.
             var queryList = Qrepo.GetQueries();
+            List<QueryModel> queryModelList;
             if (queryList == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            var queryModelList = Mapper.Map(queryList);
+            if (User.IsInRole("admin"))
+                queryModelList = Mapper.Map(queryList).ToList();
+            else
+                queryModelList = Mapper.Map(queryList.Where(q => q.Username.Equals(User.Identity.Name))).ToList();
 
             return queryModelList.ToList();
         }
 
+        /// <summary>
+        /// Returns a specific query based on its Id only if it matches the current user or they're admin.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>A QueryModel object matching the given Id</returns>
         // GET: api/Query/5
         [HttpGet("{id}", Name = "Get")]
         public ActionResult<QueryModel> Get(int id)
@@ -52,43 +66,56 @@ namespace RestaurantAPI.API.Controllers
             {
                 q = Qrepo.GetQueryByID(id);
             }
-
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
+            if (!(User.Identity.Name.Equals(q.Username) || User.IsInRole("admin")))
+            {
+                return StatusCode(403);//Forbidden
+            }
             return Mapper.Map(q);
         }
 
         // POST: api/Query
         [HttpPost]
-        public ActionResult<List<RestaurantModel>> Post([FromBody] QueryModel queryM)
+        public ActionResult<List<RestaurantModel>> Post([FromBody] QueryResult queryResult)
         {
             //Add query to DB
+            Query q = Mapper.Map(queryResult.QueryObject);
+            List<Restaurant> restaurants = Mapper.Map(queryResult.Restaurants).ToList();
             try
             {
-                Qrepo.AddQuery(Mapper.Map(queryM), (KeywordRepo)Krepo);
+                Qrepo.AddQuery(q, (KeywordRepo)Krepo);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-            //Execute request of Google Search API to get some list of RestaurantModels back
-            //TODO:  connect this controller with Google Search API functionality
-            List<RestaurantModel> queryResults = new List<RestaurantModel>();
             //Add any new restaurants to DB, and register any new keywords to existing restaurants
 
             try
             {
-                Rrepo.AddNewRestaurants(Mapper.Map(queryResults).ToList(), queryM.Keywords);
+                Rrepo.AddNewRestaurants(restaurants, queryResult.QueryObject.Keywords);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return queryResults;
+            //Add query+restaurants to junction table
+
+            try
+            {
+                Qrepo.AddQueryRestaurantJunction(q.Id, restaurants, (RestaurantRepo)Rrepo);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            //return StatusCode(StatusCodes.Status201Created);
+            return CreatedAtRoute("Get", new { id = q.Id }, queryResult);
         }
 
         /*  No need for update or delete methods for queries

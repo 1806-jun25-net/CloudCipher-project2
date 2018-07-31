@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using RestaurantAPI.Data;
 
@@ -8,6 +9,7 @@ namespace RestaurantAPI.Library.Repos
     {
         void AddQuery(Query u, KeywordRepo kRepo);
         Task AddQueryAsync(Query u, KeywordRepo kRepo);
+        void AddQueryRestaurantJunction(int queryId, List<Restaurant> restaurants, RestaurantRepo rRepo);
         bool DBContainsQuery(int Id);
         Task<bool> DBContainsQueryAsync(int Id);
         IQueryable<Query> GetQueries();

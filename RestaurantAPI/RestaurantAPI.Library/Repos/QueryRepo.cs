@@ -54,7 +54,7 @@ namespace RestaurantAPI.Library.Repos
 
         /// <summary>
         /// Adds given Query object to the DB.  
-        /// Also ensures keywords exist in both QueryKeywordJunction and Keyword tables.
+        /// Also ensures keywords exist Keyword table and add them to QueryKeywordJunction.
         /// Throws an excpetion if the Id is already set to some value, as SQL is set to generate a new ID
         /// Must call Save() afterwards to persist changes to DB.
         /// </summary>
@@ -71,6 +71,18 @@ namespace RestaurantAPI.Library.Repos
                     kRepo.AddKeyword(new Keyword() { Word = kwj.Word });
                 _db.Add(kwj);
             }  
+        }
+
+        public void AddQueryRestaurantJunction(int queryId, List<Restaurant> restaurants, RestaurantRepo rRepo)
+        {
+            if (!DBContainsQuery(queryId))
+                throw new DbUpdateException($"Query Id {queryId} not recognized.", new NotSupportedException());
+            foreach (Restaurant r in restaurants)
+            {
+                if (!rRepo.DBContainsRestaurant(r.Id))
+                    throw new DbUpdateException($"Restaurant Id {r.Id} not recognized.", new NotSupportedException());
+                _db.QueryRestaurantJunction.Add(new QueryRestaurantJunction() { QueryId = queryId, RestaurantId = r.Id});
+            }
         }
 
         /// <summary>
