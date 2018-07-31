@@ -65,8 +65,10 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         @RenderSection("query_string", false)
-        @*<script src="~/js/site.js" asp-append-version="true"></script>
-        <script async deferer
+        @*Adding following line to see if it fixes error in views w/ scripts*@
+        @RenderSection("Scripts", required: false)
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @*<script async deferer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
         </script>*@
 
