@@ -10,6 +10,7 @@ namespace RestaurantAPI.Library.Repos
         void AddQuery(Query u, KeywordRepo kRepo);
         Task AddQueryAsync(Query u, KeywordRepo kRepo);
         void AddQueryRestaurantJunction(int queryId, List<Restaurant> restaurants, RestaurantRepo rRepo);
+        Task AddQueryRestaurantJunctionAsync(int queryId, List<Restaurant> restaurants, RestaurantRepo rRepo);
         bool DBContainsQuery(int Id);
         Task<bool> DBContainsQueryAsync(int Id);
         IQueryable<Query> GetQueries();

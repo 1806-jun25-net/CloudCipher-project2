@@ -50,7 +50,7 @@ namespace RestaurantAPI.API.Controllers
         // POST api/<controller>
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Create([FromBody]UserModel value)
+        public async Task<IActionResult> CreateAsync([FromBody]UserModel value)
         {
             AppUser createVariable;
 
@@ -66,7 +66,7 @@ namespace RestaurantAPI.API.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            Arepo.Save();
+            await Arepo.SaveAsync();
 
             return CreatedAtRoute("GetUser", new { username = value.Username }, value);
            
@@ -75,7 +75,7 @@ namespace RestaurantAPI.API.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{username}", Name = "UpdateUser")]
-        public IActionResult Put(string username, [FromBody]UserModel value)
+        public async Task<IActionResult> PutAsync(string username, [FromBody]UserModel value)
         {
             AppUser updateVariable;
             if (!username.Equals(value.Username))
@@ -89,7 +89,7 @@ namespace RestaurantAPI.API.Controllers
             try
             {
                 Arepo.UpdateUser(updateVariable);
-                Arepo.Save();
+                await Arepo.SaveAsync();
             }
 
             catch
@@ -106,7 +106,7 @@ namespace RestaurantAPI.API.Controllers
         [Route("api/User")]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<UserModel> GetByUsername(string username)
+        public async Task<ActionResult<UserModel>> GetByUsernameAsync(string username)
         {
             if (User == null)
                 return StatusCode(401);//unauthorized, in case User is null for some reason like the tests.
@@ -118,14 +118,13 @@ namespace RestaurantAPI.API.Controllers
             AppUser userVariable;
             try
             {
-                userVariable = Arepo.GetUserByUsername(username);
+                userVariable = await Arepo.GetUserByUsernameAsync(username);
             }
 
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
             return Mapper.Map(userVariable);
 
             

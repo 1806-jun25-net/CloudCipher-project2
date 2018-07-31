@@ -8,7 +8,9 @@ namespace RestaurantAPI.Library.Repos
     public interface IRestaurantRepo
     {
         void AddNewRestaurants(List<Restaurant> rList, List<string> keywords);
+        Task AddNewRestaurantsAsync(List<Restaurant> rList, List<string> keywords);
         void AddRestaurant(Restaurant r);
+        Task AddRestaurantAsync(Restaurant r);
         bool DBContainsRestaurant(string Id);
         Task<bool> DBContainsRestaurantAsync(string Id);
         Restaurant GetRestaurantByID(string Id);
