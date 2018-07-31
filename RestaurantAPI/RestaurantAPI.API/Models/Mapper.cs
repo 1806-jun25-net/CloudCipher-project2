@@ -69,7 +69,7 @@ namespace RestaurantAPI.Library
             Username = other.Username,
             Lat = other.Lat,
             Lon = other.Lon,
-            Radius = (int)other.Radius,
+            Radius = other.Radius,
             QueryTime = other.QueryTime,
             QueryKeywordJunction = other.Keywords.Select( k => new QueryKeywordJunction() { Word = k, QueryId = other.Id }).ToList()
         };

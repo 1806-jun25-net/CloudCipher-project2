@@ -44,20 +44,8 @@ namespace RestaurantAPI.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            // return StatusCode(StatusCodes.Status501NotImplemented);
-
-            //SET THIS RETURN MAINLY FOR TESTING CONNECTION TO MVC
             return Mapper.Map(userlist).ToList();
-        }
-
-        // GET api/<controller>/5
-        /*
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-        */    
+        }  
 
         // POST api/<controller>
         [HttpPost]
@@ -92,12 +80,16 @@ namespace RestaurantAPI.API.Controllers
             AppUser updateVariable;
             if (!username.Equals(value.Username))
                 return StatusCode(StatusCodes.Status400BadRequest);
+            if (!(User.Identity.Name.Equals(username) || User.IsInRole("admin")))
+            {
+                return StatusCode(403);//Forbidden
+            }
             updateVariable = Mapper.Map(value);
 
             try
             {
-                //TODO:  Add capability to edit users to repositories
-                //Arepo.AddUser(updateVariable);
+                Arepo.UpdateUser(updateVariable);
+                Arepo.Save();
             }
 
             catch
@@ -109,16 +101,7 @@ namespace RestaurantAPI.API.Controllers
 
             return StatusCode(StatusCodes.Status204NoContent);
         }
-
-        /*
-         * disabling delete user since we do not want users to be deleted
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        */
-
+        
         [HttpGet("{username}", Name = "GetUser")]
         [Route("api/User")]
         [ProducesResponseType(404)]

@@ -104,46 +104,22 @@ namespace RestaurantAPI.API.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-            //Add any new restaurants to DB, and register any new keywords to existing restaurants
+            
 
             try
             {
+                //Add any new restaurants to DB, and register any new keywords to existing restaurants
                 Rrepo.AddNewRestaurants(restaurants, queryResult.QueryObject.Keywords);
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
-            //Add query+restaurants to junction table
-
-            try
-            {
+                //Add query+restaurants to junction table
                 Qrepo.AddQueryRestaurantJunction(q.Id, restaurants, (RestaurantRepo)Rrepo);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            //return StatusCode(StatusCodes.Status201Created);
+            
             return CreatedAtRoute("Get", new { id = q.Id }, queryResult);
         }
-
-        /*  No need for update or delete methods for queries
-         *  
-        // PUT: api/Query/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        *
-        */
+        
     }
 }

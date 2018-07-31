@@ -222,10 +222,15 @@ namespace RestaurantAPI.Library.Repos
             _db.Add(fav);
         }
 
+        /// <summary>
+        /// Updates user information in the database.
+        /// Throws exception if user Id isn't valid in DB
+        /// </summary>
+        /// <param name="u"></param>
         public void UpdateUser(AppUser u)
         {
             if (!DBContainsUsername(u.Username))
-                return;
+                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
             AppUser realUser = _db.AppUser.Find((u.Username));
             realUser.FirstName = u.FirstName;
             realUser.LastName = u.LastName;
