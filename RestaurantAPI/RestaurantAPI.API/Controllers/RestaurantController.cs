@@ -41,7 +41,7 @@ namespace RestaurantAPI.API.Controllers
         {
             Rrepo.GetRestaurants();
 
-            return Mapper.Map(Rrepo.GetRestaurants().ToList()).ToList();
+            return Mapper.Map(Rrepo.GetRestaurants()).ToList();
             
         }
 

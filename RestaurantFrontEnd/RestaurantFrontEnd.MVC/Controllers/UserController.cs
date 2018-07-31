@@ -213,32 +213,6 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
         }
 
-
-        /*
-         * Don't need functionality for deleting users
-        // GET: User/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: User/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-    */
+        
     }
 }

@@ -61,12 +61,12 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(403)]
         [HttpGet("{id}", Name = "Get")]
-        public ActionResult<QueryResult> Get(int id)
+        public async Task<ActionResult<QueryResult>> GetAsync(int id)
         {
             Query q;
             try
             {
-                q = Qrepo.GetQueryByID(id);
+                q = await Qrepo.GetQueryByIDAsync(id);
             }
             catch (Exception)
             {
@@ -76,7 +76,7 @@ namespace RestaurantAPI.API.Controllers
             {
                 return StatusCode(403);//Forbidden
             }
-            return new QueryResult() { QueryObject = Mapper.Map(q), Restaurants = Mapper.Map(Qrepo.GetRestaurantsInQuery(q.Id)).ToList() };
+            return new QueryResult() { QueryObject = Mapper.Map(q), Restaurants = Mapper.Map( await Qrepo.GetRestaurantsInQueryAsync(q.Id)).ToList() };
         }
 
         /// <summary>
@@ -84,6 +84,8 @@ namespace RestaurantAPI.API.Controllers
         /// 1. Adds the query to the DB
         /// 2. Adds any new restaurants to the DB that don't already exist, and register new keyword associations to each restaurant
         /// 3. Adds data to QueryRestaurantJunction table
+        /// Query Id should be 0 for new queries.
+        /// **Not idempotent - will assign a new id to the query each time and add a new query to the DB each time it is called.
         /// </summary>
         /// <param name="queryResult"></param>
         /// <returns></returns>
@@ -91,33 +93,30 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         // POST: api/Query
         [HttpPost]
-        public ActionResult<List<RestaurantModel>> Post([FromBody] QueryResult queryResult)
+        public async Task<ActionResult<List<RestaurantModel>>> PostAsync([FromBody] QueryResult queryResult)
         {
             //Add query to DB
             Query q = Mapper.Map(queryResult.QueryObject);
             List<Restaurant> restaurants = Mapper.Map(queryResult.Restaurants).ToList();
             try
             {
-                Qrepo.AddQuery(q, (KeywordRepo)Krepo);
+                await Qrepo.AddQueryAsync(q, (KeywordRepo)Krepo);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-            
-
             try
             {
                 //Add any new restaurants to DB, and register any new keywords to existing restaurants
-                Rrepo.AddNewRestaurants(restaurants, queryResult.QueryObject.Keywords);
+                await Rrepo.AddNewRestaurantsAsync(restaurants, queryResult.QueryObject.Keywords);
                 //Add query+restaurants to junction table
-                Qrepo.AddQueryRestaurantJunction(q.Id, restaurants, (RestaurantRepo)Rrepo);
+                await Qrepo.AddQueryRestaurantJunctionAsync(q.Id, restaurants, (RestaurantRepo)Rrepo);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
             return CreatedAtRoute("Get", new { id = q.Id }, queryResult);
         }
         

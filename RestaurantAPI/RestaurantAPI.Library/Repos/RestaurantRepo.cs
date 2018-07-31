@@ -189,7 +189,65 @@ namespace RestaurantAPI.Library.Repos
                 throw new NotSupportedException($"Restaurant ID '{Id}' not found.");
             return await GetRestaurants(includeAll).FirstAsync(t => t.Id.Equals(Id));
         }
-        
+
+        /// <summary>
+        /// Adds the given Restaurant object to the database
+        /// Throws an exception if the Id is already set to some value, as SQL is set to generate a new ID.
+        /// Throws an exception if a restraunt already exists in the DB with that given name and location.
+        /// </summary>
+        /// <param name="r"></param>
+        public async Task AddRestaurantAsync(Restaurant r)
+        {
+            var contains = await DBContainsRestaurantAsync(r.Id);
+            if (contains)
+                throw new DbUpdateException("Invalid ID. ID must be unique to add a Restaurant to DB", new NotSupportedException());
+            if (r.Name == null)
+                throw new DbUpdateException("Invalid Name. Restaurant name must be non-null", new ArgumentNullException("r.Name"));
+            if (r.Lat == null)
+                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException("r.Lat"));
+            if (r.Lon == null)
+                throw new DbUpdateException("Invalid location. Longitude and Latitude must be non-null", new ArgumentNullException("r.Lon"));
+            _db.Restaurant.Add(r);
+        }
+
+        /// <summary>
+        /// Given a list of Restaurants, adds all to DB that are not already in it.
+        /// Will also register the given keywords in the RestaurantKeywordJunctionTable for each Restaurant
+        /// </summary>
+        /// <param name="rList">list of restaurants</param>
+        /// <param name="keywords">list of keywords (pass empty list if none)</param>
+        public async Task AddNewRestaurantsAsync(List<Restaurant> rList, List<string> keywords)
+        {
+            if (rList == null)
+                throw new DbUpdateException("Restaurant list cannot be null.", new ArgumentNullException("rList"));
+
+            foreach (Restaurant r in rList)
+            {
+                if (keywords != null)
+                {
+                    foreach (string k in keywords)
+                    {
+                        try
+                        {
+                            _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k });
+                        }
+                        catch
+                        {
+                            //Exception is thrown if RestaurantKeyword pair is already in DB.  If so no need to add it or take any action 
+                        }
+                    }
+                }
+                try
+                {
+                    await AddRestaurantAsync(r);
+                }
+                catch
+                {
+                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
+                }
+            }
+        }
+
         /// <summary>
         /// Saves changes to DB
         /// </summary>

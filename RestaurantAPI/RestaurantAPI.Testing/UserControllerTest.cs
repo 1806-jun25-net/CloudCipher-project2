@@ -33,7 +33,7 @@ namespace RestaurantAPI.Testing
 
 
         [Fact]
-        public void GetTestfailsifnull()
+        public void GetTestReturns500CodeIfUserListIsNull()
         {
             //Arrange
             mockARepo.Setup(x => x.GetUsers()).Returns((IQueryable<AppUser>)null);
@@ -48,7 +48,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Fact]
-        public void Getreturnsmodelifempty()
+        public void GetCorrectlyReturnsModelIfUserListIsEmpty()
         {
             //Arrange
             mockARepo.Setup(x => x.GetUsers()).Returns((new List<AppUser>().AsQueryable()));
@@ -63,7 +63,7 @@ namespace RestaurantAPI.Testing
 
 
         [Fact]
-        public void Getreturnmodeliflistnonempty()
+        public void GetCorrectlyReturnsModelIfUserListIsNonempty()
         {
             //Arrange
             mockARepo.Setup(x => x.GetUsers()).Returns((new List<AppUser>() { new AppUser(){Username = "u" } }).AsQueryable());
@@ -118,7 +118,7 @@ namespace RestaurantAPI.Testing
         */
 
         [Fact]
-        public void createsucceedsifaddissuccessful()
+        public void CreateProducesCreatedAtRouteResultIfAddIsSuccessful()
         {
             UserModel userobject = new UserModel();
 
@@ -127,14 +127,14 @@ namespace RestaurantAPI.Testing
             mockARepo.Setup(x => x.Save());
 
             //Act
-            IActionResult result = controller.Create(userobject);
+            IActionResult result = controller.CreateAsync(userobject).Result;
 
             //Assert
             Assert.IsType<CreatedAtRouteResult>(result);
         }
 
         [Fact]
-        public void createreturnsstatuscodeifexceptionthrown()
+        public void CreateReturns400StatusCodeIfExceptionIsThrownByAdd()
         {
             //Arrange
             UserModel userobject = new UserModel();
@@ -143,7 +143,7 @@ namespace RestaurantAPI.Testing
             mockARepo.Setup(x => x.Save());
 
             //Act
-            IActionResult result = controller.Create(userobject);
+            IActionResult result = controller.CreateAsync(userobject).Result;
 
             //Assert
             var statusCode = Assert.IsType<StatusCodeResult>(result);

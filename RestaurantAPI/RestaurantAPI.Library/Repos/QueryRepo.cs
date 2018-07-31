@@ -168,6 +168,20 @@ namespace RestaurantAPI.Library.Repos
             }
         }
 
+        public async Task AddQueryRestaurantJunctionAsync(int queryId, List<Restaurant> restaurants, RestaurantRepo rRepo)
+        {
+            var contains = await DBContainsQueryAsync(queryId);
+            if (!contains)
+                throw new DbUpdateException($"Query Id {queryId} not recognized.", new NotSupportedException());
+            foreach (Restaurant r in restaurants)
+            {
+                contains = await rRepo.DBContainsRestaurantAsync(r.Id);
+                if (!contains)
+                    throw new DbUpdateException($"Restaurant Id {r.Id} not recognized.", new NotSupportedException());
+                _db.QueryRestaurantJunction.Add(new QueryRestaurantJunction() { QueryId = queryId, RestaurantId = r.Id });
+            }
+        }
+
         /// <summary>
         /// Saves changes to DB
         /// </summary>
