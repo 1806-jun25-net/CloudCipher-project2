@@ -96,6 +96,7 @@ namespace RestaurantAPI.API.Controllers
         public async Task<ActionResult<List<QueryResult>>> PostAsync([FromBody] QueryResult queryResult)
         {
             Query q = Mapper.Map(queryResult.QueryObject);
+            q.QueryTime = DateTime.Now;
             List<string> keywords = queryResult.QueryObject.Keywords;
             List<Restaurant> restaurants = Mapper.Map(queryResult.Restaurants).ToList();
             try
