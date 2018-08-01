@@ -103,4 +103,13 @@ SELECT * FROM RestaurantSite.Keyword;
 
 SELECT * FROM RestaurantSite.QueryRestaurantJunction;
 
---DELETE FROM RestaurantSite.Query;
+/*
+DELETE FROM RestaurantSite.QueryKeywordJunction;
+DELETE FROM RestaurantSite.QueryRestaurantJunction;
+DELETE FROM RestaurantSite.RestaurantKeywordJunction;
+DELETE FROM RestaurantSite.Blacklist;
+DELETE FROM RestaurantSite.Favorite;
+DELETE FROM RestaurantSite.Keyword;
+DELETE FROM RestaurantSite.Restaurant;
+DELETE FROM RestaurantSite.Query;
+*/
