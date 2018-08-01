@@ -42,7 +42,8 @@ namespace RestaurantAPI.API.Controllers
 
         }
 
-        //Unused
+        //Given a restaurantID, returns bool of whether restaurant is in user's favorites
+        //TODO: this
         // GET: api/Favorites/5
         [HttpGet("{id}", Name = "GetFavorites")]
         public string Get(int id)

@@ -40,7 +40,8 @@ namespace RestaurantAPI.API.Controllers
 
         }
 
-        //Unused
+        //Given a restaurantID, returns bool of whether restaurant is in user's blacklist
+        //TODO: this
         // GET: api/Blacklist/5
         [HttpGet("{id}", Name = "GetBlacklist")]
         public string Get(int id)
