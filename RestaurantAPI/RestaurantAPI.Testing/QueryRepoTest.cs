@@ -379,7 +379,7 @@ namespace RestaurantAPI.Testing
                 kRepo = new KeywordRepo(context);
                 try
                 {
-                    qRepo.AddQuery(q, kRepo);
+                    qRepo.AddQuery(q);
                 }
                 catch (DbUpdateException)
                 {
@@ -414,7 +414,7 @@ namespace RestaurantAPI.Testing
             {
                 qRepo = new QueryRepo(context);
                 kRepo = new KeywordRepo(context);
-                qRepo.AddQuery(q, kRepo);
+                qRepo.AddQuery(q);
                 result = context.Query.Find(q.Id);
             }
 
@@ -446,7 +446,7 @@ namespace RestaurantAPI.Testing
             {
                 qRepo = new QueryRepo(context);
                 kRepo = new KeywordRepo(context);
-                qRepo.AddQuery(q, kRepo);
+                qRepo.AddQuery(q);
                 result = context.Query.Find(q.Id);
                 result2 = context.QueryKeywordJunction.Find( q.Id, keyword);
             }

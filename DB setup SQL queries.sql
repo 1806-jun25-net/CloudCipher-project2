@@ -27,7 +27,7 @@ CREATE TABLE RestaurantSite.Restaurant
 --DROP TABLE RestaurantSite.Query
 CREATE TABLE RestaurantSite.Query
 (
-	ID int PRIMARY KEY IDENTITY(1,1),
+	ID int PRIMARY KEY IDENTITY,
 	Username nvarchar(128) NOT NULL FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username),
 	Lat nvarchar(128),
 	Lon nvarchar(128),
@@ -90,3 +90,11 @@ VALUES ('test', 'First', 'Last', 'a@a.com', 0),
 		('admin', 'Tess', 'Est', 'winner@gmail.com', 1);
 
 SELECT * FROM RestaurantSite.AppUser;
+
+SELECT * FROM RestaurantSite.Query;
+
+SELECT * FROM RestaurantSite.QueryKeywordJunction;
+
+SELECT * FROM RestaurantSite.Restaurant;
+
+SELECT * FROM RestaurantSite.Keyword;

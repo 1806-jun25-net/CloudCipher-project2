@@ -60,7 +60,7 @@ namespace RestaurantAPI.API.Controllers
         // GET: api/Query/5
         [ProducesResponseType(400)]
         [ProducesResponseType(403)]
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetQueryResult")]
         public async Task<ActionResult<QueryResult>> GetAsync(int id)
         {
             Query q;
@@ -93,14 +93,16 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         // POST: api/Query
         [HttpPost]
-        public async Task<ActionResult<List<QueryResult>>> PostAsync([FromBody] QueryResult queryResult)
+        public ActionResult<List<QueryResult>> Post([FromBody] QueryResult queryResult)
         {
-            //Add query to DB
             Query q = Mapper.Map(queryResult.QueryObject);
+            List<string> keywords = queryResult.QueryObject.Keywords;
             List<Restaurant> restaurants = Mapper.Map(queryResult.Restaurants).ToList();
             try
             {
-                await Qrepo.AddQueryAsync(q, (KeywordRepo)Krepo);
+                //Add query to DB
+                Qrepo.AddQuery(q);
+                Qrepo.Save();
             }
             catch
             {
@@ -108,16 +110,19 @@ namespace RestaurantAPI.API.Controllers
             }
             try
             {
+                //Add any new keywords to the DB, and register all keywords to QueryKeywordJunction
+                Qrepo.AddQueryKeywordJunction(q.Id, keywords, (KeywordRepo)Krepo);
                 //Add any new restaurants to DB, and register any new keywords to existing restaurants
-                await Rrepo.AddNewRestaurantsAsync(restaurants, queryResult.QueryObject.Keywords);
+                Rrepo.AddNewRestaurants(restaurants, keywords);
                 //Add query+restaurants to junction table
-                await Qrepo.AddQueryRestaurantJunctionAsync(q.Id, restaurants, (RestaurantRepo)Rrepo);
+                Qrepo.AddQueryRestaurantJunction(q.Id, restaurants, (RestaurantRepo)Rrepo);
+                Qrepo.Save();
             }
-            catch
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return CreatedAtRoute("Get", new { id = q.Id }, queryResult);
+            return CreatedAtRoute("GetQueryResult", new { id = q.Id }, queryResult);
         }
         
     }

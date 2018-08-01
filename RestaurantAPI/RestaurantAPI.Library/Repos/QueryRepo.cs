@@ -66,25 +66,40 @@ namespace RestaurantAPI.Library.Repos
 
         /// <summary>
         /// Adds given Query object to the DB.  
-        /// Also ensures keywords exist Keyword table and add them to QueryKeywordJunction.
-        /// Throws an excpetion if the Id is already set to some value, as SQL is set to generate a new ID
-        /// Must call Save() afterwards to persist changes to DB.
+        /// Must call Save() afterwards to persist changes to DB and learn the Id it has been assigned by the DB.
         /// </summary>
         /// <param name="u">Query to add to DB</param>
-        /// /// <param name="kRepo">KeywordRepo so keyword can be added to DB if needed</param>
-        public void AddQuery(Query u, KeywordRepo kRepo)
+        public void AddQuery(Query u)
         {
-            if (DBContainsQuery(u.Id) || u.Id > 0)
-                throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
             _db.Add(u);
-            foreach (var kwj in u.QueryKeywordJunction)
+        }
+
+        /// <summary>
+        /// Given a queryId and list of keywords (strings), adds entries to the QueryKeywordJunction table.
+        /// Throws an exception if QueryId not found for whatever reason.
+        /// </summary>
+        /// <param name="queryId">int Id of the query</param>
+        /// <param name="keywords">list of string of keywords</param>
+        /// <param name="kRepo">KeywordRepo</param>
+        public void AddQueryKeywordJunction(int queryId, List<string> keywords, KeywordRepo kRepo)
+        {
+            if (!DBContainsQuery(queryId))
+                throw new DbUpdateException($"Query Id {queryId} not recognized.", new NotSupportedException());
+            foreach (var kw in keywords)
             {
-                if (!kRepo.DBContainsKeyword(kwj.Word))
-                    kRepo.AddKeyword(new Keyword() { Word = kwj.Word });
-                _db.Add(kwj);
+                if (!kRepo.DBContainsKeyword(kw))
+                    kRepo.AddKeyword(new Keyword() { Word = kw });
+                _db.Add(new QueryKeywordJunction() { QueryId = queryId, Word = kw });
             }  
         }
 
+        /// <summary>
+        /// Given a queryId and list of restaurants, adds entries to the QueryRestaurantJunction table.
+        /// Throws an exception if QueryId not found for whatever reason.
+        /// </summary>
+        /// <param name="queryId"></param>
+        /// <param name="restaurants"></param>
+        /// <param name="rRepo"></param>
         public void AddQueryRestaurantJunction(int queryId, List<Restaurant> restaurants, RestaurantRepo rRepo)
         {
             if (!DBContainsQuery(queryId))
@@ -146,25 +161,23 @@ namespace RestaurantAPI.Library.Repos
         }
 
         /// <summary>
-        /// Adds given Query object to the DB.  
-        /// Also ensures keywords exist in both QueryKeywordJunction and Keyword tables.
-        /// Throws an excpetion if the Id is already set to some value, as SQL is set to generate a new ID
-        /// Must call Save() afterwards to persist changes to DB.
+        /// Given a queryId and list of keywords (strings), adds entries to the QueryKeywordJunction table.
+        /// Throws an exception if QueryId not found for whatever reason.
         /// </summary>
-        /// <param name="u">Query to add to DB</param>
-        /// /// <param name="kRepo">KeywordRepo so keyword can be added to DB if needed</param>
-        public async Task AddQueryAsync(Query u, KeywordRepo kRepo)
+        /// <param name="queryId">int Id of the query</param>
+        /// <param name="keywords">list of string of keywords</param>
+        /// <param name="kRepo">KeywordRepo</param>
+        public async Task AddQueryKeywordJunctionAsync(int queryId, List<string> keywords, KeywordRepo kRepo)
         {
-            bool contains = await DBContainsQueryAsync(u.Id);
-            if ( contains || u.Id > 0)
-                throw new DbUpdateException("Invalid ID. ID should not be set prior to adding a new query to the database.  Identity constraint does that for you.", new NotSupportedException());
-            _db.Add(u);
-            foreach (var kwj in u.QueryKeywordJunction)
+            var contains = await DBContainsQueryAsync(queryId);
+            if (!contains)
+                throw new DbUpdateException($"Query Id {queryId} not recognized.", new NotSupportedException());
+            foreach (var kw in keywords)
             {
-                contains = await kRepo.DBContainsKeywordAsync(kwj.Word);
+                contains = await kRepo.DBContainsKeywordAsync(kw);
                 if (!contains)
-                    kRepo.AddKeyword(new Keyword() { Word = kwj.Word });
-                _db.Add(kwj);
+                    kRepo.AddKeyword(new Keyword() { Word = kw });
+                _db.Add(new QueryKeywordJunction() { QueryId = queryId, Word = kw });
             }
         }
 

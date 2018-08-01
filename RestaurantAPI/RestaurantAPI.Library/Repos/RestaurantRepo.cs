@@ -103,6 +103,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Given a list of Restaurants, adds all to DB that are not already in it.
         /// Will also register the given keywords in the RestaurantKeywordJunctionTable for each Restaurant
+        /// Assumes All keywords already exist in DB from registering QueryKeywordJunction before this
         /// </summary>
         /// <param name="rList">list of restaurants</param>
         /// <param name="keywords">list of keywords (pass empty list if none)</param>
@@ -113,6 +114,15 @@ namespace RestaurantAPI.Library.Repos
 
             foreach (Restaurant r in rList)
             {
+                try
+                {
+                    r.Owner = null;  //making null since owner will be added in later, not when restaurant is first added
+                    AddRestaurant(r);
+                }
+                catch
+                {
+                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
+                }
                 if (keywords != null)
                 {
                     foreach (string k in keywords)
@@ -126,14 +136,6 @@ namespace RestaurantAPI.Library.Repos
                             //Exception is thrown if RestaurantKeyword pair is already in DB.  If so no need to add it or take any action 
                         }
                     }
-                }
-                try
-                {
-                    AddRestaurant(r);
-                }
-                catch
-                {
-                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
                 }
             }
         }
@@ -213,6 +215,7 @@ namespace RestaurantAPI.Library.Repos
         /// <summary>
         /// Given a list of Restaurants, adds all to DB that are not already in it.
         /// Will also register the given keywords in the RestaurantKeywordJunctionTable for each Restaurant
+        /// Assumes All keywords already exist in DB from registering QueryKeywordJunction before this
         /// </summary>
         /// <param name="rList">list of restaurants</param>
         /// <param name="keywords">list of keywords (pass empty list if none)</param>
@@ -223,6 +226,15 @@ namespace RestaurantAPI.Library.Repos
 
             foreach (Restaurant r in rList)
             {
+                try
+                {
+                    r.Owner = null;  //making null since owner will be added in later, not when restaurant is first added
+                    await AddRestaurantAsync(r);
+                }
+                catch
+                {
+                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
+                }
                 if (keywords != null)
                 {
                     foreach (string k in keywords)
@@ -236,14 +248,6 @@ namespace RestaurantAPI.Library.Repos
                             //Exception is thrown if RestaurantKeyword pair is already in DB.  If so no need to add it or take any action 
                         }
                     }
-                }
-                try
-                {
-                    await AddRestaurantAsync(r);
-                }
-                catch
-                {
-                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
                 }
             }
         }
