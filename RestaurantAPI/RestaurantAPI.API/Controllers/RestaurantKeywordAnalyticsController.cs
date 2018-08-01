@@ -16,7 +16,7 @@ namespace RestaurantAPI.API.Controllers
         // GET: api/RestaurantKeywordAnalytic
         /// <summary>
         /// Return a list of all Keywords wrapped w/ frequencies.
-        /// Frequencies represent how many restaurants matched that keyword in a search.
+        /// Frequencies represent how many restaurants in DB match that keyword.
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of string </returns>
@@ -29,14 +29,14 @@ namespace RestaurantAPI.API.Controllers
 
         // GET: api/RestaurantKeywordAnalytics/5
         /// <summary>
-        /// Return a list of Restaurants that have ever matched the given keyword.
-        /// Returns an error code if keyword not found in DB.
+        /// Given a restaurantId, return all keywords associated with that restaurant.
+        /// Returns an error code if restaurant not found in DB.
         /// Accessible to all users.
         /// </summary>
-        /// <param name="keyword">Keyword to get restaurant matches for</param>
+        /// <param name="restaurantId">Keyword to get restaurant matches for</param>
         /// <returns>List of restaurants </returns>
-        [HttpGet("{id}", Name = "GetRestaurantKeywordAnalytics")]
-        public ActionResult<List<RestaurantModel>> Get(string keyword)
+        [HttpGet("{restaurantId}", Name = "GetKeywordsForRestaurant")]
+        public ActionResult<List<RestaurantModel>> Get(string restaurantId)
         {
             throw new NotImplementedException();
         }
