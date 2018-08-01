@@ -97,4 +97,10 @@ SELECT * FROM RestaurantSite.QueryKeywordJunction;
 
 SELECT * FROM RestaurantSite.Restaurant;
 
+SELECT * FROM RestaurantSite.RestaurantKeywordJunction;
+
 SELECT * FROM RestaurantSite.Keyword;
+
+SELECT * FROM RestaurantSite.QueryRestaurantJunction;
+
+--DELETE FROM RestaurantSite.Query;

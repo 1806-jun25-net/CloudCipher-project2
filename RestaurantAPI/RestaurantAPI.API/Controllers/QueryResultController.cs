@@ -93,7 +93,7 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         // POST: api/Query
         [HttpPost]
-        public ActionResult<List<QueryResult>> Post([FromBody] QueryResult queryResult)
+        public async Task<ActionResult<List<QueryResult>>> PostAsync([FromBody] QueryResult queryResult)
         {
             Query q = Mapper.Map(queryResult.QueryObject);
             List<string> keywords = queryResult.QueryObject.Keywords;
@@ -102,7 +102,7 @@ namespace RestaurantAPI.API.Controllers
             {
                 //Add query to DB
                 Qrepo.AddQuery(q);
-                Qrepo.Save();
+                await Qrepo.SaveAsync();
             }
             catch
             {
@@ -111,14 +111,16 @@ namespace RestaurantAPI.API.Controllers
             try
             {
                 //Add any new keywords to the DB, and register all keywords to QueryKeywordJunction
-                Qrepo.AddQueryKeywordJunction(q.Id, keywords, (KeywordRepo)Krepo);
+                await Qrepo.AddQueryKeywordJunctionAsync(q.Id, keywords, (KeywordRepo)Krepo);
+                await Qrepo.SaveAsync();
                 //Add any new restaurants to DB, and register any new keywords to existing restaurants
-                Rrepo.AddNewRestaurants(restaurants, keywords);
+                await Rrepo.AddNewRestaurantsAsync(restaurants, keywords);
+                await Qrepo.SaveAsync();
                 //Add query+restaurants to junction table
-                Qrepo.AddQueryRestaurantJunction(q.Id, restaurants, (RestaurantRepo)Rrepo);
-                Qrepo.Save();
+                await Qrepo.AddQueryRestaurantJunctionAsync(q.Id, restaurants, (RestaurantRepo)Rrepo);
+                await Qrepo.SaveAsync();
             }
-            catch (Exception)
+            catch (Exception e)  //defining Excpetion as e for debugging purposes even though it's unused and a code smell.
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
