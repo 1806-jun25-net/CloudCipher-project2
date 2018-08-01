@@ -171,7 +171,7 @@ namespace RestaurantAPI.Library.Repos
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
-        /// <param name="restaurantId">int containing restaurant's ID number</param>
+        /// <param name="restaurantId">string containing restaurant's Id</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
         public void AddRestaurantToBlacklist(string username, string restaurantId, RestaurantRepo rRepo)
         {
@@ -210,7 +210,7 @@ namespace RestaurantAPI.Library.Repos
         /// Must still call Save() after to persist changes to DB
         /// </summary>
         /// <param name="username">string containing user's username</param>
-        /// <param name="restaurantId">int containing restaurant's ID number</param>
+        /// <param name="restaurantId">string containing restaurant's Id</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
         public void AddRestaurantToFavorites(string username, string restaurantId, RestaurantRepo rRepo)
         {
