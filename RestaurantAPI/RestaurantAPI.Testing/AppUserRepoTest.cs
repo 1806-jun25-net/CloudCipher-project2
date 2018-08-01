@@ -74,8 +74,10 @@ namespace RestaurantAPI.Testing
 
         
         //Testing of DBContainsUsername
-        [Fact]
-        public void DBContainsUsernameShouldNotThrowExceptionIfDBIsEmpty()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void DBContainsUsernameShouldNotThrowExceptionIfDBIsEmpty(bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -89,7 +91,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                uRepo.DBContainsUsername("LiterallyAnything");
+                if (useAsync)
+                    uRepo.DBContainsUsernameAsync("LiterallyAnything").Wait();
+                else
+                    uRepo.DBContainsUsername("LiterallyAnything");
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -97,15 +102,23 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUserr")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void DBContainsUsernameShouldReturnFalseIfIfDBIsEmpty(string username)
+        [InlineData("realUser", false)]
+        [InlineData("decoyUser1", false)]
+        [InlineData("decoyUser2", false)]
+        [InlineData("decoyUser3", false)]
+        [InlineData("fakeUser", false)]
+        [InlineData("totallyNotAUserr", false)]
+        [InlineData("zzzzzZZefea", false)]
+        [InlineData("SoooooManyTestsToCome", false)]
+        [InlineData("realUser", true)]
+        [InlineData("decoyUser1", true)]
+        [InlineData("decoyUser2", true)]
+        [InlineData("decoyUser3", true)]
+        [InlineData("fakeUser", true)]
+        [InlineData("totallyNotAUserr", true)]
+        [InlineData("zzzzzZZefea", true)]
+        [InlineData("SoooooManyTestsToCome", true)]
+        public void DBContainsUsernameShouldReturnFalseIfIfDBIsEmpty(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -118,7 +131,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                result = uRepo.DBContainsUsername(username);
+                if (useAsync)
+                    result = uRepo.DBContainsUsernameAsync(username).Result;
+                else
+                    result = uRepo.DBContainsUsername(username);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -126,11 +142,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        public void DBContainsUsernameShouldReturnTrueIfUsernameInDB(string username)
+        [InlineData("realUser", false)]
+        [InlineData("decoyUser1", false)]
+        [InlineData("decoyUser2", false)]
+        [InlineData("decoyUser3", false)]
+        [InlineData("realUser", true)]
+        [InlineData("decoyUser1", true)]
+        [InlineData("decoyUser2", true)]
+        [InlineData("decoyUser3", true)]
+        public void DBContainsUsernameShouldReturnTrueIfUsernameInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -143,18 +163,25 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                result = uRepo.DBContainsUsername(username);
+                if (useAsync)
+                    result = uRepo.DBContainsUsernameAsync(username).Result;
+                else
+                    result = uRepo.DBContainsUsername(username);
             }
             //Assert
             Assert.True(result);
         }
 
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void DBContainsUsernameShouldReturnFalseIfUsernameNotInDB(string username)
+        [InlineData("fakeUser", false)]
+        [InlineData("totallyNotAUserr", false)]
+        [InlineData("zzzzzZZefea", false)]
+        [InlineData("SoooooManyTestsToCome", false)]
+        [InlineData("fakeUser", true)]
+        [InlineData("totallyNotAUserr", true)]
+        [InlineData("zzzzzZZefea", true)]
+        [InlineData("SoooooManyTestsToCome", true)]
+        public void DBContainsUsernameShouldReturnFalseIfUsernameNotInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -167,7 +194,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                result = uRepo.DBContainsUsername(username);
+                if (useAsync)
+                    result = uRepo.DBContainsUsernameAsync(username).Result;
+                else
+                    result = uRepo.DBContainsUsername(username);
             }
             //Assert
             Assert.False(result);
