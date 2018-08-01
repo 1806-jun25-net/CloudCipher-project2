@@ -10,7 +10,7 @@ namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QueryKeywordAnalyticController : Controller
+    public class QueryKeywordAnalyticController : ControllerBase
     {
 
         // GET: api/KeywordQueryAnalytic
@@ -47,29 +47,6 @@ namespace RestaurantAPI.API.Controllers
         {
             throw new NotImplementedException();
         }
-
-        //Unused
-        // POST: api/KeywordQueryAnalytic
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Unused
-        // PUT: api/KeywordQueryAnalytic/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Unused
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
