@@ -10,7 +10,7 @@ namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RestaurantKeywordAnalyticController : ControllerBase
+    public class RestaurantKeywordAnalyticsController : ControllerBase
     {
 
         // GET: api/RestaurantKeywordAnalytic
@@ -27,7 +27,7 @@ namespace RestaurantAPI.API.Controllers
             return new List<FrequencyWrapper<string>>() { new FrequencyWrapper<string> { Frequency = 1, Obj = "it works!" } };
         }
 
-        // GET: api/RestaurantKeywordAnalytic/5
+        // GET: api/RestaurantKeywordAnalytics/5
         /// <summary>
         /// Return a list of Restaurants that have ever matched the given keyword.
         /// Returns an error code if keyword not found in DB.
@@ -35,7 +35,7 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="keyword">Keyword to get restaurant matches for</param>
         /// <returns>List of restaurants </returns>
-        [HttpGet("{id}", Name = "GetRestaurantKeywordAnalytic")]
+        [HttpGet("{id}", Name = "GetRestaurantKeywordAnalytics")]
         public ActionResult<List<RestaurantModel>> Get(string keyword)
         {
             throw new NotImplementedException();

@@ -10,10 +10,10 @@ namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QueryRestaurantAnalyticController : ControllerBase
+    public class QueryRestaurantAnalyticsController : ControllerBase
     {
 
-        // GET: api/QueryRestaurantAnalytic
+        // GET: api/QueryRestaurantAnalytics
         /// <summary>
         /// Return a list of all Restaurants wrapped w/ frequencies.
         /// Frequencies represent how many times given restaurant appeared in a query result, sorted by descending.
@@ -26,7 +26,7 @@ namespace RestaurantAPI.API.Controllers
             throw new NotImplementedException();
         }
 
-        // GET: api/QueryRestaurantAnalytic/5
+        // GET: api/QueryRestaurantAnalytics/5
         /// <summary>
         /// Returns a list of Restaurants wrapped w/ frequencies.
         /// Returns an error code if user not found in DB.
@@ -34,7 +34,7 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="username"></param>
         /// <returns>List of FrequencyWrapper of RestaurantModel<</returns>
-        [HttpGet("{id}", Name = "GetQueryRestaurantAnalytic")]
+        [HttpGet("{id}", Name = "GetQueryRestaurantAnalytics")]
         public ActionResult<List<FrequencyWrapper<RestaurantModel>>> Get(string username)
         {
             throw new NotImplementedException();

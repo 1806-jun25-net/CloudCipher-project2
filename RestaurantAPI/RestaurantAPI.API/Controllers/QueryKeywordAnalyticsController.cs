@@ -10,10 +10,10 @@ namespace RestaurantAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QueryKeywordAnalyticController : ControllerBase
+    public class QueryKeywordAnalyticsController : ControllerBase
     {
 
-        // GET: api/KeywordQueryAnalytic
+        // GET: api/QueryKeywordAnalytics
         /// <summary>
         /// Return a list of all Keywords wrapped w/ frequencies.
         /// Frequencies represent how many queries that keyword has appeared in, sorted by descending.
@@ -32,7 +32,7 @@ namespace RestaurantAPI.API.Controllers
 
         //
         //takes
-        // GET: api/KeywordQueryAnalytic/5
+        // GET: api/QueryKeywordAnalytics/5
         /// <summary>
         /// Return a list of all keywords wrapped w/ frequencies.
         /// Filters to only include queries placed by the given username.
@@ -42,7 +42,7 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="username">name of user to look up keyword frequency for</param>
         /// <returns>List of FrequencyWrapperModel<string></returns>
-        [HttpGet("{id}", Name = "GetKeywordQueryAnalytic")]
+        [HttpGet("{id}", Name = "GetKeywordQueryAnalytics")]
         public string Get(string username)
         {
             throw new NotImplementedException();
