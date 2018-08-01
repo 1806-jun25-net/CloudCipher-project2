@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RestaurantFrontEnd.Library.API_Models;
 
 namespace RestaurantFrontEnd.MVC.Controllers
 {
@@ -16,12 +19,12 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         }
         // GET: Restaurant
-        public ActionResult Index([FromQuery] string search="")
+        public ActionResult Index([FromQuery] string search = "")
         {
             var request = CreateRequestService(HttpMethod.Post, "api/Restaurant");
             //change to Query once you have authorization set up
 
-            if (search==null || search == "")
+            if (search == null || search == "")
             {
                 ///request = CreateRequestService(HttpMethod.Get, "api/restaurant")
                 //SAVE ABOVE FOR LATER//WIll be sending this request to Query
@@ -30,17 +33,80 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
             else
             {
-                
+
                 //ISCHECKED FOR CHECKBOXES FEATURE(RESEARCH)
                 string queryString = search;
                 var queryArray = queryString.Split("+");
                 //string firstElem = array.First();
                 string queried = string.Join("&", queryArray);
                 ViewData["query"] = queried;
+
                 return View(@"..\Restaurant\Index");
             }
+
+
+
+        }
+        [HttpPost]
+        
+        public async Task<string>  GetQueryResults(string[] queryobj,
+            List<Restaurant> restobj,string[] keyobj)
+        {
             
-          
+            List<string>kw = new List<string>();
+            foreach(var n in keyobj)
+            {
+                kw.Add(n);
+            }
+
+
+
+            QueryResult QR = new QueryResult
+            {
+                QueryObject = new Query
+                {
+                    Id = 0,
+                    Username = (string)TempData.Peek("Username"),
+                    Lat = (string)queryobj[0],
+                    Lon = (string)queryobj[1],
+                    Radius = Convert.ToInt32(queryobj[2]),
+                    Keywords = kw,
+                    QueryTime = DateTime.Now.Date
+
+
+                },
+                Restaurants = restobj
+                
+
+
+            };
+            //QR;
+            try
+            {
+                string result;
+                string jsonString = JsonConvert.SerializeObject(QR);
+                var request = CreateRequestService(HttpMethod.Post, "api/queryresult");
+
+                request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    result = "error";
+                    return result;
+                }
+
+                result = restobj[0].Name + queryobj[0] + keyobj[0];
+                return result;
+            }
+            catch
+            {
+                string result = "error";
+                return result;
+            }
+
 
         }
 

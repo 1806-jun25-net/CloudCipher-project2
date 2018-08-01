@@ -110,8 +110,10 @@ namespace RestaurantAPI.API.Controllers
             {
                 //Add any new restaurants to DB, and register any new keywords to existing restaurants
                 Rrepo.AddNewRestaurants(restaurants, queryResult.QueryObject.Keywords);
+                Rrepo.Save();
                 //Add query+restaurants to junction table
                 Qrepo.AddQueryRestaurantJunction(q.Id, restaurants, (RestaurantRepo)Rrepo);
+                Rrepo.Save();
             }
             catch
             {
