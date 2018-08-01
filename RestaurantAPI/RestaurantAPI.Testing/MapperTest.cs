@@ -136,8 +136,7 @@ namespace RestaurantAPI.Testing
             };
 
             result = Mapper.Map(initial);
-
-            Assert.Equal(initial.Id, result.Id);
+            
             Assert.Equal(initial.Username, result.Username);
             Assert.Equal(initial.Lat, result.Lat);
             Assert.Equal(initial.Lon, result.Lon);
@@ -270,8 +269,7 @@ namespace RestaurantAPI.Testing
             }};
 
             result = Mapper.Map(initial).ToList();
-
-            Assert.Equal(((List<QueryModel>)initial)[0].Id, result[0].Id);
+            
             Assert.Equal(((List<QueryModel>)initial)[0].Username, result[0].Username);
             Assert.Equal(((List<QueryModel>)initial)[0].Lat, result[0].Lat);
             Assert.Equal(((List<QueryModel>)initial)[0].Lon, result[0].Lon);
