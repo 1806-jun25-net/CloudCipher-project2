@@ -73,15 +73,23 @@ namespace RestaurantAPI.Testing
 
         //Testing of DBContainsQuery
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(11)]
-        [InlineData(4232)]
-        [InlineData(67)]
-        [InlineData(324)]
-        public void DBContainsQueryShouldNotThrowExceptionIfDBIsEmpty(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(11, false)]
+        [InlineData(4232, false)]
+        [InlineData(67, false)]
+        [InlineData(324, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        [InlineData(11, true)]
+        [InlineData(4232, true)]
+        [InlineData(67, true)]
+        [InlineData(324, true)]
+        public void DBContainsQueryShouldNotThrowExceptionIfDBIsEmpty(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -95,7 +103,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                qRepo.DBContainsQuery(Id);
+                if (useAsync)
+                    qRepo.DBContainsQueryAsync(Id).Wait();
+                else
+                    qRepo.DBContainsQuery(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -103,15 +114,23 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(11)]
-        [InlineData(4232)]
-        [InlineData(66)]
-        [InlineData(324)]
-        public void DBContainsQueryShouldReturnFalseIfIfDBIsEmpty(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(11, false)]
+        [InlineData(4232, false)]
+        [InlineData(67, false)]
+        [InlineData(324, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        [InlineData(11, true)]
+        [InlineData(4232, true)]
+        [InlineData(67, true)]
+        [InlineData(324, true)]
+        public void DBContainsQueryShouldReturnFalseIfIfDBIsEmpty(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -124,7 +143,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                result = qRepo.DBContainsQuery(Id);
+                if (useAsync)
+                    result = qRepo.DBContainsQueryAsync(Id).Result;
+                else
+                    result = qRepo.DBContainsQuery(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -132,11 +154,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void DBContainsQueryShouldReturnTrueIfRestaurantIdInDB(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        public void DBContainsQueryShouldReturnTrueIfRestaurantIdInDB(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -149,18 +175,25 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                result = qRepo.DBContainsQuery(Id);
+                if (useAsync)
+                    result = qRepo.DBContainsQueryAsync(Id).Result;
+                else
+                    result = qRepo.DBContainsQuery(Id);
             }
             //Assert
             Assert.True(result);
         }
 
         [Theory]
-        [InlineData(12)]
-        [InlineData(4232)]
-        [InlineData(67)]
-        [InlineData(324)]
-        public void DBContainsQueryShouldReturnFalseIfQueryIdNotInDB(int Id)
+        [InlineData(11, false)]
+        [InlineData(4232, false)]
+        [InlineData(67, false)]
+        [InlineData(324, false)]
+        [InlineData(11, true)]
+        [InlineData(4232, true)]
+        [InlineData(67, true)]
+        [InlineData(324, true)]
+        public void DBContainsQueryShouldReturnFalseIfQueryIdNotInDB(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -173,7 +206,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                result = qRepo.DBContainsQuery(Id);
+                if (useAsync)
+                    result = qRepo.DBContainsQueryAsync(Id).Result;
+                else
+                    result = qRepo.DBContainsQuery(Id);
             }
             //Assert
             Assert.False(result);
@@ -181,11 +217,15 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetQueryByID
         [Theory]
-        [InlineData(11)]
-        [InlineData(4232)]
-        [InlineData(66)]
-        [InlineData(324)]
-        public void GetQueryByIDShouldThrowExceptionIfIdNotFound(int Id)
+        [InlineData(11, false)]
+        [InlineData(4232, false)]
+        [InlineData(67, false)]
+        [InlineData(324, false)]
+        [InlineData(11, true)]
+        [InlineData(4232, true)]
+        [InlineData(67, true)]
+        [InlineData(324, true)]
+        public void GetQueryByIDShouldThrowExceptionIfIdNotFound(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -201,9 +241,16 @@ namespace RestaurantAPI.Testing
                 qRepo = new QueryRepo(context);
                 try
                 {
-                    qRepo.GetQueryByID(Id);
+                    if (useAsync)
+                        qRepo.GetQueryByIDAsync(Id).Wait();
+                    else
+                        qRepo.GetQueryByID(Id);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -213,11 +260,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void GetQueryByIDShouldNotThrowExceptionIfIdIsInDB(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        public void GetQueryByIDShouldNotThrowExceptionIfIdIsInDB(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -230,7 +281,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                qRepo.GetQueryByID(Id);
+                if (useAsync)
+                    qRepo.GetQueryByIDAsync(Id).Wait();
+                else
+                    qRepo.GetQueryByID(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -238,11 +292,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void GetQueryByIDShouldReturnQueryWithMatchingId(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        public void GetQueryByIDShouldReturnQueryWithMatchingId(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -256,7 +314,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                q = qRepo.GetQueryByID(Id);
+                if (useAsync)
+                    q = qRepo.GetQueryByIDAsync(Id).Result;
+                else
+                    q = qRepo.GetQueryByID(Id);
             }
 
             //Assert
@@ -265,11 +326,15 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetRestaurantsInQuery
         [Theory]
-        [InlineData(11)]
-        [InlineData(4232)]
-        [InlineData(66)]
-        [InlineData(324)]
-        public void GetRestaurantsInQueryShouldThrowExceptionIfIdNotFound(int Id)
+        [InlineData(11, false)]
+        [InlineData(4232, false)]
+        [InlineData(67, false)]
+        [InlineData(324, false)]
+        [InlineData(11, true)]
+        [InlineData(4232, true)]
+        [InlineData(67, true)]
+        [InlineData(324, true)]
+        public void GetRestaurantsInQueryShouldThrowExceptionIfIdNotFound(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -285,9 +350,16 @@ namespace RestaurantAPI.Testing
                 qRepo = new QueryRepo(context);
                 try
                 {
-                    qRepo.GetRestaurantsInQuery(Id);
+                    if (useAsync)
+                        qRepo.GetRestaurantsInQueryAsync(Id).Wait();
+                    else
+                        qRepo.GetRestaurantsInQuery(Id);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -297,11 +369,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void GetRestaurantsInQueryShouldNotThrowExceptionIfIdIsInDB(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        public void GetRestaurantsInQueryShouldNotThrowExceptionIfIdIsInDB(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -314,7 +390,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                qRepo.GetRestaurantsInQuery(Id);
+                if (useAsync)
+                    qRepo.GetRestaurantsInQueryAsync(Id).Wait();
+                else
+                    qRepo.GetRestaurantsInQuery(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -322,11 +401,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void GetRestaurantsInQueryShouldReturnAllRestaurantsFromJunctionTable(int Id)
+        [InlineData(1, false)]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(4, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        public void GetRestaurantsInQueryShouldReturnAllRestaurantsFromJunctionTable(int Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -340,7 +423,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                rl = qRepo.GetRestaurantsInQuery(Id);
+                if (useAsync)
+                    rl = qRepo.GetRestaurantsInQueryAsync(Id).Result;
+                else
+                    rl = qRepo.GetRestaurantsInQuery(Id);
             }
 
             //Assert
