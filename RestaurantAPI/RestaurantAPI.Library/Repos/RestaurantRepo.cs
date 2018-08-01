@@ -129,7 +129,7 @@ namespace RestaurantAPI.Library.Repos
                     {
                         try
                         {
-                            _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k });
+                            _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k.ToLower() });
                         }
                         catch
                         {
