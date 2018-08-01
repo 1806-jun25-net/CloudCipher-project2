@@ -16,13 +16,15 @@ CREATE TABLE RestaurantSite.Restaurant
 	ID nvarchar(128) PRIMARY KEY,
 	Name nvarchar(128) NOT NULL,
 	Hours nvarchar(256),
-	Lat nvarchar(128) NOT NULL,
-	Lon nvarchar(128) NOT NULL,
+	Lat nvarchar(128),
+	Lon nvarchar(128),
 	Address nvarchar(128),
 	Rating decimal,
 	PriceLevel decimal,
 	Owner nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username)
 );
+--ALTER TABLE RestaurantSite.Restaurant ALTER COLUMN Lat nvarchar(128) NULL;
+--ALTER TABLE RestaurantSite.Restaurant ALTER COLUMN Lon nvarchar(128) NULL;
 
 --DROP TABLE RestaurantSite.Query
 CREATE TABLE RestaurantSite.Query
