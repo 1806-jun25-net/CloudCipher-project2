@@ -73,13 +73,19 @@ namespace RestaurantAPI.Testing
 
         //Testing of DBContainsKeyword
         [Theory]
-        [InlineData("breakfast")]
-        [InlineData("fast")]
-        [InlineData("food")]
-        [InlineData("trash")]
-        [InlineData("brick")]
-        [InlineData("hardware")]
-        public void DBContainsKeywordShouldNotThrowExceptionIfDBIsEmpty(string kw)
+        [InlineData("breakfast", false)]
+        [InlineData("fast", false)]
+        [InlineData("food", false)]
+        [InlineData("trash", false)]
+        [InlineData("brick", false)]
+        [InlineData("hardware", false)]
+        [InlineData("breakfast", true)]
+        [InlineData("fast", true)]
+        [InlineData("food", true)]
+        [InlineData("trash", true)]
+        [InlineData("brick", true)]
+        [InlineData("hardware", true)]
+        public void DBContainsKeywordShouldNotThrowExceptionIfDBIsEmpty(string kw, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -93,7 +99,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 kRepo = new KeywordRepo(context);
-                kRepo.DBContainsKeyword(kw);
+                if (useAsync)
+                    kRepo.DBContainsKeywordAsync(kw).Wait();
+                else
+                    kRepo.DBContainsKeyword(kw);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -101,13 +110,19 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("breakfast")]
-        [InlineData("fast")]
-        [InlineData("food")]
-        [InlineData("trash")]
-        [InlineData("brick")]
-        [InlineData("hardware")]
-        public void DBContainsKeywordShouldReturnFalseIfIfDBIsEmpty(string kw)
+        [InlineData("breakfast", false)]
+        [InlineData("fast", false)]
+        [InlineData("food", false)]
+        [InlineData("trash", false)]
+        [InlineData("brick", false)]
+        [InlineData("hardware", false)]
+        [InlineData("breakfast", true)]
+        [InlineData("fast", true)]
+        [InlineData("food", true)]
+        [InlineData("trash", true)]
+        [InlineData("brick", true)]
+        [InlineData("hardware", true)]
+        public void DBContainsKeywordShouldReturnFalseIfIfDBIsEmpty(string kw, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -120,7 +135,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 kRepo = new KeywordRepo(context);
-                result = kRepo.DBContainsKeyword(kw);
+                if (useAsync)
+                    result = kRepo.DBContainsKeywordAsync(kw).Result;
+                else
+                    result = kRepo.DBContainsKeyword(kw);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -128,10 +146,13 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("breakfast")]
-        [InlineData("fast")]
-        [InlineData("food")]
-        public void DBContainsKeywordShouldReturnTrueIfRestaurantIdInDB(string kw)
+        [InlineData("breakfast", false)]
+        [InlineData("fast", false)]
+        [InlineData("food", false)]
+        [InlineData("breakfast", true)]
+        [InlineData("fast", true)]
+        [InlineData("food", true)]
+        public void DBContainsKeywordShouldReturnTrueIfRestaurantIdInDB(string kw, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -144,17 +165,23 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 kRepo = new KeywordRepo(context);
-                result = kRepo.DBContainsKeyword(kw);
+                if (useAsync)
+                    result = kRepo.DBContainsKeywordAsync(kw).Result;
+                else
+                    result = kRepo.DBContainsKeyword(kw);
             }
             //Assert
             Assert.True(result);
         }
 
         [Theory]
-        [InlineData("trash")]
-        [InlineData("brick")]
-        [InlineData("hardware")]
-        public void DBContainsKeywordShouldReturnFalseIfKeywordNotInDB(string kw)
+        [InlineData("trash", true)]
+        [InlineData("brick", true)]
+        [InlineData("hardware", true)]
+        [InlineData("trash", false)]
+        [InlineData("brick", false)]
+        [InlineData("hardware", false)]
+        public void DBContainsKeywordShouldReturnFalseIfKeywordNotInDB(string kw, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -167,7 +194,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 kRepo = new KeywordRepo(context);
-                result = kRepo.DBContainsKeyword(kw);
+                if (useAsync)
+                    result = kRepo.DBContainsKeywordAsync(kw).Result;
+                else
+                    result = kRepo.DBContainsKeyword(kw);
             }
             //Assert
             Assert.False(result);
@@ -175,10 +205,13 @@ namespace RestaurantAPI.Testing
 
         //Testing of AddKeyword
         [Theory]
-        [InlineData("food")]
-        [InlineData("breakfast")]
-        [InlineData("fast")]
-        public void AddKeywordShouldThrowExceptionIfKeywordIsPreset(string kw)
+        [InlineData("breakfast", false)]
+        [InlineData("fast", false)]
+        [InlineData("food", false)]
+        [InlineData("breakfast", true)]
+        [InlineData("fast", true)]
+        [InlineData("food", true)]
+        public void AddKeywordShouldThrowExceptionIfKeywordIsPreset(string kw, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -201,9 +234,16 @@ namespace RestaurantAPI.Testing
                 kRepo = new KeywordRepo(context);
                 try
                 {
-                    kRepo.AddKeyword(k);
+                    if (useAsync)
+                        kRepo.AddKeywordAsync(k).Wait();
+                    else
+                        kRepo.AddKeyword(k);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -214,10 +254,13 @@ namespace RestaurantAPI.Testing
         }
         
         [Theory]
-        [InlineData("breakfast")]
-        [InlineData("fast")]
-        [InlineData("food")]
-        public void AddKeywordShouldAddCorrectKeywordToDB(string kw)
+        [InlineData("breakfast", false)]
+        [InlineData("fast", false)]
+        [InlineData("food", false)]
+        [InlineData("breakfast", true)]
+        [InlineData("fast", true)]
+        [InlineData("food", true)]
+        public void AddKeywordShouldAddCorrectKeywordToDB(string kw, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -232,7 +275,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 kRepo = new KeywordRepo(context);
-                kRepo.AddKeyword(k);
+                if (useAsync)
+                    kRepo.AddKeywordAsync(k).Wait();
+                else
+                    kRepo.AddKeyword(k);
                 result = context.Keyword.Find(k.Word);
             }
 
