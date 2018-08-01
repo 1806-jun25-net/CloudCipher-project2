@@ -19,14 +19,14 @@ namespace RestaurantAPI.API.Controllers
         /// Frequencies represent how many queries that keyword has appeared in, sorted by descending.
         /// Available to All users
         /// </summary>
-        /// <returns>List of FrequencyWrapperModel<string> </returns>
+        /// <returns>List of FrequencyWrapper of string </returns>
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
         {
             //Test code to see if it is possible to send the generic type FrequencyWrapperModel<string>
             // Spoilers - it is! :D
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             return new List<FrequencyWrapper<string>>() { new FrequencyWrapper<string>() { Frequency = 1, Obj = "it works!" } };
         }
 
@@ -46,7 +46,6 @@ namespace RestaurantAPI.API.Controllers
         public string Get(string username)
         {
             throw new NotImplementedException();
-            return "value";
         }
 
         //Unused

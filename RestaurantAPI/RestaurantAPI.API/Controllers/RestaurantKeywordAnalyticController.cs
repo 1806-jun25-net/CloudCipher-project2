@@ -19,17 +19,18 @@ namespace RestaurantAPI.API.Controllers
         /// Frequencies represent how many restaurants matched that keyword in a search.
         /// Available to all users
         /// </summary>
-        /// <returns>List of FrequencyWrapperModel<string></returns>
+        /// <returns>List of FrequencyWrapper of string </returns>
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
         {
-            throw new NotImplementedException();
-            return new List<FrequencyWrapper<string>>();
+            //throw new NotImplementedException();
+            return new List<FrequencyWrapper<string>>() { new FrequencyWrapper<string> { Frequency = 1, Obj = "it works!" } };
         }
 
         // GET: api/RestaurantKeywordAnalytic/5
         /// <summary>
         /// Return a list of Restaurants that have ever matched the given keyword.
+        /// Returns an error code if keyword not found in DB.
         /// Accessible to all users.
         /// </summary>
         /// <param name="keyword">Keyword to get restaurant matches for</param>
@@ -38,7 +39,6 @@ namespace RestaurantAPI.API.Controllers
         public ActionResult<List<RestaurantModel>> Get(string keyword)
         {
             throw new NotImplementedException();
-            return null;
         }
 
         //Unused
@@ -57,6 +57,7 @@ namespace RestaurantAPI.API.Controllers
             throw new NotImplementedException();
         }
 
+        //Unused
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
