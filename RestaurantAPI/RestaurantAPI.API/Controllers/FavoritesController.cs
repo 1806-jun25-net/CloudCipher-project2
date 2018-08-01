@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantAPI.API.Models;
+using RestaurantAPI.Data;
+using RestaurantAPI.Library;
 using RestaurantAPI.Library.Repos;
 
 namespace RestaurantAPI.API.Controllers
@@ -31,11 +34,12 @@ namespace RestaurantAPI.API.Controllers
         //Return list of all favorited Restaurants for a given user
         // GET: api/Favorites
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<List<RestaurantModel>> Get()
         {
-            <List><Restaurant>
+            Arepo.GetFavoritesForUser(User.Identity.Name);
 
-            return new string[] { "value1", "value2" };
+            return Mapper.Map(Arepo.GetFavoritesForUser(User.Identity.Name)).ToList();
+
         }
 
         //Unused
@@ -49,8 +53,23 @@ namespace RestaurantAPI.API.Controllers
         //Given a restaurant id as a parameter, add the restaurant to the current user's favorites
         // POST: api/Favorites
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Authorize]
+        public IActionResult Create([FromBody] string value)
         {
+         
+            try
+            {
+                Arepo.AddRestaurantToFavorites(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            Rrepo.Save();
+
+            return CreatedAtRoute("Getfavorite", new { Id = value }, value);
         }
 
         //Unused
@@ -63,8 +82,23 @@ namespace RestaurantAPI.API.Controllers
         //Given a restaurant id as a parameter, remove the restaurant from the current user's favorites
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [Authorize]
+        public IActionResult Delete([FromBody]string value)
         {
+
+            try
+            {
+                Arepo.RemoveRestaurantFromFavorites(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            Rrepo.Save();
+
+            return CreatedAtRoute("Removefavorite", new { Id = value }, value);
         }
     }
 }
