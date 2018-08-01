@@ -21,7 +21,7 @@ namespace RestaurantAPI.API.Controllers
 
         //Unused
         // GET: api/Blacklist/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetBlacklist")]
         public string Get(int id)
         {
             return "value";
