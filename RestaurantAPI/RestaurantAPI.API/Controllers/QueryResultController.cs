@@ -32,7 +32,7 @@ namespace RestaurantAPI.API.Controllers
         /// <summary>
         /// Get all queries placed by a username, or all queries in DB if user is an admin.
         /// </summary>
-        /// <returns>list of QueryModels</returns>
+        /// <returns>list of QueryResults</returns>
         // GET: api/Query
         [Authorize]
         [ProducesResponseType(500)]
@@ -56,7 +56,7 @@ namespace RestaurantAPI.API.Controllers
         /// Returns a specific query based on its Id only if it matches the current user or they're admin.
         /// </summary>
         /// <param name="id">queryId to look up</param>
-        /// <returns>A QueryModel object matching the given Id</returns>
+        /// <returns>A QueryResult object matching the given Id</returns>
         // GET: api/Query/5
         [ProducesResponseType(400)]
         [ProducesResponseType(403)]
@@ -93,7 +93,7 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         // POST: api/Query
         [HttpPost]
-        public async Task<ActionResult<List<RestaurantModel>>> PostAsync([FromBody] QueryResult queryResult)
+        public async Task<ActionResult<List<QueryResult>>> PostAsync([FromBody] QueryResult queryResult)
         {
             //Add query to DB
             Query q = Mapper.Map(queryResult.QueryObject);
