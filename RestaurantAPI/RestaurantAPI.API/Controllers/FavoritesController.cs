@@ -73,13 +73,7 @@ namespace RestaurantAPI.API.Controllers
             return CreatedAtRoute("Getfavorite", new { Id = value }, value);
         }
 
-        //Unused
-        // PUT: api/Favorites/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
+        
         //Given a restaurant id as a parameter, remove the restaurant from the current user's favorites
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]

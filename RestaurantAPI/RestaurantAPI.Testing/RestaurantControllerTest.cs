@@ -20,11 +20,11 @@ namespace RestaurantAPI.Testing
                mockARepo.Object, mockKRepo.Object, mockQRepo.Object, mockRRepo.Object);
         }
 
-        Mock<IAppUserRepo> mockARepo;
-        Mock<KeywordRepo> mockKRepo;
-        Mock<QueryRepo> mockQRepo;
-        Mock<IRestaurantRepo> mockRRepo;
-        RestaurantController controller;
+        private readonly Mock<IAppUserRepo> mockARepo;
+        private readonly Mock<KeywordRepo> mockKRepo;
+        private readonly Mock<QueryRepo> mockQRepo;
+        private readonly Mock<IRestaurantRepo> mockRRepo;
+        private readonly RestaurantController controller;
 
 
        /* [Fact]

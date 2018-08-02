@@ -38,15 +38,11 @@ namespace RestaurantAPI.API
             services.AddDbContext<Data.Project2DBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Project2DB"),
                  b => b.MigrationsAssembly("RestaurantAPI.API")));
-            //services.AddDbContext<Project2DBContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("Project2DB"),
-            //    b => b.MigrationsAssembly("RestaurantAPI.API")));
-
 
             //Setting Up Identity Environment
             services.AddDbContext<IdentityDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("Project2ApiAuthDB"),
-            b => b.MigrationsAssembly("RestaurantAPI.API")));
+                options.UseSqlServer(Configuration.GetConnectionString("Project2ApiAuthDB"),
+                b => b.MigrationsAssembly("RestaurantAPI.API")));
 
             // Add-Migration <diff-migration-name> -Context IdentityDbContext
             // Update-Database -Context IdentityDbContext
