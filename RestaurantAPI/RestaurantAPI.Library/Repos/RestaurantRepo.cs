@@ -48,6 +48,8 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>true if Restaurant is found matching given ID, false otherwise</returns>
         public bool DBContainsRestaurant(string Id)
         {
+            if (Id == null)
+                return false;
             return GetRestaurants(false).Any(t => t.Id.Equals(Id));
         }
 
@@ -114,27 +116,16 @@ namespace RestaurantAPI.Library.Repos
 
             foreach (Restaurant r in rList)
             {
-                try
-                {
-                    r.Owner = null;  //making null since owner will be added in later, not when restaurant is first added
+                r.Owner = null;  //making null since owner will be added in later, not when restaurant is first added
+                if (!DBContainsRestaurant(r.Id))
                     AddRestaurant(r);
-                }
-                catch
-                {
-                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
-                }
+
                 if (keywords != null)
                 {
                     foreach (string k in keywords)
                     {
-                        try
-                        {
+                        if (!_db.RestaurantKeywordJunction.Any(t => t.RestaurantId.Equals(r.Id)&&t.Word.Equals(k)))
                             _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k.ToLower() });
-                        }
-                        catch
-                        {
-                            //Exception is thrown if RestaurantKeyword pair is already in DB.  If so no need to add it or take any action 
-                        }
                     }
                 }
             }
@@ -160,6 +151,8 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>true if Restaurant is found matching given ID, false otherwise</returns>
         public async Task<bool> DBContainsRestaurantAsync(string Id)
         {
+            if (Id == null)
+                return false;
             return await GetRestaurants(false).AnyAsync(t => t.Id.Equals(Id));
         }
 
@@ -226,27 +219,18 @@ namespace RestaurantAPI.Library.Repos
 
             foreach (Restaurant r in rList)
             {
-                try
-                {
-                    r.Owner = null;  //making null since owner will be added in later, not when restaurant is first added
-                    await AddRestaurantAsync(r);
-                }
-                catch
-                {
-                    //Exception thrown if restaurant already in DB. If so can just ignore it and move on to next
-                }
+                r.Owner = null;  //making null since owner will be added in later, not when restaurant is first added
+                bool contains = await DBContainsRestaurantAsync(r.Id);
+                if (!contains)
+                    AddRestaurant(r);
+
                 if (keywords != null)
                 {
                     foreach (string k in keywords)
                     {
-                        try
-                        {
-                            _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k });
-                        }
-                        catch
-                        {
-                            //Exception is thrown if RestaurantKeyword pair is already in DB.  If so no need to add it or take any action 
-                        }
+                        contains = await _db.RestaurantKeywordJunction.AnyAsync(t => t.RestaurantId.Equals(r.Id) && t.Word.Equals(k));
+                        if (!contains)
+                            _db.RestaurantKeywordJunction.Add(new RestaurantKeywordJunction() { RestaurantId = r.Id, Word = k.ToLower() });
                     }
                 }
             }
