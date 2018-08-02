@@ -63,12 +63,11 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="kw">Keyword object to add to DB</param>
         public void AddKeyword(Keyword kw)
         {
-            kw.Word = kw.Word.ToLower();
             if (kw == null)
                 throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            kw.Word = kw.Word.ToLower();
             if (DBContainsKeyword(kw))
                 throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
-            kw.Word = kw.Word.ToLower();
             _db.Add(kw);
         }
 
