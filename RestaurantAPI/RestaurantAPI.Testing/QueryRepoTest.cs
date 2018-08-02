@@ -68,7 +68,7 @@ namespace RestaurantAPI.Testing
                 qList = qRepo.GetQueries().ToList();
             }
             //Assert
-            Assert.Equal(8, qList.Count);
+            Assert.Equal(15, qList.Count);
         }
 
         //Testing of DBContainsQuery
@@ -185,11 +185,11 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(11, false)]
+        [InlineData(19, false)]
         [InlineData(4232, false)]
         [InlineData(67, false)]
         [InlineData(324, false)]
-        [InlineData(11, true)]
+        [InlineData(19, true)]
         [InlineData(4232, true)]
         [InlineData(67, true)]
         [InlineData(324, true)]
@@ -217,11 +217,11 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetQueryByID
         [Theory]
-        [InlineData(11, false)]
+        [InlineData(19, false)]
         [InlineData(4232, false)]
         [InlineData(67, false)]
         [InlineData(324, false)]
-        [InlineData(11, true)]
+        [InlineData(19, true)]
         [InlineData(4232, true)]
         [InlineData(67, true)]
         [InlineData(324, true)]
@@ -326,11 +326,11 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetRestaurantsInQuery
         [Theory]
-        [InlineData(11, false)]
+        [InlineData(19, false)]
         [InlineData(4232, false)]
         [InlineData(67, false)]
         [InlineData(324, false)]
-        [InlineData(11, true)]
+        [InlineData(19, true)]
         [InlineData(4232, true)]
         [InlineData(67, true)]
         [InlineData(324, true)]
