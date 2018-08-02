@@ -17,7 +17,6 @@ namespace RestaurantAPI.API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RestaurantController : Controller
     {
         public RestaurantController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
@@ -36,7 +35,6 @@ namespace RestaurantAPI.API.Controllers
 
         // GET: api/<controller>
         [HttpGet]
-        [Authorize]
         public ActionResult<List<RestaurantModel>> Get()
         {
             Rrepo.GetRestaurants();
@@ -47,7 +45,6 @@ namespace RestaurantAPI.API.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}", Name = "GetRestaurant")]
-        [Authorize]
         public ActionResult<RestaurantModel> Get(string id)
         {
             Restaurant grabVariable;
@@ -89,6 +86,7 @@ namespace RestaurantAPI.API.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
+        [Authorize]
         public void Put(int id, [FromBody]string value)
         {
         }
