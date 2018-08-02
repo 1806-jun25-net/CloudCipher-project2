@@ -648,7 +648,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledDB2")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
@@ -785,7 +785,7 @@ namespace RestaurantAPI.Testing
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "StaticFilledUserDB")
+                .UseInMemoryDatabase(databaseName: "StaticFilledDB2")
                 .Options;
             AppUserRepo uRepo;
             RestaurantRepo rRepo;
