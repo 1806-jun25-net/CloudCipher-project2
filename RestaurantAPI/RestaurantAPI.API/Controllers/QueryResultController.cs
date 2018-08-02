@@ -105,7 +105,7 @@ namespace RestaurantAPI.API.Controllers
                 Qrepo.AddQuery(q);
                 await Qrepo.SaveAsync();
             }
-            catch
+            catch  (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
