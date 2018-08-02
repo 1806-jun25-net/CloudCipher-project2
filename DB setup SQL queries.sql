@@ -88,8 +88,14 @@ CREATE TABLE RestaurantSite.QueryRestaurantJunction
 --Inserting test data:
 
 INSERT INTO RestaurantSite.AppUser
-VALUES ('test', 'First', 'Last', 'a@a.com', 0),
-		('admin', 'Tess', 'Est', 'winner@gmail.com', 1);
+VALUES ('test', 'First', 'Last', 'a@a.com'),
+		('admin', 'Tess', 'Est', 'winner@gmail.com');
+
+INSERT INTO RestaurantSite.AppUser
+VALUES ('admin.2', 'The', 'Admin', 'a@a.com');
+
+INSERT INTO RestaurantSite.AppUser
+VALUES ('RegisterTest1', 'Reggie', 'T', 'rr@t.org');
 
 SELECT * FROM RestaurantSite.AppUser;
 
