@@ -214,8 +214,13 @@ namespace RestaurantAPI.Testing
         public void AddKeywordShouldThrowExceptionIfKeywordIsPreset(string kw, bool useAsync)
         {
             //Arrange
+            string dBName;
+            if (useAsync)
+                dBName = "EmptyKeywordAddTestingAsync1DB";
+            else
+                dBName = "EmptyKeywordAddTesting1DB";
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyKeywordAddTesting1DB")
+                .UseInMemoryDatabase(databaseName: dBName)
                 .Options;
 
             Keyword k = new Keyword { Word = kw };

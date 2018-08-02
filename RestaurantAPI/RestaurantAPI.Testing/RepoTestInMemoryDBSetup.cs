@@ -32,11 +32,20 @@ namespace RestaurantAPI.Testing
                 context.Blacklist.Add(new Blacklist { Username = "realUser", RestaurantId = "2b" });
                 context.Blacklist.Add(new Blacklist { Username = "realUser", RestaurantId = "4d" });
                 context.Blacklist.Add(new Blacklist { Username = "realUser", RestaurantId = "6f" });
+                context.Blacklist.Add(new Blacklist { Username = "decoyUser1", RestaurantId = "4d" });
+                context.Blacklist.Add(new Blacklist { Username = "decoyUser1", RestaurantId = "6f" });
+                context.Blacklist.Add(new Blacklist { Username = "decoyUser2", RestaurantId = "6f" });
 
                 context.Favorite.Add(new Favorite { Username = "realUser", RestaurantId = "1a" });
                 context.Favorite.Add(new Favorite { Username = "realUser", RestaurantId = "3c" });
                 context.Favorite.Add(new Favorite { Username = "realUser", RestaurantId = "5e" });
                 context.Favorite.Add(new Favorite { Username = "realUser", RestaurantId = "7g" });
+                context.Favorite.Add(new Favorite { Username = "decoyUser1", RestaurantId = "1a" });
+                context.Favorite.Add(new Favorite { Username = "decoyUser1", RestaurantId = "3c" });
+                context.Favorite.Add(new Favorite { Username = "decoyUser1", RestaurantId = "5e" });
+                context.Favorite.Add(new Favorite { Username = "decoyUser2", RestaurantId = "1a" });
+                context.Favorite.Add(new Favorite { Username = "decoyUser2", RestaurantId = "3c" });
+                context.Favorite.Add(new Favorite { Username = "decoyUser3", RestaurantId = "5e" });
 
                 context.Keyword.Add(new Keyword { Word = "breakfast" });
                 context.Keyword.Add(new Keyword { Word = "fast" });
