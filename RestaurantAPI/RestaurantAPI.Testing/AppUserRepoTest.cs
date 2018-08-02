@@ -23,6 +23,53 @@ namespace RestaurantAPI.Testing
             }
         }
 
+        public static IEnumerable<object[]> AllUserData =>
+        new List<object[]>
+        {
+            new object[] { "realUser", false },
+            new object[] { "decoyUser1", false },
+            new object[] { "decoyUser2", false },
+            new object[] { "decoyUser3", false },
+            new object[] { "fakeUser", false },
+            new object[] { "totallyNotAUserr", false },
+            new object[] { "zzzzzZZefea", false },
+            new object[] { "SoooooManyTestsToCome", false },
+            new object[] { "realUser", true },
+            new object[] { "decoyUser1", true },
+            new object[] { "decoyUser2", true },
+            new object[] { "decoyUser3", true },
+            new object[] { "fakeUser", true },
+            new object[] { "totallyNotAUserr", true },
+            new object[] { "zzzzzZZefea", true },
+            new object[] { "SoooooManyTestsToCome", true },
+        };
+
+        public static IEnumerable<object[]> ValidUserData =>
+        new List<object[]>
+        {
+            new object[] { "realUser", false },
+            new object[] { "decoyUser1", false },
+            new object[] { "decoyUser2", false },
+            new object[] { "decoyUser3", false },
+            new object[] { "realUser", true },
+            new object[] { "decoyUser1", true },
+            new object[] { "decoyUser2", true },
+            new object[] { "decoyUser3", true },
+        };
+
+        public static IEnumerable<object[]> InvalidUserData =>
+        new List<object[]>
+        {
+            new object[] { "fakeUser", false },
+            new object[] { "totallyNotAUserr", false },
+            new object[] { "zzzzzZZefea", false },
+            new object[] { "SoooooManyTestsToCome", false },
+            new object[] { "fakeUser", true },
+            new object[] { "totallyNotAUserr", true },
+            new object[] { "zzzzzZZefea", true },
+            new object[] { "SoooooManyTestsToCome", true },
+        };
+
         //Testing of GetUsers()
         [Fact]
         public void GetUsersShouldNotThrowExceptionIfDBIsEmpty()
@@ -102,22 +149,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(AllUserData))]
         public void DBContainsUsernameShouldReturnFalseIfIfDBIsEmpty(string username, bool useAsync)
         {
             //Arrange
@@ -142,14 +174,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
+        [MemberData(nameof(ValidUserData))]
         public void DBContainsUsernameShouldReturnTrueIfUsernameInDB(string username, bool useAsync)
         {
             //Arrange
@@ -173,14 +198,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void DBContainsUsernameShouldReturnFalseIfUsernameNotInDB(string username, bool useAsync)
         {
             //Arrange
@@ -207,14 +225,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetUserByUsername
         [Theory]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void GetUserByUsernameShouldThrowExceptionIfUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
@@ -250,14 +261,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void GetUserByUsernameShouldNotThrowExceptionIfUsernameIsInDB(string username, bool useAsync)
         {
             //Arrange
@@ -282,14 +286,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
+        [MemberData(nameof(ValidUserData))]
         public void GetUserByUsernameShouldReturnUserWithMatchingUsername(string username, bool useAsync)
         {
             //Arrange
@@ -317,22 +314,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetBlacklistForUser
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(AllUserData))]
         public void GetBlacklistForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
@@ -368,14 +350,7 @@ namespace RestaurantAPI.Testing
         }
         
         [Theory]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void GetBlacklistForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
@@ -444,22 +419,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetFavoritesForUser
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(AllUserData))]
         public void GetFavoritesForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
@@ -495,14 +455,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void GetFavoritesForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
@@ -538,14 +491,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", 4, false)]
-        [InlineData("decoyUser1", 3, false)]
-        [InlineData("decoyUser2", 2, false)]
-        [InlineData("decoyUser3", 1, false)]
-        [InlineData("realUser", 4, true)]
-        [InlineData("decoyUser1", 3, true)]
-        [InlineData("decoyUser2", 2, true)]
-        [InlineData("decoyUser3", 1, true)]
+        [MemberData(nameof(ValidUserData))]
         public void GetFavoritesForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound(string username, int expected, bool useAsync)
         {
             //Arrange
@@ -573,22 +519,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetQueriesForUser
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(AllUserData))]
         public void GetQueriesForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
@@ -624,14 +555,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void GetQueriesForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
@@ -701,22 +625,7 @@ namespace RestaurantAPI.Testing
 
         //Testing for GetOwnedRestaurantsForUser
         [Theory]
-        [InlineData("realUser", false)]
-        [InlineData("decoyUser1", false)]
-        [InlineData("decoyUser2", false)]
-        [InlineData("decoyUser3", false)]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("realUser", true)]
-        [InlineData("decoyUser1", true)]
-        [InlineData("decoyUser2", true)]
-        [InlineData("decoyUser3", true)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(AllUserData))]
         public void GetOwnedRestaurantsForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
@@ -752,14 +661,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser", false)]
-        [InlineData("totallyNotAUserr", false)]
-        [InlineData("zzzzzZZefea", false)]
-        [InlineData("SoooooManyTestsToCome", false)]
-        [InlineData("fakeUser", true)]
-        [InlineData("totallyNotAUserr", true)]
-        [InlineData("zzzzzZZefea", true)]
-        [InlineData("SoooooManyTestsToCome", true)]
+        [MemberData(nameof(InvalidUserData))]
         public void GetOwnedRestaurantsForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
