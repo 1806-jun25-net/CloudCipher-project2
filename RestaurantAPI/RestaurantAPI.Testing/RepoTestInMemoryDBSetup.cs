@@ -20,13 +20,13 @@ namespace RestaurantAPI.Testing
 
                 context.Restaurant.Add(new Restaurant { Id = "1a", Name = "1", Lat = "loc", Lon = "loc", Owner = "realUser" });
                 context.Restaurant.Add(new Restaurant { Id = "2b", Name = "2", Lat = "loc", Lon = "loc" });
-                context.Restaurant.Add(new Restaurant { Id = "3c", Name = "3", Lat = "loc", Lon = "loc" });
+                context.Restaurant.Add(new Restaurant { Id = "3c", Name = "3", Lat = "loc", Lon = "loc" , Owner = "decoyUser1"});
                 context.Restaurant.Add(new Restaurant { Id = "4d", Name = "4", Lat = "loc", Lon = "loc" });
                 context.Restaurant.Add(new Restaurant { Id = "5e", Name = "5", Lat = "loc", Lon = "loc", Owner = "realUser" });
                 context.Restaurant.Add(new Restaurant { Id = "6f", Name = "6", Lat = "loc", Lon = "loc" });
                 context.Restaurant.Add(new Restaurant { Id = "7g", Name = "7", Lat = "loc", Lon = "loc" });
                 context.Restaurant.Add(new Restaurant { Id = "8h", Name = "8", Lat = "loc", Lon = "loc" });
-                context.Restaurant.Add(new Restaurant { Id = "9i", Name = "9", Lat = "loc", Lon = "loc" });
+                context.Restaurant.Add(new Restaurant { Id = "9i", Name = "9", Lat = "loc", Lon = "loc", Owner = "decoyUser2"});
 
 
                 context.Blacklist.Add(new Blacklist { Username = "realUser", RestaurantId = "2b" });
@@ -59,6 +59,14 @@ namespace RestaurantAPI.Testing
                 context.Query.Add(new Query { Id = 6, Username = "realUser", QueryTime = DateTime.Now });
                 context.Query.Add(new Query { Id = 7, Username = "realUser", QueryTime = DateTime.Now });
                 context.Query.Add(new Query { Id = 8, Username = "realUser", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 9, Username = "decoyUser1", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 10, Username = "decoyUser1", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 11, Username = "decoyUser1", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 12, Username = "decoyUser1", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 13, Username = "decoyUser2", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 14, Username = "decoyUser2", QueryTime = DateTime.Now });
+                context.Query.Add(new Query { Id = 15, Username = "decoyUser3", QueryTime = DateTime.Now });
+
 
                 context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "breakfast" });
                 context.QueryKeywordJunction.Add(new QueryKeywordJunction { QueryId = 1, Word = "fast" });
