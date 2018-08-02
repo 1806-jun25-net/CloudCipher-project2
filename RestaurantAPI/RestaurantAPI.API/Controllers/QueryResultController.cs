@@ -97,7 +97,7 @@ namespace RestaurantAPI.API.Controllers
         {
             Query q = Mapper.Map(queryResult.QueryObject);
             q.QueryTime = DateTime.Now;
-            queryResult.QueryObject.Keywords = queryResult.QueryObject.Keywords.Where(k => !String.IsNullOrEmpty(k)).ToList();
+            queryResult.QueryObject.Keywords = queryResult.QueryObject.Keywords.Where(k => !String.IsNullOrEmpty(k)).Select(k => k.ToLower()).ToList();
             List<string> keywords = queryResult.QueryObject.Keywords;
             List<Restaurant> restaurants = Mapper.Map(queryResult.Restaurants).ToList();
             try
