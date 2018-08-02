@@ -86,7 +86,9 @@ function initMap() {
 
                         //kwarr
                         var queryString = query;
-                        var queryArray = queryString.split("+"); 
+                        var queryArray = queryString.split("amp;"); 
+                       
+                       
                         kwarr=queryArray;
                         //queryarr
                         //queryarr.push(origin1.lat);

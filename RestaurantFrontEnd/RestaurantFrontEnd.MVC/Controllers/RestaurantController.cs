@@ -21,6 +21,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
         // GET: Restaurant
         public ActionResult Index([FromQuery] string search = "")
         {
+            //var requestg = CreateRequestService(HttpMethod.Get, "api/Restaurant");
             var request = CreateRequestService(HttpMethod.Post, "api/Restaurant");
             //change to Query once you have authorization set up
 
@@ -36,7 +37,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
                 //ISCHECKED FOR CHECKBOXES FEATURE(RESEARCH)
                 string queryString = search;
-                var queryArray = queryString.Split("+");
+                var queryArray = queryString.Split(" ");
                 //string firstElem = array.First();
                 string queried = string.Join("&", queryArray);
                 ViewData["query"] = queried;
@@ -56,7 +57,14 @@ namespace RestaurantFrontEnd.MVC.Controllers
             List<string>kw = new List<string>();
             foreach(var n in keyobj)
             {
-                kw.Add(n);
+                string character = "";
+                foreach (var l in n)
+                {
+                    if(char.IsLetter(l))
+                    character +=l;
+                }
+
+                kw.Add(character);
             }
 
 
