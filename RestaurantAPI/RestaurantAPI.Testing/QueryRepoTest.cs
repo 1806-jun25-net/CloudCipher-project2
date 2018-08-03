@@ -409,7 +409,6 @@ namespace RestaurantAPI.Testing
 
             Query q = new Query { Username = username, QueryTime = DateTime.Now };
             QueryRepo qRepo;
-            KeywordRepo kRepo;
             Query result;
 
             //Act

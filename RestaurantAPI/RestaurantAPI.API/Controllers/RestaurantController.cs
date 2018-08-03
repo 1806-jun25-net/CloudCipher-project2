@@ -34,12 +34,21 @@ namespace RestaurantAPI.API.Controllers
 
 
         // GET: api/<controller>
+        [ProducesResponseType(500)]
         [HttpGet]
         public ActionResult<List<RestaurantModel>> Get()
         {
-            return Mapper.Map(Rrepo.GetRestaurants(true)).ToList();
+            try
+            {
+                return Mapper.Map(Rrepo.GetRestaurants(true)).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
+        [ProducesResponseType(400)]
         // GET api/<controller>/5
         [HttpGet("{id}", Name = "GetRestaurant")]
         public async Task<ActionResult<RestaurantModel>> GetAsync(string id)
@@ -49,7 +58,7 @@ namespace RestaurantAPI.API.Controllers
             {
                 r = await Rrepo.GetRestaurantByIDAsync(id, true);
             }
-            catch(Exception)
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
@@ -57,6 +66,9 @@ namespace RestaurantAPI.API.Controllers
             return Mapper.Map(r);
         }
 
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         // POST api/<controller>
         [HttpPost]
         [Authorize]
@@ -71,16 +83,23 @@ namespace RestaurantAPI.API.Controllers
                 await Rrepo.AddRestaurantAsync(createVariable);
             }
 
-            catch
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            await Rrepo.SaveAsync();
+            try
+            {
+                await Rrepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return CreatedAtRoute("GetRestaurant", new { Id = value.Id }, value);
         }
 
+        //TODO: Implement this method or delete
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         [Authorize]
@@ -88,6 +107,7 @@ namespace RestaurantAPI.API.Controllers
         {
         }
 
+        //TODO: Implement this method or delete
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]

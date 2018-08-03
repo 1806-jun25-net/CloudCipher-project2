@@ -15,6 +15,8 @@ namespace RestaurantAPI.Library.Repos
         Task<bool> DBContainsKeywordAsync(Keyword kw);
         Task<bool> DBContainsKeywordAsync(string kw);
         IQueryable<Keyword> GetKeywords();
+        IQueryable<QueryKeywordJunction> GetQueryKeywordJunction();
+        IQueryable<RestaurantKeywordJunction> GetRestaurantKeywordJunction();
         void Save();
         Task SaveAsync();
     }

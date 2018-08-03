@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.API.Models;
+using RestaurantAPI.Library.Repos;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -12,6 +13,18 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class RestaurantKeywordAnalyticsController : ControllerBase
     {
+        public RestaurantKeywordAnalyticsController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
+        {
+            Arepo = AppRepo;
+            Krepo = KeyRepo;
+            Qrepo = QRepo;
+            Rrepo = RestRepo;
+        }
+
+        public IAppUserRepo Arepo { get; set; }
+        public IKeywordRepo Krepo { get; set; }
+        public IQueryRepo Qrepo { get; set; }
+        public IRestaurantRepo Rrepo { get; set; }
 
         // GET: api/RestaurantKeywordAnalytic
         /// <summary>
@@ -20,11 +33,22 @@ namespace RestaurantAPI.API.Controllers
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of string </returns>
+        [ProducesResponseType(500)]
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
         {
-            //throw new NotImplementedException();
-            return new List<FrequencyWrapper<string>>() { new FrequencyWrapper<string> { Frequency = 1, Obj = "it works!" } };
+            try
+            { 
+                return Krepo.GetKeywords().Select(k => new FrequencyWrapper<string>()
+                {
+                    Obj = k.Word,
+                    Frequency = Krepo.GetRestaurantKeywordJunction().Count(w => w.Word.Equals(k.Word))
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // GET: api/RestaurantKeywordAnalytics/5
@@ -35,10 +59,19 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="restaurantId">Keyword to get restaurant matches for</param>
         /// <returns>List of restaurants </returns>
+        [ProducesResponseType(400)]
         [HttpGet("{restaurantId}", Name = "GetKeywordsForRestaurant")]
-        public ActionResult<List<RestaurantModel>> Get(string restaurantId)
+        public async Task<ActionResult<List<string>>> GetAsync(string restaurantId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return (await Rrepo.GetRestaurantByIDAsync(restaurantId, true)).RestaurantKeywordJunction.Select(n=>n.Word).ToList();
+            }
+            catch (Exception e)
+            {
+                //if requested restaurantID not in DB
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
         }
         
     }

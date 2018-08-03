@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantAPI.API.Models;
+using RestaurantAPI.Library;
+using RestaurantAPI.Library.Repos;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -11,6 +14,19 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class BlacklistAnalyticsController : ControllerBase
     {
+        public BlacklistAnalyticsController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
+        {
+            Arepo = AppRepo;
+            Krepo = KeyRepo;
+            Qrepo = QRepo;
+            Rrepo = RestRepo;
+        }
+
+        public IAppUserRepo Arepo { get; set; }
+        public IKeywordRepo Krepo { get; set; }
+        public IQueryRepo Qrepo { get; set; }
+        public IRestaurantRepo Rrepo { get; set; }
+
         // GET: api/BlacklistAnalytics
         /// <summary>
         /// Return a list of all Restaurants wrapped w/ frequencies.
@@ -18,10 +34,22 @@ namespace RestaurantAPI.API.Controllers
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of RestaurantModel </returns>
+        [ProducesResponseType(500)]
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<List<FrequencyWrapper<RestaurantModel>>> Get()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+                {
+                    Obj = Mapper.Map(r),
+                    Frequency = r.Blacklist.Count()
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // GET: api/BlacklistAnalytics/5
@@ -31,10 +59,18 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="id">restaurant Id</param>
         /// <returns>List of strings representing usernames</returns>
-        [HttpGet("{id}", Name = "GetBlacklistAnalytics")]
-        public ActionResult<List<string>> Get(int id)
+        [ProducesResponseType(500)]
+        [HttpGet("{rId}", Name = "GetBlacklistAnalytics")]
+        public ActionResult<List<string>> Get(string rId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Arepo.GetUsers(true).Where(a => a.Blacklist.Any(f => f.RestaurantId.Equals(rId))).Select(a => a.Username).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
     }
