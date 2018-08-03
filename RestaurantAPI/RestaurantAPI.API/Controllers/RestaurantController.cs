@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using RestaurantAPI.API.Models;
 using RestaurantAPI.Data;
 using RestaurantAPI.Library;
@@ -31,6 +33,7 @@ namespace RestaurantAPI.API.Controllers
         public IKeywordRepo Krepo { get; set; }
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 
         // GET: api/<controller>
@@ -44,6 +47,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -60,6 +64,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
@@ -85,6 +90,7 @@ namespace RestaurantAPI.API.Controllers
 
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             try
@@ -93,6 +99,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 

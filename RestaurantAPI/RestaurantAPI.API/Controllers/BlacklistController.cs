@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using RestaurantAPI.API.Models;
 using RestaurantAPI.Library;
 using RestaurantAPI.Library.Repos;
@@ -27,7 +29,7 @@ namespace RestaurantAPI.API.Controllers
         public IKeywordRepo Krepo { get; set; }
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
-
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         //Return list of all favorited Restaurants for a given user
         // GET: api/Blacklist
@@ -44,6 +46,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -64,6 +67,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -82,8 +86,9 @@ namespace RestaurantAPI.API.Controllers
             {
                 await Arepo.AddRestaurantToBlacklistAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             try
@@ -92,6 +97,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
@@ -112,8 +118,9 @@ namespace RestaurantAPI.API.Controllers
             {
                 await Arepo.RemoveRestaurantFromBlacklistAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
             }
-            catch
+            catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             try
@@ -122,6 +129,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             return CreatedAtRoute("RemoveBlacklist", new { Id = value }, value);
