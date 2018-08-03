@@ -39,14 +39,12 @@ namespace RestaurantAPI.API.Controllers
         [HttpGet]
         public ActionResult<List<QueryResult>> Get()
         {
-            if (User == null)
-                return StatusCode(401);//unauthorized, in case User is null for some reason like the tests.
             var queryList = Qrepo.GetQueries();
             if (queryList == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            if (!User.IsInRole("admin"))
+            if (!User.IsInRole("admin"))  //Admin gets full query list, other users only get their own
                 queryList = queryList.Where(q => q.Username.Equals(User.Identity.Name));
 
             return queryList.Select(m => new QueryResult() { QueryObject = Mapper.Map(m), Restaurants = Mapper.Map(Qrepo.GetRestaurantsInQuery(m.Id)).ToList() } ).ToList();
@@ -59,7 +57,9 @@ namespace RestaurantAPI.API.Controllers
         /// <returns>A QueryResult object matching the given Id</returns>
         // GET: api/Query/5
         [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(403)]
+        [Authorize]
         [HttpGet("{id}", Name = "GetQueryResult")]
         public async Task<ActionResult<QueryResult>> GetAsync(int id)
         {
@@ -89,9 +89,9 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="queryResult"></param>
         /// <returns></returns>
+        // POST: api/Query
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        // POST: api/Query
         [HttpPost]
         public async Task<ActionResult<List<QueryResult>>> PostAsync([FromBody] QueryResult queryResult)
         {

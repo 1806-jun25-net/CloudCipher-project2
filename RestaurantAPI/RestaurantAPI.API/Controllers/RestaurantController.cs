@@ -106,13 +106,5 @@ namespace RestaurantAPI.API.Controllers
         public void Put(int id, [FromBody]string value)
         {
         }
-
-        //TODO: Implement this method or delete
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
-        public void Delete(int id)
-        {
-        }
     }
 }

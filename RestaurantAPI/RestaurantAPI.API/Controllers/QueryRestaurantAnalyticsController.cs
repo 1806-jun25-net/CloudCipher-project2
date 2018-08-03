@@ -34,14 +34,22 @@ namespace RestaurantAPI.API.Controllers
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of RestaurantModel</returns>
+        [ProducesResponseType(500)]
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<RestaurantModel>>> Get()
         {
-            return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+            try
             {
-                Obj = Mapper.Map(r),
-                Frequency = r.QueryRestaurantJunction.Count()
-            }).ToList();
+                return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+                {
+                    Obj = Mapper.Map(r),
+                    Frequency = r.QueryRestaurantJunction.Count()
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // GET: api/QueryRestaurantAnalytics/5
@@ -53,17 +61,24 @@ namespace RestaurantAPI.API.Controllers
         /// <param name="username"></param>
         /// <returns>List of FrequencyWrapper of RestaurantModel<</returns>
         [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         [HttpGet("{username}", Name = "GetQueryRestaurantAnalytics")]
         public async Task<ActionResult<List<FrequencyWrapper<RestaurantModel>>>> GetAsync(string username)
         {
             if (!(await Arepo.DBContainsUsernameAsync(username)))
                 return StatusCode(StatusCodes.Status400BadRequest);
-
-            return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+            try
             {
-                Obj = Mapper.Map(r),
-                Frequency = r.QueryRestaurantJunction.Where(q => q.Query.Username.Equals(username)).Count()
-            }).ToList();
+                return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+                {
+                    Obj = Mapper.Map(r),
+                    Frequency = r.QueryRestaurantJunction.Where(q => q.Query.Username.Equals(username)).Count()
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
     }
