@@ -36,7 +36,8 @@ namespace RestaurantAPI.Library
             Address = other.Address,
             Rating = (decimal)other.Rating,
             PriceLevel = (decimal)other.PriceLevel,
-            Owner = other.Owner
+            Owner = other.Owner,
+            Keywords = other.RestaurantKeywordJunction.Select(rkj => rkj.Word).ToList()
         };
 
         public static Restaurant Map(RestaurantModel other) => new Restaurant
