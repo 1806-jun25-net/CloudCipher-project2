@@ -23,6 +23,53 @@ namespace RestaurantAPI.Testing
             }
         }
 
+        public static IEnumerable<object[]> AllUserData =>
+        new List<object[]>
+        {
+            new object[] { "realUser", false },
+            new object[] { "decoyUser1", false },
+            new object[] { "decoyUser2", false },
+            new object[] { "decoyUser3", false },
+            new object[] { "fakeUser", false },
+            new object[] { "totallyNotAUserr", false },
+            new object[] { "zzzzzZZefea", false },
+            new object[] { "SoooooManyTestsToCome", false },
+            new object[] { "realUser", true },
+            new object[] { "decoyUser1", true },
+            new object[] { "decoyUser2", true },
+            new object[] { "decoyUser3", true },
+            new object[] { "fakeUser", true },
+            new object[] { "totallyNotAUserr", true },
+            new object[] { "zzzzzZZefea", true },
+            new object[] { "SoooooManyTestsToCome", true },
+        };
+
+        public static IEnumerable<object[]> ValidUserData =>
+        new List<object[]>
+        {
+            new object[] { "realUser", false },
+            new object[] { "decoyUser1", false },
+            new object[] { "decoyUser2", false },
+            new object[] { "decoyUser3", false },
+            new object[] { "realUser", true },
+            new object[] { "decoyUser1", true },
+            new object[] { "decoyUser2", true },
+            new object[] { "decoyUser3", true },
+        };
+
+        public static IEnumerable<object[]> InvalidUserData =>
+        new List<object[]>
+        {
+            new object[] { "fakeUser", false },
+            new object[] { "totallyNotAUserr", false },
+            new object[] { "zzzzzZZefea", false },
+            new object[] { "SoooooManyTestsToCome", false },
+            new object[] { "fakeUser", true },
+            new object[] { "totallyNotAUserr", true },
+            new object[] { "zzzzzZZefea", true },
+            new object[] { "SoooooManyTestsToCome", true },
+        };
+
         //Testing of GetUsers()
         [Fact]
         public void GetUsersShouldNotThrowExceptionIfDBIsEmpty()
@@ -74,8 +121,10 @@ namespace RestaurantAPI.Testing
 
         
         //Testing of DBContainsUsername
-        [Fact]
-        public void DBContainsUsernameShouldNotThrowExceptionIfDBIsEmpty()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void DBContainsUsernameShouldNotThrowExceptionIfDBIsEmpty(bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -89,7 +138,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                uRepo.DBContainsUsername("LiterallyAnything");
+                if (useAsync)
+                    uRepo.DBContainsUsernameAsync("LiterallyAnything").Wait();
+                else
+                    uRepo.DBContainsUsername("LiterallyAnything");
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -97,15 +149,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUserr")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void DBContainsUsernameShouldReturnFalseIfIfDBIsEmpty(string username)
+        [MemberData(nameof(AllUserData))]
+        public void DBContainsUsernameShouldReturnFalseIfIfDBIsEmpty(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -118,7 +163,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                result = uRepo.DBContainsUsername(username);
+                if (useAsync)
+                    result = uRepo.DBContainsUsernameAsync(username).Result;
+                else
+                    result = uRepo.DBContainsUsername(username);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -126,11 +174,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        public void DBContainsUsernameShouldReturnTrueIfUsernameInDB(string username)
+        [MemberData(nameof(ValidUserData))]
+        public void DBContainsUsernameShouldReturnTrueIfUsernameInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -143,18 +188,18 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                result = uRepo.DBContainsUsername(username);
+                if (useAsync)
+                    result = uRepo.DBContainsUsernameAsync(username).Result;
+                else
+                    result = uRepo.DBContainsUsername(username);
             }
             //Assert
             Assert.True(result);
         }
 
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void DBContainsUsernameShouldReturnFalseIfUsernameNotInDB(string username)
+        [MemberData(nameof(InvalidUserData))]
+        public void DBContainsUsernameShouldReturnFalseIfUsernameNotInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -167,7 +212,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                result = uRepo.DBContainsUsername(username);
+                if (useAsync)
+                    result = uRepo.DBContainsUsernameAsync(username).Result;
+                else
+                    result = uRepo.DBContainsUsername(username);
             }
             //Assert
             Assert.False(result);
@@ -177,11 +225,8 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetUserByUsername
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetUserByUsernameShouldThrowExceptionIfUsernameNotFound(string username)
+        [MemberData(nameof(InvalidUserData))]
+        public void GetUserByUsernameShouldThrowExceptionIfUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -197,9 +242,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetUserByUsername(username);
+                    if (useAsync)
+                        uRepo.GetUserByUsernameAsync(username).Wait();
+                    else
+                        uRepo.GetUserByUsername(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -209,11 +261,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        public void GetUserByUsernameShouldNotThrowExceptionIfUsernameIsInDB(string username)
+        [MemberData(nameof(ValidUserData))]
+        public void GetUserByUsernameShouldNotThrowExceptionIfUsernameIsInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -226,7 +275,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                uRepo.GetUserByUsername(username);
+                if (useAsync)
+                    uRepo.GetUserByUsernameAsync(username).Wait();
+                else
+                    uRepo.GetUserByUsername(username);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -234,11 +286,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        public void GetUserByUsernameShouldReturnUserWithMatchingUsername(string username)
+        [MemberData(nameof(ValidUserData))]
+        public void GetUserByUsernameShouldReturnUserWithMatchingUsername(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -252,7 +301,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                u = uRepo.GetUserByUsername(username);
+                if (useAsync)
+                    u= uRepo.GetUserByUsernameAsync(username).Result;
+                else
+                    u = uRepo.GetUserByUsername(username);
             }
 
             //Assert
@@ -262,15 +314,8 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetBlacklistForUser
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetBlacklistForUserShouldThrowExceptionIfIsDBEmpty(string username)
+        [MemberData(nameof(AllUserData))]
+        public void GetBlacklistForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -285,9 +330,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetBlacklistForUser(username);
+                    if (useAsync)
+                        uRepo.GetBlacklistForUserAsync(username).Wait();
+                    else
+                        uRepo.GetBlacklistForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -298,11 +350,8 @@ namespace RestaurantAPI.Testing
         }
         
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetBlacklistForUserShouldThrowExceptionIfIsUsernameNotFound(string username)
+        [MemberData(nameof(InvalidUserData))]
+        public void GetBlacklistForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -317,9 +366,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetBlacklistForUser(username);
+                    if (useAsync)
+                        uRepo.GetBlacklistForUserAsync(username).Wait();
+                    else
+                        uRepo.GetBlacklistForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -329,8 +385,16 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        [Fact]
-        public void GetBlacklistForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound()
+        [Theory]
+        [InlineData("realUser", 3, false)]
+        [InlineData("decoyUser1", 2, false)]
+        [InlineData("decoyUser2", 1, false)]
+        [InlineData("decoyUser3", 0, false)]
+        [InlineData("realUser", 3, true)]
+        [InlineData("decoyUser1", 2, true)]
+        [InlineData("decoyUser2", 1, true)]
+        [InlineData("decoyUser3", 0, true)]
+        public void GetBlacklistForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound(string username, int expected, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -343,24 +407,20 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                results = uRepo.GetBlacklistForUser("realUser").ToList();
+                if (useAsync)
+                    results = uRepo.GetBlacklistForUserAsync(username).Result.ToList();
+                else
+                    results = uRepo.GetBlacklistForUser(username).ToList();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
-            Assert.Equal(3, results.Count);
+            Assert.Equal(expected, results.Count);
         }
 
         //Testing of GetFavoritesForUser
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetFavoritesForUserShouldThrowExceptionIfIsDBEmpty(string username)
+        [MemberData(nameof(AllUserData))]
+        public void GetFavoritesForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -375,9 +435,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetFavoritesForUser(username);
+                    if (useAsync)
+                        uRepo.GetFavoritesForUserAsync(username).Wait();
+                    else
+                        uRepo.GetFavoritesForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -388,11 +455,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetFavoritesForUserShouldThrowExceptionIfIsUsernameNotFound(string username)
+        [MemberData(nameof(InvalidUserData))]
+        public void GetFavoritesForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -407,9 +471,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetFavoritesForUser(username);
+                    if (useAsync)
+                        uRepo.GetFavoritesForUserAsync(username).Wait();
+                    else
+                        uRepo.GetFavoritesForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -419,8 +490,16 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        [Fact]
-        public void GetFavoritesForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound()
+        [Theory]
+        [InlineData("realUser", 4, false)]
+        [InlineData("decoyUser1", 3, false)]
+        [InlineData("decoyUser2", 2, false)]
+        [InlineData("decoyUser3", 1, false)]
+        [InlineData("realUser", 4, true)]
+        [InlineData("decoyUser1", 3, true)]
+        [InlineData("decoyUser2", 2, true)]
+        [InlineData("decoyUser3", 1, true)]
+        public void GetFavoritesForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound(string username, int expected, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -433,26 +512,22 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                results = uRepo.GetFavoritesForUser("realUser").ToList();
+                if (useAsync)
+                    results = uRepo.GetFavoritesForUserAsync(username).Result.ToList();
+                else
+                    results = uRepo.GetFavoritesForUser(username).ToList();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
-            Assert.Equal(4, results.Count);
+            Assert.Equal(expected, results.Count);
         }
 
 
 
         //Testing of GetQueriesForUser
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetQueriesForUserShouldThrowExceptionIfIsDBEmpty(string username)
+        [MemberData(nameof(AllUserData))]
+        public void GetQueriesForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -467,9 +542,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetQueriesForUser(username);
+                    if (useAsync)
+                        uRepo.GetQueriesForUserAsync(username).Wait();
+                    else
+                        uRepo.GetQueriesForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -480,11 +562,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetQueriesForUserShouldThrowExceptionIfIsUsernameNotFound(string username)
+        [MemberData(nameof(InvalidUserData))]
+        public void GetQueriesForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -499,9 +578,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetQueriesForUser(username);
+                    if (useAsync)
+                        uRepo.GetQueriesForUserAsync(username).Wait();
+                    else
+                        uRepo.GetQueriesForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -511,8 +597,16 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        [Fact]
-        public void GetQueriesForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound()
+        [Theory]
+        [InlineData("realUser", 8, false)]
+        [InlineData("decoyUser1", 4, false)]
+        [InlineData("decoyUser2", 2, false)]
+        [InlineData("decoyUser3", 1, false)]
+        [InlineData("realUser", 8, true)]
+        [InlineData("decoyUser1", 4, true)]
+        [InlineData("decoyUser2", 2, true)]
+        [InlineData("decoyUser3", 1, true)]
+        public void GetQueriesForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound(string username, int expected, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -525,25 +619,21 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                results = uRepo.GetQueriesForUser("realUser").ToList();
+                if (useAsync)
+                    results = uRepo.GetQueriesForUserAsync(username).Result.ToList();
+                else
+                    results = uRepo.GetQueriesForUser(username).ToList();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
-            Assert.Equal(8, results.Count);
+            Assert.Equal(expected, results.Count);
         }
 
 
         //Testing for GetOwnedRestaurantsForUser
         [Theory]
-        [InlineData("realUser")]
-        [InlineData("decoyUser1")]
-        [InlineData("decoyUser2")]
-        [InlineData("decoyUser3")]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetOwnedRestaurantsForUserShouldThrowExceptionIfIsDBEmpty(string username)
+        [MemberData(nameof(AllUserData))]
+        public void GetOwnedRestaurantsForUserShouldThrowExceptionIfIsDBEmpty(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -558,9 +648,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetOwnedRestaurantsForUser(username);
+                    if (useAsync)
+                        uRepo.GetOwnedRestaurantsForUserAsync(username).Wait();
+                    else
+                        uRepo.GetOwnedRestaurantsForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -571,11 +668,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("fakeUser")]
-        [InlineData("totallyNotAUser")]
-        [InlineData("zzzzzZZefea")]
-        [InlineData("SoooooManyTestsToCome")]
-        public void GetOwnedRestaurantsForUserShouldThrowExceptionIfIsUsernameNotFound(string username)
+        [MemberData(nameof(InvalidUserData))]
+        public void GetOwnedRestaurantsForUserShouldThrowExceptionIfIsUsernameNotFound(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -590,9 +684,16 @@ namespace RestaurantAPI.Testing
                 uRepo = new AppUserRepo(context);
                 try
                 {
-                    uRepo.GetOwnedRestaurantsForUser(username);
+                    if (useAsync)
+                        uRepo.GetOwnedRestaurantsForUserAsync(username).Wait();
+                    else
+                        uRepo.GetOwnedRestaurantsForUser(username);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -602,8 +703,16 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        [Fact]
-        public void GetOwnedRestaurantsForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound()
+        [Theory]
+        [InlineData("realUser", 2, false)]
+        [InlineData("decoyUser1", 1, false)]
+        [InlineData("decoyUser2", 1, false)]
+        [InlineData("decoyUser3", 0, false)]
+        [InlineData("realUser", 2, true)]
+        [InlineData("decoyUser1", 1, true)]
+        [InlineData("decoyUser2", 1, true)]
+        [InlineData("decoyUser3", 0, true)]
+        public void GetOwnedRestaurantsForUserShouldReturnCorrectNumberOfRestaurantsWhenUsernameFound(string username, int expected, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -616,11 +725,14 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 uRepo = new AppUserRepo(context);
-                results = uRepo.GetOwnedRestaurantsForUser("realUser").ToList();
+                if (useAsync)
+                    results = uRepo.GetOwnedRestaurantsForUserAsync(username).Result.ToList();
+                else
+                    results = uRepo.GetOwnedRestaurantsForUser(username).ToList();
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
-            Assert.Equal(2, results.Count);
+            Assert.Equal(expected, results.Count);
         }
 
 
@@ -695,11 +807,8 @@ namespace RestaurantAPI.Testing
 
         //Testing of AddRestaurantToBlacklist
         [Theory]
-        [InlineData("fakeUser", "1a")]
-        [InlineData("totallyNotAUser", "2b")]
-        [InlineData("zzzzzZZefea", "3c")]
-        [InlineData("SoooooManyTestsToCome", "4d")]
-        public void AddRestaurantToBlacklistShouldThrowExceptionIfUserNotInDB(string username, string rId)
+        [MemberData(nameof(InvalidUserData))]
+        public void AddRestaurantToBlacklistShouldThrowExceptionIfUserNotInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -716,9 +825,17 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                    if (useAsync)
+                        uRepo.AddRestaurantToBlacklistAsync(username, "anything", rRepo).Wait();
+                    else
+                        uRepo.AddRestaurantToBlacklist(username, "anything", rRepo);
+
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -729,11 +846,15 @@ namespace RestaurantAPI.Testing
         }
         
         [Theory]
-        [InlineData("realUser", "nope")]
-        [InlineData("decoyUser1", "2fake4u")]
-        [InlineData("decoyUser2", "garbage inputs")]
-        [InlineData("decoyUser3", "4444_1_#52_")]
-        public void AddRestaurantToBlacklistShouldThrowExceptionIfRestaurantNotInDB(string username, string rId)
+        [InlineData("realUser", "nope", false)]
+        [InlineData("decoyUser1", "2fake4u", false)]
+        [InlineData("decoyUser2", "garbage inputs", false)]
+        [InlineData("decoyUser3", "4444_1_#52_", false)]
+        [InlineData("realUser", "nope", true)]
+        [InlineData("decoyUser1", "2fake4u", true)]
+        [InlineData("decoyUser2", "garbage inputs", true)]
+        [InlineData("decoyUser3", "4444_1_#52_", true)]
+        public void AddRestaurantToBlacklistShouldThrowExceptionIfRestaurantNotInDB(string username, string rId, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -750,9 +871,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                    if (useAsync)
+                        uRepo.AddRestaurantToBlacklistAsync(username, rId, rRepo).Wait();
+                    else
+                        uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -763,11 +891,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", "1a")]
-        [InlineData("decoyUser1", "2b")]
-        [InlineData("decoyUser2", "3c")]
-        [InlineData("decoyUser3", "4d")]
-        public void AddRestaurantToBlacklistShouldSucceedIfUserAndRestaurantAreValid(string username, string rId)
+        [InlineData("realUser", "1a", false)]
+        [InlineData("decoyUser1", "2b", false)]
+        [InlineData("decoyUser2", "3c", false)]
+        [InlineData("decoyUser3", "4d", false)]
+        [InlineData("realUser", "1a", true)]
+        [InlineData("decoyUser1", "2b", true)]
+        [InlineData("decoyUser2", "3c", true)]
+        [InlineData("decoyUser3", "4d", true)]
+        public void AddRestaurantToBlacklistShouldSucceedIfUserAndRestaurantAreValid(string username, string rId, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -782,7 +914,10 @@ namespace RestaurantAPI.Testing
             {
                 uRepo = new AppUserRepo(context);
                 rRepo = new RestaurantRepo(context);
-                uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                if (useAsync)
+                    uRepo.AddRestaurantToBlacklistAsync(username, rId, rRepo).Wait();
+                else
+                    uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
                 result = context.Blacklist.Find(rId, username);
             }
 
@@ -792,11 +927,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", "1a")]
-        [InlineData("decoyUser1", "2b")]
-        [InlineData("decoyUser2", "3c")]
-        [InlineData("decoyUser3", "4d")]
-        public void AddRestaurantToBlacklistShouldThrowExceptionIfRestrauntAlreadyInUsersBlacklist(string username, string rId)
+        [InlineData("realUser", "1a", false)]
+        [InlineData("decoyUser1", "2b", false)]
+        [InlineData("decoyUser2", "3c", false)]
+        [InlineData("decoyUser3", "4d", false)]
+        [InlineData("realUser", "1a", true)]
+        [InlineData("decoyUser1", "2b", true)]
+        [InlineData("decoyUser2", "3c", true)]
+        [InlineData("decoyUser3", "4d", true)]
+        public void AddRestaurantToBlacklistShouldThrowExceptionIfRestrauntAlreadyInUsersBlacklist(string username, string rId, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -817,9 +956,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
+                    if (useAsync)
+                        uRepo.AddRestaurantToBlacklistAsync(username, rId, rRepo).Wait();
+                    else
+                        uRepo.AddRestaurantToBlacklist(username, rId, rRepo);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -832,11 +978,8 @@ namespace RestaurantAPI.Testing
 
         //Testing of AddRestaurantToFavorites
         [Theory]
-        [InlineData("fakeUser", "1a")]
-        [InlineData("totallyNotAUser", "2b")]
-        [InlineData("zzzzzZZefea", "3c")]
-        [InlineData("SoooooManyTestsToCome", "4d")]
-        public void AddRestaurantToFavoritesShouldThrowExceptionIfUserNotInDB(string username, string rId)
+        [MemberData(nameof(InvalidUserData))]
+        public void AddRestaurantToFavoritesShouldThrowExceptionIfUserNotInDB(string username, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -853,9 +996,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                    if (useAsync)
+                        uRepo.AddRestaurantToFavoritesAsync(username, "literally anything", rRepo).Wait();
+                    else
+                        uRepo.AddRestaurantToFavorites(username, "literally anything", rRepo);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -866,11 +1016,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", "nope")]
-        [InlineData("decoyUser1", "2fake4u")]
-        [InlineData("decoyUser2", "garbage inputs")]
-        [InlineData("decoyUser3", "4444_1_#52_")]
-        public void AddRestaurantToFavoritesShouldThrowExceptionIfRestaurantNotInDB(string username, string rId)
+        [InlineData("realUser", "nope", false)]
+        [InlineData("decoyUser1", "2fake4u", false)]
+        [InlineData("decoyUser2", "garbage inputs", false)]
+        [InlineData("decoyUser3", "4444_1_#52_", false)]
+        [InlineData("realUser", "nope", true)]
+        [InlineData("decoyUser1", "2fake4u", true)]
+        [InlineData("decoyUser2", "garbage inputs", true)]
+        [InlineData("decoyUser3", "4444_1_#52_", true)]
+        public void AddRestaurantToFavoritesShouldThrowExceptionIfRestaurantNotInDB(string username, string rId, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -887,9 +1041,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                    if (useAsync)
+                        uRepo.AddRestaurantToFavoritesAsync(username, rId, rRepo).Wait();
+                    else
+                        uRepo.AddRestaurantToFavorites(username, rId, rRepo);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -900,11 +1061,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", "1a")]
-        [InlineData("decoyUser1", "2b")]
-        [InlineData("decoyUser2", "3c")]
-        [InlineData("decoyUser3", "4d")]
-        public void AddRestaurantToFavoritesShouldSucceedIfUserAndRestaurantAreValid(string username, string rId)
+        [InlineData("realUser", "1a", false)]
+        [InlineData("decoyUser1", "2b", false)]
+        [InlineData("decoyUser2", "3c", false)]
+        [InlineData("decoyUser3", "4d", false)]
+        [InlineData("realUser", "1a", true)]
+        [InlineData("decoyUser1", "2b", true)]
+        [InlineData("decoyUser2", "3c", true)]
+        [InlineData("decoyUser3", "4d", true)]
+        public void AddRestaurantToFavoritesShouldSucceedIfUserAndRestaurantAreValid(string username, string rId, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -919,7 +1084,10 @@ namespace RestaurantAPI.Testing
             {
                 uRepo = new AppUserRepo(context);
                 rRepo = new RestaurantRepo(context);
-                uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                if (useAsync)
+                    uRepo.AddRestaurantToFavoritesAsync(username, rId, rRepo).Wait();
+                else
+                    uRepo.AddRestaurantToFavorites(username, rId, rRepo);
                 result = context.Favorite.Find(rId, username);
             }
 
@@ -929,11 +1097,15 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("realUser", "1a")]
-        [InlineData("decoyUser1", "2b")]
-        [InlineData("decoyUser2", "3c")]
-        [InlineData("decoyUser3", "4d")]
-        public void AddRestaurantToFavoritesShouldThrowExceptionIfRestrauntAlreadyInUsersBlacklist(string username, string rId)
+        [InlineData("realUser", "1a", false)]
+        [InlineData("decoyUser1", "2b", false)]
+        [InlineData("decoyUser2", "3c", false)]
+        [InlineData("decoyUser3", "4d", false)]
+        [InlineData("realUser", "1a", true)]
+        [InlineData("decoyUser1", "2b", true)]
+        [InlineData("decoyUser2", "3c", true)]
+        [InlineData("decoyUser3", "4d", true)]
+        public void AddRestaurantToFavoritesShouldThrowExceptionIfRestrauntAlreadyInUsersBlacklist(string username, string rId, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -954,9 +1126,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    uRepo.AddRestaurantToFavorites(username, rId, rRepo);
+                    if (useAsync)
+                        uRepo.AddRestaurantToFavoritesAsync(username, rId, rRepo).Wait();
+                    else
+                        uRepo.AddRestaurantToFavorites(username, rId, rRepo);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }

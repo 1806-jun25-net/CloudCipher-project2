@@ -32,7 +32,7 @@ namespace RestaurantAPI.API.Controllers
         /// <summary>
         /// Get all queries placed by a username, or all queries in DB if user is an admin.
         /// </summary>
-        /// <returns>list of QueryModels</returns>
+        /// <returns>list of QueryResults</returns>
         // GET: api/Query
         [Authorize]
         [ProducesResponseType(500)]
@@ -56,11 +56,11 @@ namespace RestaurantAPI.API.Controllers
         /// Returns a specific query based on its Id only if it matches the current user or they're admin.
         /// </summary>
         /// <param name="id">queryId to look up</param>
-        /// <returns>A QueryModel object matching the given Id</returns>
+        /// <returns>A QueryResult object matching the given Id</returns>
         // GET: api/Query/5
         [ProducesResponseType(400)]
         [ProducesResponseType(403)]
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetQueryResult")]
         public async Task<ActionResult<QueryResult>> GetAsync(int id)
         {
             Query q;
@@ -93,31 +93,40 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         // POST: api/Query
         [HttpPost]
-        public async Task<ActionResult<List<RestaurantModel>>> PostAsync([FromBody] QueryResult queryResult)
+        public async Task<ActionResult<List<QueryResult>>> PostAsync([FromBody] QueryResult queryResult)
         {
-            //Add query to DB
             Query q = Mapper.Map(queryResult.QueryObject);
+            q.QueryTime = DateTime.Now;
+            queryResult.QueryObject.Keywords = queryResult.QueryObject.Keywords.Where(k => !String.IsNullOrEmpty(k)).Select(k => k.ToLower()).ToList();
+            List<string> keywords = queryResult.QueryObject.Keywords;
             List<Restaurant> restaurants = Mapper.Map(queryResult.Restaurants).ToList();
             try
             {
-                await Qrepo.AddQueryAsync(q, (KeywordRepo)Krepo);
+                //Add query to DB
+                Qrepo.AddQuery(q);
+                await Qrepo.SaveAsync();
             }
-            catch
+            catch  (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             try
             {
+                //Add any new keywords to the DB, and register all keywords to QueryKeywordJunction
+                await Qrepo.AddQueryKeywordJunctionAsync(q.Id, keywords, (KeywordRepo)Krepo);
+                await Qrepo.SaveAsync();
                 //Add any new restaurants to DB, and register any new keywords to existing restaurants
-                await Rrepo.AddNewRestaurantsAsync(restaurants, queryResult.QueryObject.Keywords);
+                await Rrepo.AddNewRestaurantsAsync(restaurants, keywords);
+                await Qrepo.SaveAsync();
                 //Add query+restaurants to junction table
                 await Qrepo.AddQueryRestaurantJunctionAsync(q.Id, restaurants, (RestaurantRepo)Rrepo);
+                await Qrepo.SaveAsync();
             }
-            catch
+            catch (Exception e)  //defining Excpetion as e for debugging purposes even though it's unused and a code smell.
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return CreatedAtRoute("Get", new { id = q.Id }, queryResult);
+            return CreatedAtRoute("GetQueryResult", new { id = q.Id }, queryResult);
         }
         
     }

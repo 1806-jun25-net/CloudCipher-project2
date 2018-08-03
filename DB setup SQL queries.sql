@@ -16,18 +16,20 @@ CREATE TABLE RestaurantSite.Restaurant
 	ID nvarchar(128) PRIMARY KEY,
 	Name nvarchar(128) NOT NULL,
 	Hours nvarchar(256),
-	Lat nvarchar(128) NOT NULL,
-	Lon nvarchar(128) NOT NULL,
+	Lat nvarchar(128),
+	Lon nvarchar(128),
 	Address nvarchar(128),
 	Rating decimal,
 	PriceLevel decimal,
 	Owner nvarchar(128) FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username)
 );
+--ALTER TABLE RestaurantSite.Restaurant ALTER COLUMN Lat nvarchar(128) NULL;
+--ALTER TABLE RestaurantSite.Restaurant ALTER COLUMN Lon nvarchar(128) NULL;
 
 --DROP TABLE RestaurantSite.Query
 CREATE TABLE RestaurantSite.Query
 (
-	ID int PRIMARY KEY IDENTITY(1,1),
+	ID int PRIMARY KEY IDENTITY,
 	Username nvarchar(128) NOT NULL FOREIGN KEY REFERENCES RestaurantSite.AppUser(Username),
 	Lat nvarchar(128),
 	Lon nvarchar(128),
@@ -86,7 +88,36 @@ CREATE TABLE RestaurantSite.QueryRestaurantJunction
 --Inserting test data:
 
 INSERT INTO RestaurantSite.AppUser
-VALUES ('test', 'First', 'Last', 'a@a.com', 0),
-		('admin', 'Tess', 'Est', 'winner@gmail.com', 1);
+VALUES ('test', 'First', 'Last', 'a@a.com'),
+		('admin', 'Tess', 'Est', 'winner@gmail.com');
+
+INSERT INTO RestaurantSite.AppUser
+VALUES ('admin.2', 'The', 'Admin', 'a@a.com');
+
+INSERT INTO RestaurantSite.AppUser
+VALUES ('RegisterTest1', 'Reggie', 'T', 'rr@t.org');
 
 SELECT * FROM RestaurantSite.AppUser;
+
+SELECT * FROM RestaurantSite.Query;
+
+SELECT * FROM RestaurantSite.QueryKeywordJunction;
+
+SELECT * FROM RestaurantSite.Restaurant;
+
+SELECT * FROM RestaurantSite.RestaurantKeywordJunction;
+
+SELECT * FROM RestaurantSite.Keyword;
+
+SELECT * FROM RestaurantSite.QueryRestaurantJunction;
+
+/*
+DELETE FROM RestaurantSite.QueryKeywordJunction;
+DELETE FROM RestaurantSite.QueryRestaurantJunction;
+DELETE FROM RestaurantSite.RestaurantKeywordJunction;
+DELETE FROM RestaurantSite.Blacklist;
+DELETE FROM RestaurantSite.Favorite;
+DELETE FROM RestaurantSite.Keyword;
+DELETE FROM RestaurantSite.Restaurant;
+DELETE FROM RestaurantSite.Query;
+*/

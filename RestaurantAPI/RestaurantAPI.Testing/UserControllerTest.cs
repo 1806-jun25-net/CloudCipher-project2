@@ -134,12 +134,12 @@ namespace RestaurantAPI.Testing
         }
 
         [Fact]
-        public void CreateReturns400StatusCodeIfExceptionIsThrownByAdd()
+        public void CreateAsyncReturns400StatusCodeIfExceptionIsThrownByAdd()
         {
             //Arrange
             UserModel userobject = new UserModel();
 
-            mockARepo.Setup(x => x.AddUser(It.IsAny<AppUser>())).Throws<Exception>();
+            mockARepo.Setup(x => x.AddUserAsync(It.IsAny<AppUser>())).Throws<AggregateException>();
             mockARepo.Setup(x => x.Save());
 
             //Act

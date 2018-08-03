@@ -40,12 +40,17 @@ namespace RestaurantAPI.API.Controllers
 
         }
 
-        //Unused
+        //Given a restaurantID, returns bool of whether restaurant is in user's blacklist
+        //TODO: this
         // GET: api/Blacklist/5
-        [HttpGet("{id}", Name = "GetBlacklist")]
-        public string Get(int id)
+        [Authorize]
+        [HttpGet("{rId}", Name = "GetBlacklist")]
+        public async Task<ActionResult<bool>> GetAsync(string rId)
         {
-            return "value";
+            if (!(await Arepo.DBContainsUsernameAsync(User.Identity.Name)))
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
+            return (await Arepo.GetBlacklistForUserAsync(User.Identity.Name)).Any(n => n.Id.Equals(rId));
         }
 
         //Given a restaurant id as a parameter, add the restaurant to the current user's favorites
@@ -69,13 +74,7 @@ namespace RestaurantAPI.API.Controllers
 
             return CreatedAtRoute("GetBlacklist", new { Id = value }, value);
         }
-
-        //Unused
-        // PUT: api/Blacklist/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        
 
         //Given a restaurant id as a parameter, remove the restaurant from the current user's favorites
         // DELETE: api/ApiWithActions/5

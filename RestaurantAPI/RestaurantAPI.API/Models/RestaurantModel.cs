@@ -16,5 +16,7 @@ namespace RestaurantAPI.API.Models
         public decimal Rating { get; set; }
         public decimal PriceLevel { get; set; }
         public string Owner { get; set; }
+
+        public List<string> Keywords { get; set; }
     }
 }

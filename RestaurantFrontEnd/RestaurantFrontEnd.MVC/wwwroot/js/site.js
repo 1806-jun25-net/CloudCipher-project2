@@ -9,8 +9,8 @@ function initMap() {
             lat: position.coords.latitude,
             lng: position.coords.longitude
         };
-        lat = pos.lat;
-        lng = pos.lng;
+        var lat = pos.lat;
+        var lng = pos.lng;
 
 
         /////////////////////
@@ -23,7 +23,7 @@ function initMap() {
 
 
         // var origin2 = 'Montgomery, Alabama';
-        var destinationA = 'Manhattan, New York';
+        // var destinationA = 'Manhattan, New York';
         // var destinationB = 'Columbus, Ohio';
 
         var destinationIcon = 'https://chart.googleapis.com/chart?' +
@@ -45,6 +45,13 @@ function initMap() {
         const URL = PROXY_URL + TARGET_URL;
         var destinations = [];
         var destinationNames = [];
+        var queryarr = [];
+        var restarr = [];
+        
+        var kwarr = [];
+        queryarr.push(origin1.lat);
+        queryarr.push(origin1.lng);
+
 
         $.getJSON(URL, function (json) {
 
@@ -53,16 +60,56 @@ function initMap() {
             }
             else {
 
-
-                var title = '';
-                for (var i = 0; i < json.results.length; i++) {
+                //commenting out title since it is unused
+                //var title = '';
+                for (var i = 0; i < json.results.length&&i<6; i++) {
 
                     destinations.push(json.results[i].geometry.location);
                     //title += "<p>"+JSON.stringify(json.results[i].geometry.location)+"</p>";
-                    destinationNames.push(JSON.stringify(json.results[i].name));
+                    destinationNames.push(json.results[i].name);
+                    var pkg = 
+                        {
+                            Id: json.results[i].id,
+                            Name: json.results[i].name,
+                            Hours : "8a-6p",//n[2],UNTIL I CAN FIND HOURS PARAM
+                            Lat: json.results[i].geometry.location.lat,
+                            Lon: json.results[i].geometry.location.lng,
+                            Address: json.results[i].vicinity,
+                            Rating: json.results[i].rating,
+                            PriceLevel: json.results[i].price_level,
+                            Owner: "moq-owner vari"
+                        };
+                    restarr.push(pkg);
 
+                    if(i==(json.results.length-1)||i==5) {
+                    //if (destinationNames.length == 6) {
+
+                        //kwarr
+                        var queryString = query;
+                        var queryArray = queryString.split("amp;"); 
+                       
+                       
+                        kwarr=queryArray;
+                        //queryarr
+                        //queryarr.push(origin1.lat);
+                        //queryarr.push(origin1.lng);
+                        while (queryarr.length <= 2) {
+                            queryarr.push('2000');
+                        }
+                        
+                        //resarr
+                       
+
+        
+                        /////
+                        console.log(restarr);
+                        $.post("/Restaurant/GetQueryResults", { queryobj:queryarr,restobj:restarr,keyobj:kwarr }, function (data) {
+                            alert(data);
+                        });
+                    }
                 }
-
+                
+                
                 var geocoder = new google.maps.Geocoder;
 
                 var service = new google.maps.DistanceMatrixService;

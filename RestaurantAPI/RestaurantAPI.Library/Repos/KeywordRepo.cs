@@ -31,6 +31,7 @@ namespace RestaurantAPI.Library.Repos
 
         /// <summary>
         /// Checks whether the given Keyword already exists in the DB or not.  Overload which takes a Keyword object.
+        /// Ignores case sensitivity
         /// </summary>
         /// <param name="kw">Keyword object who's .Word is to be checked for existence in the DB</param>
         /// <returns>true if Keyword found in DB, falase otherwise</returns>
@@ -38,11 +39,12 @@ namespace RestaurantAPI.Library.Repos
         {
             if (kw == null)
                 return false;
-            return GetKeywords().Any(t => t.Word.Equals(kw.Word));
+            return GetKeywords().Any(t => t.Word.ToLower().Equals(kw.Word));
         }
 
         /// <summary>
         /// Checks whether the given Keyword already exists in the DB or not.  Overload which takes a string.
+        /// Ignores case sensitivity
         /// </summary>
         /// <param name="kw">string to be checked for existence in the DB as a Keyword</param>
         /// <returns>true if keyword string found in DB, falase otherwise</returns>
@@ -50,7 +52,7 @@ namespace RestaurantAPI.Library.Repos
         {
             if (kw == null)
                 return false;
-            return GetKeywords().Any(t => t.Word.Equals(kw));
+            return GetKeywords().Any(t => t.Word.ToLower().Equals(kw));
         }
 
         /// <summary>
@@ -63,6 +65,7 @@ namespace RestaurantAPI.Library.Repos
         {
             if (kw == null)
                 throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            kw.Word = kw.Word.ToLower();
             if (DBContainsKeyword(kw))
                 throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
             _db.Add(kw);
@@ -80,7 +83,7 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
             if (DBContainsKeyword(kw))
                 throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
-            _db.Add(new Keyword() { Word = kw } );
+            _db.Add(new Keyword() { Word = kw.ToLower() } );
         }
 
         /// <summary>

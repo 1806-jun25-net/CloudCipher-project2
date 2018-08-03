@@ -36,7 +36,8 @@ namespace RestaurantAPI.Library
             Address = other.Address,
             Rating = (decimal)other.Rating,
             PriceLevel = (decimal)other.PriceLevel,
-            Owner = other.Owner
+            Owner = other.Owner,
+            Keywords = other.RestaurantKeywordJunction.Select(rkj => rkj.Word).ToList()
         };
 
         public static Restaurant Map(RestaurantModel other) => new Restaurant
@@ -65,13 +66,11 @@ namespace RestaurantAPI.Library
 
         public static Query Map(QueryModel other) => new Query
         {
-            Id = other.Id,
             Username = other.Username,
             Lat = other.Lat,
             Lon = other.Lon,
             Radius = other.Radius,
-            QueryTime = other.QueryTime,
-            //QueryKeywordJunction = other.Keywords.Select( k => new QueryKeywordJunction() { Word = k, QueryId = other.Id }).ToList()
+            QueryTime = other.QueryTime
         };
 
         public static string Map(Keyword other) => other.Word;
