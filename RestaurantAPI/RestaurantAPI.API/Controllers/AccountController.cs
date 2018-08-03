@@ -23,7 +23,6 @@ namespace RestaurantAPI.API.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
-
         public async Task<ActionResult> Login(Login input)
         {//REMEMBER TO MOD ACCORDING TO PREFERENCES FOR LOGIN
             var result = await _signInManager.PasswordSignInAsync(input.Username, input.Password,

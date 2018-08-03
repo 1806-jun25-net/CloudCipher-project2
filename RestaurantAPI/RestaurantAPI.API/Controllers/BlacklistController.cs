@@ -31,70 +31,99 @@ namespace RestaurantAPI.API.Controllers
 
         //Return list of all favorited Restaurants for a given user
         // GET: api/Blacklist
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
         [HttpGet]
-        public ActionResult<List<RestaurantModel>> Get()
+        public async Task<ActionResult<List<RestaurantModel>>> GetAsync()
         {
-            Arepo.GetFavoritesForUser(User.Identity.Name);
-
-            return Mapper.Map(Arepo.GetFavoritesForUser(User.Identity.Name)).ToList();
-
+            //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
+            try
+            {
+                return Mapper.Map(await Arepo.GetFavoritesForUserAsync(User.Identity.Name)).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         //Given a restaurantID, returns bool of whether restaurant is in user's blacklist
         //TODO: this
         // GET: api/Blacklist/5
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         [Authorize]
         [HttpGet("{rId}", Name = "GetBlacklist")]
         public async Task<ActionResult<bool>> GetAsync(string rId)
         {
-            if (!(await Arepo.DBContainsUsernameAsync(User.Identity.Name)))
-                return StatusCode(StatusCodes.Status401Unauthorized);
             //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
-            return (await Arepo.GetBlacklistForUserAsync(User.Identity.Name)).Any(n => n.Id.Equals(rId));
+            try
+            {
+                return (await Arepo.GetBlacklistForUserAsync(User.Identity.Name)).Any(n => n.Id.Equals(rId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         //Given a restaurant id as a parameter, add the restaurant to the current user's favorites
         // POST: api/Blacklist
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] string value)
+        public async Task<IActionResult> CreateAsync([FromBody] string value)
         {
 
             try
             {
-                Arepo.AddRestaurantToBlacklist(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+                await Arepo.AddRestaurantToBlacklistAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
             }
-
             catch
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            Rrepo.Save();
+            try
+            {
+                await Rrepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return CreatedAtRoute("GetBlacklist", new { Id = value }, value);
         }
-        
+
 
         //Given a restaurant id as a parameter, remove the restaurant from the current user's favorites
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
+        // DELETE: api/Blacklist/5
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [HttpDelete("{value}")]
         [Authorize]
-        public IActionResult Delete([FromBody]string value)
+        public async Task<IActionResult> DeleteAsync(string value)
         {
-
             try
             {
-                Arepo.RemoveRestaurantFromBlacklist(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+                await Arepo.RemoveRestaurantFromBlacklistAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
             }
-
             catch
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            Rrepo.Save();
-
+            try
+            {
+                await Rrepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return CreatedAtRoute("RemoveBlacklist", new { Id = value }, value);
         }
     }

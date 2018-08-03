@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.API.Models;
+using RestaurantAPI.Library.Repos;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -12,6 +14,18 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class QueryKeywordAnalyticsController : ControllerBase
     {
+        public QueryKeywordAnalyticsController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
+        {
+            Arepo = AppRepo;
+            Krepo = KeyRepo;
+            Qrepo = QRepo;
+            Rrepo = RestRepo;
+        }
+
+        public IAppUserRepo Arepo { get; set; }
+        public IKeywordRepo Krepo { get; set; }
+        public IQueryRepo Qrepo { get; set; }
+        public IRestaurantRepo Rrepo { get; set; }
 
         // GET: api/QueryKeywordAnalytics
         /// <summary>
@@ -21,13 +35,21 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <returns>List of FrequencyWrapper of string </returns>
         [HttpGet]
+        [ProducesResponseType(500)]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
         {
-            //Test code to see if it is possible to send the generic type FrequencyWrapperModel<string>
-            // Spoilers - it is! :D
-
-            //throw new NotImplementedException();
-            return new List<FrequencyWrapper<string>>() { new FrequencyWrapper<string>() { Frequency = 1, Obj = "it works!" } };
+            try
+            {
+                return Krepo.GetKeywords().Select(k => new FrequencyWrapper<string>()
+                {
+                    Obj = k.Word,
+                    Frequency = Krepo.GetQueryKeywordJunction().Count(qkj => qkj.Word.Equals(k.Word))
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         //
@@ -42,10 +64,25 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="username">name of user to look up keyword frequency for</param>
         /// <returns>List of FrequencyWrapperModel<string></returns>
-        [HttpGet("{id}", Name = "GetKeywordQueryAnalytics")]
-        public string Get(string username)
+        [Authorize]
+        [ProducesResponseType(500)]
+        [HttpGet("{username}", Name = "GetKeywordQueryAnalytics")]
+        public ActionResult<List<FrequencyWrapper<string>>> Get(string username)
         {
-            throw new NotImplementedException();
+            //[Authorize] handles returning 401 if noone is logged in.
+            try
+            {
+                return Krepo.GetKeywords().Select(k => new FrequencyWrapper<string>()
+                {
+                    Obj = k.Word,
+                    Frequency = Krepo.GetQueryKeywordJunction().Where(s => s.Query.Username.Equals(User.Identity.Name) && s.Word.Equals(k.Word)).Count()
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
         }
         
     }

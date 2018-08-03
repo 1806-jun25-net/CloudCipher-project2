@@ -104,8 +104,10 @@ namespace RestaurantAPI.API.Controllers
         
         [HttpGet("{username}", Name = "GetUser")]
         [Route("api/User")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
         public async Task<ActionResult<UserModel>> GetByUsernameAsync(string username)
         {
             if (User == null)

@@ -37,7 +37,11 @@ namespace RestaurantAPI.Library.Repos
         public IQueryable<Restaurant> GetRestaurants(bool includeAll)
         {
             if (includeAll)
-                return _db.Restaurant.AsNoTracking().Include(m => m.Blacklist).Include(m => m.Favorite).Include(m => m.RestaurantKeywordJunction);
+                return _db.Restaurant.AsNoTracking()
+                    .Include(m => m.Blacklist)
+                    .Include(m => m.Favorite)
+                    .Include(m => m.RestaurantKeywordJunction)
+                    .Include(m=>m.QueryRestaurantJunction).ThenInclude(n => n.Query);
             return _db.Restaurant.AsNoTracking();
         }
 

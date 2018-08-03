@@ -40,7 +40,11 @@ namespace RestaurantAPI.Library.Repos
         public IQueryable<AppUser> GetUsers(bool includeAll)
         {
             if (includeAll)
-                return _db.AppUser.AsNoTracking().Include(m => m.Blacklist).ThenInclude(k => k.Restaurant).Include(m => m.Favorite).ThenInclude(k => k.Restaurant).Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction).Include(m => m.Restaurant);
+                return _db.AppUser.AsNoTracking()
+                    .Include(m => m.Blacklist).ThenInclude(k => k.Restaurant)
+                    .Include(m => m.Favorite).ThenInclude(k => k.Restaurant)
+                    .Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction)
+                    .Include(m => m.Restaurant);
             return _db.AppUser.AsNoTracking();
         }
 
