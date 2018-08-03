@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using RestaurantAPI.API.Models;
 using RestaurantAPI.Library;
 using RestaurantAPI.Library.Repos;
@@ -26,6 +28,7 @@ namespace RestaurantAPI.API.Controllers
         public IKeywordRepo Krepo { get; set; }
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         // GET: api/Keyword
         /// <summary>
@@ -42,6 +45,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -58,10 +62,11 @@ namespace RestaurantAPI.API.Controllers
         {
             try
             {
-                return Rrepo.GetRestaurants().Where(k => k.RestaurantKeywordJunction.Any(rkj => rkj.Word.Equals(keyword))).Select(k => Mapper.Map(k)).ToList();
+                return Rrepo.GetRestaurants(true).Where(k => k.RestaurantKeywordJunction.Any(rkj => rkj.Word.Equals(keyword))).Select(k => Mapper.Map(k)).ToList();
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
