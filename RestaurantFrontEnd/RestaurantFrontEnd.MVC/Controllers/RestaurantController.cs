@@ -49,25 +49,33 @@ namespace RestaurantFrontEnd.MVC.Controllers
                             string jsonString = await response.Content.ReadAsStringAsync();
                             List<QueryResult> user = JsonConvert.DeserializeObject<List<QueryResult>>(jsonString);
 
-                            IEnumerable<Restaurant> GetUserRests()
-                            {
+                            //IEnumerable<Restaurant> GetUserRests()
+                            //{
 
-                                // IEnumerable<Restaurant> user_rests = new List<Restaurant>();
-                                List<Restaurant> user_rests = new List<Restaurant>();
-                                foreach (var m in user)
-                                {
-                                    if (m.QueryObject.Username == (string)TempData.Peek("Username"))
-                                    {
-                                        foreach (var l in m.Restaurants)
-                                        {
-                                            user_rests.Add(l);
-                                        }
-                                    }
-                                }
-                                IEnumerable<Restaurant> userRests = user_rests;
-                                return userRests;
+                            //    // IEnumerable<Restaurant> user_rests = new List<Restaurant>();
+                            //    List<Restaurant> user_rests = new List<Restaurant>();
+                            //    foreach (var m in user)
+                            //    {
+                            //        if (m.QueryObject.Username == (string)TempData.Peek("Username"))
+                            //        {
+                            //            foreach (var l in m.Restaurants)
+                            //            {
+                            //                user_rests.Add(l);
+                            //            }
+                            //        }
+                            //    }
+                            //    IEnumerable<Restaurant> userRests = user_rests;
+                            //    return userRests;
+                            //}
+                            if (user.Count()== 0)
+                            {
+                                return View(@"..\Restaurant\Index");
                             }
-                            return View(@"..\Restaurant\Index", GetUserRests());
+                            else
+                            {
+                                return View(@"..\Restaurant\Index", user);
+                            }
+
                         }
                         catch (HttpRequestException ex)
                         {
