@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RestaurantFrontEnd.Library.API_Models;
 
 namespace RestaurantFrontEnd.MVC.Controllers
 {
@@ -45,9 +47,30 @@ namespace RestaurantFrontEnd.MVC.Controllers
         }
 
         // GET: Restaurant/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id)
         {
-            return View();
+            if (id == null)
+                return View("Error");
+            var request = CreateRequestService(HttpMethod.Get, $"api/restaurant/{id}");
+
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                Restaurant restaurant = JsonConvert.DeserializeObject<Restaurant>(jsonString);
+
+                return View(@"..\Restaurant\Details", restaurant);
+            }
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // GET: Restaurant/Create
@@ -117,6 +140,43 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 return View();
             }
+        }
+
+        public async Task<ActionResult> BrowseRestaurants([FromQuery] string search = "")
+        {
+            if (string search = "keyword")
+            {
+                
+            }
+
+            else
+            {
+                var request = CreateRequestService(HttpMethod.Get, "api/restaurant");
+
+                try
+                {
+                    var response = await HttpClient.SendAsync(request);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return View("Error");
+                    }
+
+                    string jsonString = await response.Content.ReadAsStringAsync();
+                    List<Restaurant> restaurant = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
+
+                    return View(@"..\Restarant\Index", restaurant);
+                }
+
+                catch (HttpRequestException ex)
+                {
+                    return View("Error", ex);
+                }
+            }
+            
+            
+
+
         }
     }
 }
