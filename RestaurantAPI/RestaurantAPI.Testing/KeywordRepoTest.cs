@@ -22,6 +22,45 @@ namespace RestaurantAPI.Testing
             }
         }
 
+        public static IEnumerable<object[]> AllKeywordData =>
+        new List<object[]>
+        {
+            new object[] { "breakfast", false },
+            new object[] { "fast", false },
+            new object[] { "food", false },
+            new object[] { "trash", false },
+            new object[] { "brick", false },
+            new object[] { "hardware", false },
+            new object[] { "breakfast", true },
+            new object[] { "fast", true },
+            new object[] { "food", true },
+            new object[] { "trash", true },
+            new object[] { "brick", true },
+            new object[] { "hardware", true },
+        };
+
+        public static IEnumerable<object[]> ValidKeywordData =>
+        new List<object[]>
+        {
+            new object[] { "breakfast", false },
+            new object[] { "fast", false },
+            new object[] { "food", false },
+            new object[] { "breakfast", true },
+            new object[] { "fast", true },
+            new object[] { "food", true },
+        };
+
+        public static IEnumerable<object[]> InvalidKeywordData =>
+        new List<object[]>
+        {
+            new object[] { "trash", false },
+            new object[] { "brick", false },
+            new object[] { "hardware", false },
+            new object[] { "trash", true },
+            new object[] { "brick", true },
+            new object[] { "hardware", true },
+        };
+
         //Testing of GetKeywords()
         [Fact]
         public void GetKeywordsShouldNotThrowExceptionIfDBIsEmpty()
@@ -73,18 +112,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of DBContainsKeyword
         [Theory]
-        [InlineData("breakfast", false)]
-        [InlineData("fast", false)]
-        [InlineData("food", false)]
-        [InlineData("trash", false)]
-        [InlineData("brick", false)]
-        [InlineData("hardware", false)]
-        [InlineData("breakfast", true)]
-        [InlineData("fast", true)]
-        [InlineData("food", true)]
-        [InlineData("trash", true)]
-        [InlineData("brick", true)]
-        [InlineData("hardware", true)]
+        [MemberData(nameof(AllKeywordData))]
         public void DBContainsKeywordShouldNotThrowExceptionIfDBIsEmpty(string kw, bool useAsync)
         {
             //Arrange
@@ -110,18 +138,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("breakfast", false)]
-        [InlineData("fast", false)]
-        [InlineData("food", false)]
-        [InlineData("trash", false)]
-        [InlineData("brick", false)]
-        [InlineData("hardware", false)]
-        [InlineData("breakfast", true)]
-        [InlineData("fast", true)]
-        [InlineData("food", true)]
-        [InlineData("trash", true)]
-        [InlineData("brick", true)]
-        [InlineData("hardware", true)]
+        [MemberData(nameof(AllKeywordData))]
         public void DBContainsKeywordShouldReturnFalseIfIfDBIsEmpty(string kw, bool useAsync)
         {
             //Arrange
@@ -146,12 +163,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("breakfast", false)]
-        [InlineData("fast", false)]
-        [InlineData("food", false)]
-        [InlineData("breakfast", true)]
-        [InlineData("fast", true)]
-        [InlineData("food", true)]
+        [MemberData(nameof(ValidKeywordData))]
         public void DBContainsKeywordShouldReturnTrueIfRestaurantIdInDB(string kw, bool useAsync)
         {
             //Arrange
@@ -175,12 +187,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("trash", true)]
-        [InlineData("brick", true)]
-        [InlineData("hardware", true)]
-        [InlineData("trash", false)]
-        [InlineData("brick", false)]
-        [InlineData("hardware", false)]
+        [MemberData(nameof(InvalidKeywordData))]
         public void DBContainsKeywordShouldReturnFalseIfKeywordNotInDB(string kw, bool useAsync)
         {
             //Arrange
@@ -205,12 +212,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of AddKeyword
         [Theory]
-        [InlineData("breakfast", false)]
-        [InlineData("fast", false)]
-        [InlineData("food", false)]
-        [InlineData("breakfast", true)]
-        [InlineData("fast", true)]
-        [InlineData("food", true)]
+        [MemberData(nameof(ValidKeywordData))]
         public void AddKeywordShouldThrowExceptionIfKeywordIsPreset(string kw, bool useAsync)
         {
             //Arrange
@@ -259,12 +261,7 @@ namespace RestaurantAPI.Testing
         }
         
         [Theory]
-        [InlineData("breakfast", false)]
-        [InlineData("fast", false)]
-        [InlineData("food", false)]
-        [InlineData("breakfast", true)]
-        [InlineData("fast", true)]
-        [InlineData("food", true)]
+        [MemberData(nameof(ValidKeywordData))]
         public void AddKeywordShouldAddCorrectKeywordToDB(string kw, bool useAsync)
         {
             //Arrange

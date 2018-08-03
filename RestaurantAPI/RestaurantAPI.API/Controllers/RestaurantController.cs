@@ -17,7 +17,6 @@ namespace RestaurantAPI.API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RestaurantController : Controller
     {
         public RestaurantController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
@@ -35,38 +34,45 @@ namespace RestaurantAPI.API.Controllers
 
 
         // GET: api/<controller>
+        [ProducesResponseType(500)]
         [HttpGet]
-        [Authorize]
         public ActionResult<List<RestaurantModel>> Get()
         {
-            Rrepo.GetRestaurants();
-
-            return Mapper.Map(Rrepo.GetRestaurants()).ToList();
-            
-        }
-
-        // GET api/<controller>/5
-        [HttpGet("{id}", Name = "GetRestaurant")]
-        [Authorize]
-        public ActionResult<RestaurantModel> Get(string id)
-        {
-            Restaurant grabVariable;
             try
             {
-                grabVariable = Rrepo.GetRestaurantByID(id);
+                return Mapper.Map(Rrepo.GetRestaurants(true)).ToList();
             }
-            catch(Exception)
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [ProducesResponseType(400)]
+        // GET api/<controller>/5
+        [HttpGet("{id}", Name = "GetRestaurant")]
+        public async Task<ActionResult<RestaurantModel>> GetAsync(string id)
+        {
+            Restaurant r;
+            try
+            {
+                r = await Rrepo.GetRestaurantByIDAsync(id, true);
+            }
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            return Mapper.Map(grabVariable);
+            return Mapper.Map(r);
         }
 
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         // POST api/<controller>
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody]RestaurantModel value)
+        public async Task<IActionResult> CreateAsync([FromBody]RestaurantModel value)
         {
             Restaurant createVariable;
 
@@ -74,29 +80,30 @@ namespace RestaurantAPI.API.Controllers
 
             try
             {
-                Rrepo.AddRestaurant(createVariable);
+                await Rrepo.AddRestaurantAsync(createVariable);
             }
 
-            catch
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            Rrepo.Save();
+            try
+            {
+                await Rrepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return CreatedAtRoute("GetRestaurant", new { Id = value.Id }, value);
         }
 
+        //TODO: Implement this method or delete
         // PUT api/<controller>/5
         [HttpPut("{id}")]
+        [Authorize]
         public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
-        public void Delete(int id)
         {
         }
     }

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantAPI.API.Models;
+using RestaurantAPI.Library;
+using RestaurantAPI.Library.Repos;
 
 namespace RestaurantAPI.API.Controllers
 {
@@ -12,6 +14,18 @@ namespace RestaurantAPI.API.Controllers
     [ApiController]
     public class QueryRestaurantAnalyticsController : ControllerBase
     {
+        public QueryRestaurantAnalyticsController(IAppUserRepo AppRepo, IKeywordRepo KeyRepo, IQueryRepo QRepo, IRestaurantRepo RestRepo)
+        {
+            Arepo = AppRepo;
+            Krepo = KeyRepo;
+            Qrepo = QRepo;
+            Rrepo = RestRepo;
+        }
+
+        public IAppUserRepo Arepo { get; set; }
+        public IKeywordRepo Krepo { get; set; }
+        public IQueryRepo Qrepo { get; set; }
+        public IRestaurantRepo Rrepo { get; set; }
 
         // GET: api/QueryRestaurantAnalytics
         /// <summary>
@@ -20,10 +34,22 @@ namespace RestaurantAPI.API.Controllers
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of RestaurantModel</returns>
+        [ProducesResponseType(500)]
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<RestaurantModel>>> Get()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+                {
+                    Obj = Mapper.Map(r),
+                    Frequency = r.QueryRestaurantJunction.Count()
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // GET: api/QueryRestaurantAnalytics/5
@@ -34,10 +60,25 @@ namespace RestaurantAPI.API.Controllers
         /// </summary>
         /// <param name="username"></param>
         /// <returns>List of FrequencyWrapper of RestaurantModel<</returns>
-        [HttpGet("{id}", Name = "GetQueryRestaurantAnalytics")]
-        public ActionResult<List<FrequencyWrapper<RestaurantModel>>> Get(string username)
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        [HttpGet("{username}", Name = "GetQueryRestaurantAnalytics")]
+        public async Task<ActionResult<List<FrequencyWrapper<RestaurantModel>>>> GetAsync(string username)
         {
-            throw new NotImplementedException();
+            if (!(await Arepo.DBContainsUsernameAsync(username)))
+                return StatusCode(StatusCodes.Status400BadRequest);
+            try
+            {
+                return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
+                {
+                    Obj = Mapper.Map(r),
+                    Frequency = r.QueryRestaurantJunction.Where(q => q.Query.Username.Equals(username)).Count()
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
     }

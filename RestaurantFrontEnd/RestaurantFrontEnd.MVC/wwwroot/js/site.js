@@ -9,8 +9,8 @@ function initMap() {
             lat: position.coords.latitude,
             lng: position.coords.longitude
         };
-        lat = pos.lat;
-        lng = pos.lng;
+        var lat = pos.lat;
+        var lng = pos.lng;
 
 
         /////////////////////
@@ -23,7 +23,7 @@ function initMap() {
 
 
         // var origin2 = 'Montgomery, Alabama';
-        var destinationA = 'Manhattan, New York';
+        // var destinationA = 'Manhattan, New York';
         // var destinationB = 'Columbus, Ohio';
 
         var destinationIcon = 'https://chart.googleapis.com/chart?' +
@@ -60,8 +60,8 @@ function initMap() {
             }
             else {
 
-
-                var title = '';
+                //commenting out title since it is unused
+                //var title = '';
                 for (var i = 0; i < json.results.length&&i<6; i++) {
 
                     destinations.push(json.results[i].geometry.location);

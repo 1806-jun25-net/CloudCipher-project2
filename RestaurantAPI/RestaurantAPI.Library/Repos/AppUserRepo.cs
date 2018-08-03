@@ -40,7 +40,11 @@ namespace RestaurantAPI.Library.Repos
         public IQueryable<AppUser> GetUsers(bool includeAll)
         {
             if (includeAll)
-                return _db.AppUser.AsNoTracking().Include(m => m.Blacklist).ThenInclude(k => k.Restaurant).Include(m => m.Favorite).ThenInclude(k => k.Restaurant).Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction).Include(m => m.Restaurant);
+                return _db.AppUser.AsNoTracking()
+                    .Include(m => m.Blacklist).ThenInclude(k => k.Restaurant)
+                    .Include(m => m.Favorite).ThenInclude(k => k.Restaurant)
+                    .Include(m => m.Query).ThenInclude(k => k.QueryKeywordJunction)
+                    .Include(m => m.Restaurant);
             return _db.AppUser.AsNoTracking();
         }
 
@@ -151,25 +155,6 @@ namespace RestaurantAPI.Library.Repos
         /// Also throws exception if Blacklist already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
-        /// <param name="u">User object who is blaclisting</param>
-        /// <param name="r">Restraunt object to be blacklisted</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            if (!DBContainsUsername(u.Username))
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            if (!rRepo.DBContainsRestaurant(r.Id))
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            Blacklist bl = new Blacklist() { Username = u.Username, RestaurantId = r.Id };
-            _db.Add(bl);
-        }
-
-        /// <summary>
-        /// Adds the specified restaurant to the specified user's blacklist
-        /// Throws an exception if specified user or restraunt is not found in DB
-        /// Also throws exception if Blacklist already exists for that user
-        /// Must still call Save() after to persist changes to DB
-        /// </summary>
         /// <param name="username">string containing user's username</param>
         /// <param name="restaurantId">string containing restaurant's Id</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
@@ -181,26 +166,6 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException($"Restaurant ID '{restaurantId}' not found.", new NotSupportedException());
             Blacklist bl = new Blacklist() { Username = username, RestaurantId = restaurantId };
             _db.Add(bl);
-        }
-
-
-        /// <summary>
-        /// Adds the specified restaurant to the specified user's Favorites
-        /// Throws an exception if specified user or restraunt is not found in DB
-        /// Also throws exception if Favorite list already exists for that user
-        /// Must still call Save() after to persist changes to DB
-        /// </summary>
-        /// <param name="u">User object who is Favoriting</param>
-        /// <param name="r">Restraunt object to be Favorited</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void AddRestaurantToFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            if (!DBContainsUsername(u.Username))
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            if (!rRepo.DBContainsRestaurant(r.Id))
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            Favorite fav = new Favorite() { Username = u.Username, RestaurantId = r.Id };
-            _db.Add(fav);
         }
 
         /// <summary>
@@ -226,22 +191,6 @@ namespace RestaurantAPI.Library.Repos
         /// Removes the restaurant from a user's favorites list, if it exists
         /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently a favorite
         /// </summary>
-        /// <param name="u">user object to remove from favorites of</param>
-        /// <param name="r">restaurant to remove from favorites</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void RemoveRestaurantFromFavorites(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            if (!DBContainsUsername(u.Username))
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            if (!rRepo.DBContainsRestaurant(r.Id))
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            _db.Favorite.Remove(new Favorite { Username = u.Username, RestaurantId = r.Id });
-        }
-
-        /// <summary>
-        /// Removes the restaurant from a user's favorites list, if it exists
-        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently a favorite
-        /// </summary>
         /// <param name="username">user id to remove from favorites of</param>
         /// <param name="restaurantId">restaurant id to remove from favorites</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
@@ -252,22 +201,6 @@ namespace RestaurantAPI.Library.Repos
             if (!rRepo.DBContainsRestaurant(restaurantId))
                 throw new DbUpdateException($"Restaurant ID '{restaurantId}' not found.", new NotSupportedException());
             _db.Favorite.Remove(new Favorite { Username = username, RestaurantId = restaurantId });
-        }
-
-        /// <summary>
-        /// Removes the restaurant from a user's blacklist, if it exists
-        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently on the blacklist
-        /// </summary>
-        /// <param name="u">user object to remove from blacklist of</param>
-        /// <param name="r">restaurant to remove from blacklist</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public void RemoveRestaurantFromBlacklist(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            if (!DBContainsUsername(u.Username))
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            if (!rRepo.DBContainsRestaurant(r.Id))
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            _db.Blacklist.Remove(new Blacklist { Username = u.Username, RestaurantId = r.Id });
         }
 
         /// <summary>
@@ -428,27 +361,6 @@ namespace RestaurantAPI.Library.Repos
         /// Also throws exception if Blacklist already exists for that user
         /// Must still call Save() after to persist changes to DB
         /// </summary>
-        /// <param name="u">User object who is blaclisting</param>
-        /// <param name="r">Restraunt object to be blacklisted</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public async Task AddRestaurantToBlacklistAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            var contains = await DBContainsUsernameAsync(u.Username);
-            if (!contains)
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            contains = rRepo.DBContainsRestaurant(r.Id);
-            if (!contains)
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            Blacklist bl = new Blacklist() { Username = u.Username, RestaurantId = r.Id };
-            _db.Add(bl);
-        }
-
-        /// <summary>
-        /// Adds the specified restaurant to the specified user's blacklist
-        /// Throws an exception if specified user or restraunt is not found in DB
-        /// Also throws exception if Blacklist already exists for that user
-        /// Must still call Save() after to persist changes to DB
-        /// </summary>
         /// <param name="username">string containing user's username</param>
         /// <param name="restaurantId">int containing restaurant's ID number</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
@@ -462,28 +374,6 @@ namespace RestaurantAPI.Library.Repos
                 throw new DbUpdateException($"Restaurant ID '{restaurantId}' not found.", new NotSupportedException());
             Blacklist bl = new Blacklist() { Username = username, RestaurantId = restaurantId };
             _db.Add(bl);
-        }
-
-
-        /// <summary>
-        /// Adds the specified restaurant to the specified user's Favorites
-        /// Throws an exception if specified user or restraunt is not found in DB
-        /// Also throws exception if Favorite list already exists for that user
-        /// Must still call Save() after to persist changes to DB
-        /// </summary>
-        /// <param name="u">User object who is Favoriting</param>
-        /// <param name="r">Restraunt object to be Favorited</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public async Task AddRestaurantToFavoritesAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            var contains = await DBContainsUsernameAsync(u.Username);
-            if (!contains)
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            contains = await rRepo.DBContainsRestaurantAsync(r.Id);
-            if (!contains)
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            Favorite fav = new Favorite() { Username = u.Username, RestaurantId = r.Id };
-            _db.Add(fav);
         }
 
         /// <summary>
@@ -511,24 +401,6 @@ namespace RestaurantAPI.Library.Repos
         /// Removes the restaurant from a user's favorites list, if it exists
         /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently a favorite
         /// </summary>
-        /// <param name="u">user object to remove from favorites of</param>
-        /// <param name="r">restaurant to remove from favorites</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public async Task RemoveRestaurantFromFavoritesAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            var contains = await DBContainsUsernameAsync(u.Username);
-            if (!contains)
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            contains = await rRepo.DBContainsRestaurantAsync(r.Id);
-            if (!contains)
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            _db.Favorite.Remove(new Favorite { Username = u.Username, RestaurantId = r.Id });
-        }
-
-        /// <summary>
-        /// Removes the restaurant from a user's favorites list, if it exists
-        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently a favorite
-        /// </summary>
         /// <param name="username">user id to remove from favorites of</param>
         /// <param name="restaurantId">restaurant id to remove from favorites</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
@@ -547,24 +419,6 @@ namespace RestaurantAPI.Library.Repos
         /// Removes the restaurant from a user's blacklist, if it exists
         /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently on the blacklist
         /// </summary>
-        /// <param name="u">user object to remove from blacklist of</param>
-        /// <param name="r">restaurant to remove from blacklist</param>
-        /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
-        public async Task RemoveRestaurantFromBlacklistAsync(AppUser u, Restaurant r, RestaurantRepo rRepo)
-        {
-            var contains = await DBContainsUsernameAsync(u.Username);
-            if (!contains)
-                throw new DbUpdateException($"Username '{u.Username}' not found.", new NotSupportedException());
-            contains = await rRepo.DBContainsRestaurantAsync(r.Id);
-            if (!contains)
-                throw new DbUpdateException($"Restaurant ID '{r.Id}' not found.", new NotSupportedException());
-            _db.Blacklist.Remove(new Blacklist { Username = u.Username, RestaurantId = r.Id });
-        }
-
-        /// <summary>
-        /// Removes the restaurant from a user's blacklist, if it exists
-        /// Throws an exception if either the user or restaurant ids don't exist in the db, or if that restaurant isn't even currently on the blacklist
-        /// </summary>
         /// <param name="username">user id to remove from blacklist of</param>
         /// <param name="restaurantId">restaurant id to remove from blacklist</param>
         /// <param name="rRepo">RestaurantRepo object, required for validation to ensure the given restraunt exists in our DB</param>
@@ -577,6 +431,20 @@ namespace RestaurantAPI.Library.Repos
             if (!contains)
                 throw new DbUpdateException($"Restaurant ID '{restaurantId}' not found.", new NotSupportedException());
             _db.Blacklist.Remove(new Blacklist { Username = username, RestaurantId = restaurantId });
+        }
+
+        /// <summary>
+        /// Adds a new AppUser object to the DB
+        /// Throws an exception if that username is already in use to avoid violating PK constraint.
+        /// Must still call Save() after all DB updates are finished.
+        /// </summary>
+        /// <param name="u">AppUser object to be added to DB</param>
+        public async Task AddUserAsync(AppUser u)
+        {
+            bool contains = await DBContainsUsernameAsync(u.Username);
+            if (contains)
+                throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
+            _db.Add(u);
         }
 
         /// <summary>

@@ -29,6 +29,16 @@ namespace RestaurantAPI.Library.Repos
             return _db.Keyword.AsNoTracking();
         }
 
+        public IQueryable<RestaurantKeywordJunction> GetRestaurantKeywordJunction()
+        {
+            return _db.RestaurantKeywordJunction.AsNoTracking().Include(k => k.Restaurant);
+        }
+
+        public IQueryable<QueryKeywordJunction> GetQueryKeywordJunction()
+        {
+            return _db.QueryKeywordJunction.AsNoTracking().Include(k=>k.Query);
+        }
+
         /// <summary>
         /// Checks whether the given Keyword already exists in the DB or not.  Overload which takes a Keyword object.
         /// Ignores case sensitivity
@@ -63,12 +73,11 @@ namespace RestaurantAPI.Library.Repos
         /// <param name="kw">Keyword object to add to DB</param>
         public void AddKeyword(Keyword kw)
         {
-            kw.Word = kw.Word.ToLower();
             if (kw == null)
                 throw new DbUpdateException("Cannot add null Keyword.", new NotSupportedException());
+            kw.Word = kw.Word.ToLower();
             if (DBContainsKeyword(kw))
                 throw new DbUpdateException("That keyword is already in the database.  Keywords must be unique.", new NotSupportedException());
-            kw.Word = kw.Word.ToLower();
             _db.Add(kw);
         }
 

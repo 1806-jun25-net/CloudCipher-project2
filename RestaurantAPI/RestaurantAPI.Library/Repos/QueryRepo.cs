@@ -26,7 +26,9 @@ namespace RestaurantAPI.Library.Repos
         /// <returns>Returns an IQueryable containing all Query objects in the database.  Use ToList() on the result to make it a usable list. </returns>
         public IQueryable<Query> GetQueries()
         {
-            return _db.Query.AsNoTracking().Include(m =>m.QueryKeywordJunction).Include(m=>m.QueryRestaurantJunction).ThenInclude(n=>n.Restaurant);
+            return _db.Query.AsNoTracking()
+                .Include(m =>m.QueryKeywordJunction)
+                .Include(m=>m.QueryRestaurantJunction).ThenInclude(n=>n.Restaurant);
         }
 
         /// <summary>
@@ -52,6 +54,7 @@ namespace RestaurantAPI.Library.Repos
             return GetQueries().First(t => t.Id == Id);
         }
 
+        //TODO: write test for this method
         /// <summary>
         /// Given a Query Id, returns the list of restaurants that were returned for that query as found in the QueryRestaurantJunction table
         /// Throws an exception if ID not found in DB

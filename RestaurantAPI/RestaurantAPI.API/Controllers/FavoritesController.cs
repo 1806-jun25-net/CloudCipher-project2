@@ -33,73 +33,99 @@ namespace RestaurantAPI.API.Controllers
 
         //Return list of all favorited Restaurants for a given user
         // GET: api/Favorites
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
         [HttpGet]
-        public ActionResult<List<RestaurantModel>> Get()
+        public async Task<ActionResult<List<RestaurantModel>>> GetAsync()
         {
-            Arepo.GetFavoritesForUser(User.Identity.Name);
-
-            return Mapper.Map(Arepo.GetFavoritesForUser(User.Identity.Name)).ToList();
-
+            //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
+            try
+            {
+                return Mapper.Map(await Arepo.GetFavoritesForUserAsync(User.Identity.Name)).ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         //Given a restaurantID, returns bool of whether restaurant is in user's favorites
         //TODO: this
         // GET: api/Favorites/5
-        [HttpGet("{id}", Name = "GetFavorites")]
-        public string Get(int id)
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        [HttpGet("{rId}", Name = "GetFavorites")]
+        public async Task<ActionResult<bool>> GetAsync(string rId)
         {
-            return "value";
+            //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
+            try
+            {
+                return (await Arepo.GetFavoritesForUserAsync(User.Identity.Name)).Any(n => n.Id.Equals(rId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         //Given a restaurant id as a parameter, add the restaurant to the current user's favorites
         // POST: api/Favorites
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] string value)
+        public async Task<IActionResult> CreateAsync([FromBody] string value)
         {
-         
             try
             {
-                Arepo.AddRestaurantToFavorites(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+                await Arepo.AddRestaurantToFavoritesAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
             }
-
             catch
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            Rrepo.Save();
-
+            try
+            {
+                await Rrepo.SaveAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return CreatedAtRoute("Getfavorite", new { Id = value }, value);
         }
 
-        //Unused
-        // PUT: api/Favorites/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
         //Given a restaurant id as a parameter, remove the restaurant from the current user's favorites
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         [Authorize]
-        public IActionResult Delete([FromBody]string value)
+        [HttpDelete("{value}")]
+        public async Task<IActionResult> DeleteAsync(string value)
         {
-
             try
             {
-                Arepo.RemoveRestaurantFromFavorites(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+                await Arepo.RemoveRestaurantFromFavoritesAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
             }
 
             catch
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            Rrepo.Save();
-
-            return CreatedAtRoute("Removefavorite", new { Id = value }, value);
+            try
+            {
+                await Rrepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return StatusCode(StatusCodes.Status204NoContent);
         }
     }
 }
