@@ -58,7 +58,7 @@ namespace RestaurantAPI.API.Controllers
         {
             try
             {
-                return Rrepo.GetRestaurants().Where(k => k.RestaurantKeywordJunction.Any(rkj => rkj.Word.Equals(keyword))).Select(k => Mapper.Map(k)).ToList();
+                return Rrepo.GetRestaurants(true).Where(k => k.RestaurantKeywordJunction.Any(rkj => rkj.Word.Equals(keyword))).Select(k => Mapper.Map(k)).ToList();
             }
             catch (Exception e)
             {
