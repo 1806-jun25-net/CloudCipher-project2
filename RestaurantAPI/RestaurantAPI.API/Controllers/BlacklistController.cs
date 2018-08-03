@@ -101,7 +101,7 @@ namespace RestaurantAPI.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtRoute("GetBlacklist", new { Id = value }, value);
+            return StatusCode(StatusCodes.Status204NoContent);
         }
 
 
