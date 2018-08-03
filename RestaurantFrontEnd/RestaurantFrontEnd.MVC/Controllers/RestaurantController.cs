@@ -216,37 +216,39 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         public async Task<ActionResult> BrowseRestaurants([FromQuery] string search = "")
         {
-            if (string search = "keyword")
+            HttpRequestMessage request;
+
+            if (string.IsNullOrEmpty(search))
             {
-                
+                request = CreateRequestService(HttpMethod.Get, "api/restaurant");
             }
 
             else
             {
-                var request = CreateRequestService(HttpMethod.Get, "api/restaurant");
-
-                try
-                {
-                    var response = await HttpClient.SendAsync(request);
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return View("Error");
-                    }
-
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    List<Restaurant> restaurant = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
-
-                    return View(@"..\Restarant\Index", restaurant);
-                }
-
-                catch (HttpRequestException ex)
-                {
-                    return View("Error", ex);
-                }
+                request = CreateRequestService(HttpMethod.Get, "api/Keyword/"+search);
             }
-            
-            
+
+
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                List<Restaurant> restaurant = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
+
+                return View(@"..\Restarant\Index", restaurant);
+            }
+
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
+
 
 
         }
