@@ -47,7 +47,7 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = k.Word,
                     Frequency = Krepo.GetQueryKeywordJunction().Count(qkj => qkj.Word.Equals(k.Word))
-                }).ToList();
+                }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {
@@ -86,7 +86,7 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = k.Word,
                     Frequency = Krepo.GetQueryKeywordJunction().Where(s => s.Query.Username.Equals(User.Identity.Name) && s.Word.Equals(k.Word)).Count()
-                }).ToList();
+                }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {
