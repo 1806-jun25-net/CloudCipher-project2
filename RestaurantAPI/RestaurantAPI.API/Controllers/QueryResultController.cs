@@ -39,14 +39,17 @@ namespace RestaurantAPI.API.Controllers
         [HttpGet]
         public ActionResult<List<QueryResult>> Get()
         {
-            var queryList = Qrepo.GetQueries();
+            List<Query> queryList;
+
+            if (!User.IsInRole("admin"))  //Admin gets full query list, other users only get their own
+                queryList = Qrepo.GetQueries().Where(q => q.Username.Equals(User.Identity.Name)).ToList();
+            else
+                queryList = Qrepo.GetQueries().ToList();
+
             if (queryList == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            if (!User.IsInRole("admin"))  //Admin gets full query list, other users only get their own
-                queryList = queryList.Where(q => q.Username.Equals(User.Identity.Name));
-
             return queryList.Select(m => new QueryResult() { QueryObject = Mapper.Map(m), Restaurants = Mapper.Map(Qrepo.GetRestaurantsInQuery(m.Id)).ToList() } ).ToList();
         }
 
