@@ -36,7 +36,7 @@ namespace RestaurantAPI.API.Controllers
         /// Frequencies represent how many queries that keyword has appeared in, sorted by descending.
         /// Available to All users
         /// </summary>
-        /// <returns>List of FrequencyWrapper of string </returns>
+        /// <returns>List of FrequencyWrappers of string </returns>
         [ProducesResponseType(500)]
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
@@ -47,7 +47,7 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = k.Word,
                     Frequency = Krepo.GetQueryKeywordJunction().Count(qkj => qkj.Word.Equals(k.Word))
-                }).ToList();
+                }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {
@@ -67,7 +67,7 @@ namespace RestaurantAPI.API.Controllers
         /// Only available for user matching username, or admin.
         /// </summary>
         /// <param name="username">name of user to look up keyword frequency for</param>
-        /// <returns>List of FrequencyWrapperModel<string></returns>
+        /// <returns>List of FrequencyWrappers of string </returns>
         [Authorize]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
@@ -86,7 +86,7 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = k.Word,
                     Frequency = Krepo.GetQueryKeywordJunction().Where(s => s.Query.Username.Equals(User.Identity.Name) && s.Word.Equals(k.Word)).Count()
-                }).ToList();
+                }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {

@@ -34,6 +34,7 @@ namespace RestaurantAPI.API.Controllers
         /// <summary>
         /// Return a list of all Keywords wrapped w/ frequencies.
         /// Frequencies represent how many restaurants in DB match that keyword.
+        /// Sorted by most frequent to least
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of string </returns>
@@ -47,7 +48,7 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = k.Word,
                     Frequency = Krepo.GetRestaurantKeywordJunction().Count(w => w.Word.Equals(k.Word))
-                }).ToList();
+                }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {
