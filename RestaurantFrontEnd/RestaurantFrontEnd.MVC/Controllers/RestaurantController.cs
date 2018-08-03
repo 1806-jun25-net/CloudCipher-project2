@@ -19,18 +19,81 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         }
         // GET: Restaurant
-        public ActionResult Index([FromQuery] string search = "")
+        public async Task<ActionResult> Index([FromQuery] string search = "")
         {
             //var requestg = CreateRequestService(HttpMethod.Get, "api/Restaurant");
-            var request = CreateRequestService(HttpMethod.Post, "api/Restaurant");
+          
             //change to Query once you have authorization set up
 
             if (search == null || search == "")
             {
-                ///request = CreateRequestService(HttpMethod.Get, "api/restaurant")
-                //SAVE ABOVE FOR LATER//WIll be sending this request to Query
-                //controller in the form of a list
-                return View(@"..\Restaurant\Index");
+                string cookieValue = Request.Cookies[s_CookieName];
+
+                //RETURNING SUGGESTIONS FOR
+                if (cookieValue != null)
+                {
+                    if (TempData.Peek("Username") != null)
+                    {
+
+                        var request = CreateRequestService(HttpMethod.Get, "api/QueryResult/");
+
+                        try
+                        {
+                            var response = await HttpClient.SendAsync(request);
+
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                return View("Error");
+                            }
+
+                            string jsonString = await response.Content.ReadAsStringAsync();
+                            List<QueryResult> user = JsonConvert.DeserializeObject<List<QueryResult>>(jsonString);
+
+                            IEnumerable<Restaurant> GetUserRests()
+                            {
+
+                                // IEnumerable<Restaurant> user_rests = new List<Restaurant>();
+                                List<Restaurant> user_rests = new List<Restaurant>();
+                                foreach (var m in user)
+                                {
+                                    if (m.QueryObject.Username == (string)TempData.Peek("Username"))
+                                    {
+                                        foreach (var l in m.Restaurants)
+                                        {
+                                            user_rests.Add(l);
+                                        }
+                                    }
+                                }
+                                IEnumerable<Restaurant> userRests = user_rests;
+                                return userRests;
+                            }
+                            return View(@"..\Restaurant\Index", GetUserRests());
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            return View("Error");
+                        };
+                    }
+                    else
+                    {
+                        return View(@"..\Restaurant\Index");
+                    }
+                }
+                else
+                {
+                    return View(@"..\Restaurant\Index");
+                }
+                /////request = CreateRequestService(HttpMethod.Get, "api/restaurant")
+                ////SAVE ABOVE FOR LATER//WIll be sending this request to Query
+                ////controller in the form of a list
+
+                //DONT FORGET THIS: IF NEW TO APP THIS SHOULD BE RETURNED
+                //MAYBE ABOVE SUGGESTIONS PROCESS CAN STILL FUNCITON AS LONG AS IT DOESNT RETURN
+                //ERROR PAGE IF NO RESULTS RETURNED...SHOULD CONTINUE ON TO EMPTY VIEW
+
+                //return View(@"..\Restaurant\Index");
+
+                ///////////
             }
             else
             {
