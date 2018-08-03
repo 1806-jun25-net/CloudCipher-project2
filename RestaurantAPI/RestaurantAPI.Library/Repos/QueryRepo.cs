@@ -28,7 +28,7 @@ namespace RestaurantAPI.Library.Repos
         {
             return _db.Query.AsNoTracking()
                 .Include(m =>m.QueryKeywordJunction)
-                .Include(m=>m.QueryRestaurantJunction).ThenInclude(n=>n.Restaurant);
+                .Include(m=>m.QueryRestaurantJunction).ThenInclude(n=>n.Restaurant).ThenInclude(o => o.RestaurantKeywordJunction);
         }
 
         /// <summary>
