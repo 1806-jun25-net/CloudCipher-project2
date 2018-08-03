@@ -37,33 +37,30 @@ namespace RestaurantAPI.API.Controllers
         [HttpGet]
         public ActionResult<List<RestaurantModel>> Get()
         {
-            Rrepo.GetRestaurants();
-
-            return Mapper.Map(Rrepo.GetRestaurants()).ToList();
-            
+            return Mapper.Map(Rrepo.GetRestaurants(true)).ToList();
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}", Name = "GetRestaurant")]
-        public ActionResult<RestaurantModel> Get(string id)
+        public async Task<ActionResult<RestaurantModel>> GetAsync(string id)
         {
-            Restaurant grabVariable;
+            Restaurant r;
             try
             {
-                grabVariable = Rrepo.GetRestaurantByID(id);
+                r = await Rrepo.GetRestaurantByIDAsync(id, true);
             }
             catch(Exception)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            return Mapper.Map(grabVariable);
+            return Mapper.Map(r);
         }
 
         // POST api/<controller>
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody]RestaurantModel value)
+        public async Task<IActionResult> CreateAsync([FromBody]RestaurantModel value)
         {
             Restaurant createVariable;
 
@@ -71,7 +68,7 @@ namespace RestaurantAPI.API.Controllers
 
             try
             {
-                Rrepo.AddRestaurant(createVariable);
+                await Rrepo.AddRestaurantAsync(createVariable);
             }
 
             catch
@@ -79,7 +76,7 @@ namespace RestaurantAPI.API.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            Rrepo.Save();
+            await Rrepo.SaveAsync();
 
             return CreatedAtRoute("GetRestaurant", new { Id = value.Id }, value);
         }

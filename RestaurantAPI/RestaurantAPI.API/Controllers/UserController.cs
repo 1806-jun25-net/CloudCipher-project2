@@ -58,7 +58,7 @@ namespace RestaurantAPI.API.Controllers
 
             try
             {
-                Arepo.AddUser(createVariable);
+                await Arepo.AddUserAsync(createVariable);
             }
 
             catch
@@ -97,7 +97,7 @@ namespace RestaurantAPI.API.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            Arepo.Save();
+            await Arepo.SaveAsync();
 
             return StatusCode(StatusCodes.Status204NoContent);
         }

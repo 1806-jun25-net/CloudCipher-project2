@@ -430,6 +430,20 @@ namespace RestaurantAPI.Library.Repos
         }
 
         /// <summary>
+        /// Adds a new AppUser object to the DB
+        /// Throws an exception if that username is already in use to avoid violating PK constraint.
+        /// Must still call Save() after all DB updates are finished.
+        /// </summary>
+        /// <param name="u">AppUser object to be added to DB</param>
+        public void AddUserAsync(AppUser u)
+        {
+            bool contains = DBContainsUsername(u.Username);
+            if (contains)
+                throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
+            _db.Add(u);
+        }
+
+        /// <summary>
         /// Saves changes to DB
         /// </summary>
         public async Task SaveAsync()

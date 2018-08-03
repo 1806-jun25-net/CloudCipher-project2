@@ -12,6 +12,7 @@ namespace RestaurantAPI.Library.Repos
         void AddRestaurantToFavorites(string username, string restaurantId, RestaurantRepo rRepo);
         Task AddRestaurantToFavoritesAsync(string username, string restaurantId, RestaurantRepo rRepo);
         void AddUser(AppUser u);
+        Task AddUserAsync(AppUser u);
         bool DBContainsUsername(string username);
         Task<bool> DBContainsUsernameAsync(string username);
         IEnumerable<Restaurant> GetBlacklistForUser(string username);
