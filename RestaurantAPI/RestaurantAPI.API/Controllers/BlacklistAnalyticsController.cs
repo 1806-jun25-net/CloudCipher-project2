@@ -31,6 +31,7 @@ namespace RestaurantAPI.API.Controllers
         /// <summary>
         /// Return a list of all Restaurants wrapped w/ frequencies.
         /// Frequencies represent how many users have given restaurant in their blacklist.
+        /// Need to sort by descending
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of RestaurantModel </returns>
@@ -55,7 +56,8 @@ namespace RestaurantAPI.API.Controllers
         // GET: api/BlacklistAnalytics/5
         /// <summary>
         /// Return a list of usernames of users who have blacklisted a specific restaurant.
-        /// Available to all users (public like facebook likes?) (or admin only?)
+        /// Available to all users 
+        /// Should sort by descending
         /// </summary>
         /// <param name="id">restaurant Id</param>
         /// <returns>List of strings representing usernames</returns>
