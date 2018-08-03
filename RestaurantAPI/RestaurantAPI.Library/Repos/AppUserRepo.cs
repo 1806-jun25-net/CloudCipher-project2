@@ -435,9 +435,9 @@ namespace RestaurantAPI.Library.Repos
         /// Must still call Save() after all DB updates are finished.
         /// </summary>
         /// <param name="u">AppUser object to be added to DB</param>
-        public void AddUserAsync(AppUser u)
+        public async Task AddUserAsync(AppUser u)
         {
-            bool contains = DBContainsUsername(u.Username);
+            bool contains = await DBContainsUsernameAsync(u.Username);
             if (contains)
                 throw new DbUpdateException("That username is already in the database.  Usernames must be unique to add a new user", new NotSupportedException());
             _db.Add(u);

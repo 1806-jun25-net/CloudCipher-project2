@@ -46,9 +46,12 @@ namespace RestaurantAPI.API.Controllers
         //TODO: this
         // GET: api/Favorites/5
         [HttpGet("{id}", Name = "GetFavorites")]
-        public string Get(int id)
+        public async Task<ActionResult<bool>> GetAsync(string rId)
         {
-            return "value";
+            if (!(await Arepo.DBContainsUsernameAsync(User.Identity.Name)))
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
+            return (await Arepo.GetFavoritesForUserAsync(User.Identity.Name)).Any(n => n.Id.Equals(rId));
         }
 
         //Given a restaurant id as a parameter, add the restaurant to the current user's favorites
