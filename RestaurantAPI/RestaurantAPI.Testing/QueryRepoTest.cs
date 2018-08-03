@@ -416,7 +416,6 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 qRepo = new QueryRepo(context);
-                kRepo = new KeywordRepo(context);
                 qRepo.AddQuery(q);
                 result = context.Query.Find(q.Id);
             }
