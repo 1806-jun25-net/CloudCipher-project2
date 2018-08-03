@@ -13,8 +13,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
 {
     public abstract class AServiceController : Controller
     {
-        private static readonly Uri s_serviceUri = new Uri("http://localhost:58756/");
+        private static readonly Uri s_LocalServiceUri = new Uri("http://localhost:58756/");
+        private static readonly Uri s_AzureServiceUri = new Uri("https://cloudcipher-restrauntrecommendations.azurewebsites.net/");
         protected static readonly string s_CookieName = "Project2Auth";
+        protected static readonly bool useAzureApi = true; //Use this to switch between Azure and local Api
 
         protected HttpClient HttpClient { get; }
 
@@ -25,7 +27,15 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         protected HttpRequestMessage CreateRequestService(HttpMethod method,string uri, object body = null)
         {
-            var apiRequest = new HttpRequestMessage(method,new Uri(s_serviceUri, uri));
+            HttpRequestMessage apiRequest;
+            if (useAzureApi)  //use AzureApi
+            {
+                apiRequest = new HttpRequestMessage(method, new Uri(s_AzureServiceUri, uri));
+            }
+            else  //use localhostApi
+            {
+                apiRequest = new HttpRequestMessage(method, new Uri(s_LocalServiceUri, uri));
+            }
 
             if(body != null)
             {
