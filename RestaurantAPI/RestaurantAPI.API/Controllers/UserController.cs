@@ -32,22 +32,35 @@ namespace RestaurantAPI.API.Controllers
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
 
-        
+
         // GET: api/<controller>
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(500)]
         [HttpGet]
         [Authorize(Roles = "admin")]//checking if you are in some role, to access something
         public ActionResult <List<UserModel>> Get()
         {
-            var userlist = Arepo.GetUsers();
+            List<AppUser> userlist;
+            try
+            {
+                userlist = Arepo.GetUsers().ToList();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             if (userlist == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return Mapper.Map(userlist).ToList();
-        }  
+        }
 
         // POST api/<controller>
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> CreateAsync([FromBody]UserModel value)
@@ -61,19 +74,25 @@ namespace RestaurantAPI.API.Controllers
                 await Arepo.AddUserAsync(createVariable);
             }
 
-            catch
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            await Arepo.SaveAsync();
-
+            try
+            {
+                await Arepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return CreatedAtRoute("GetUser", new { username = value.Username }, value);
-           
-
         }
 
         // PUT api/<controller>/5
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [Authorize]
         [HttpPut("{username}", Name = "UpdateUser")]
         public async Task<IActionResult> PutAsync(string username, [FromBody]UserModel value)
         {
@@ -89,16 +108,19 @@ namespace RestaurantAPI.API.Controllers
             try
             {
                 Arepo.UpdateUser(updateVariable);
-                await Arepo.SaveAsync();
             }
-
-            catch
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
-            await Arepo.SaveAsync();
-
+            try
+            {
+                await Arepo.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return StatusCode(StatusCodes.Status204NoContent);
         }
         
@@ -123,7 +145,7 @@ namespace RestaurantAPI.API.Controllers
                 userVariable = await Arepo.GetUserByUsernameAsync(username);
             }
 
-            catch (Exception)
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
@@ -131,10 +153,6 @@ namespace RestaurantAPI.API.Controllers
 
             
         }
-
         
-
-
-
     }
 }

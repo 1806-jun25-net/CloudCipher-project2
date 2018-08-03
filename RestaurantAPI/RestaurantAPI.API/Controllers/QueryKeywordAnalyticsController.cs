@@ -34,8 +34,8 @@ namespace RestaurantAPI.API.Controllers
         /// Available to All users
         /// </summary>
         /// <returns>List of FrequencyWrapper of string </returns>
-        [HttpGet]
         [ProducesResponseType(500)]
+        [HttpGet]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
         {
             try
@@ -65,11 +65,17 @@ namespace RestaurantAPI.API.Controllers
         /// <param name="username">name of user to look up keyword frequency for</param>
         /// <returns>List of FrequencyWrapperModel<string></returns>
         [Authorize]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         [HttpGet("{username}", Name = "GetKeywordQueryAnalytics")]
         public ActionResult<List<FrequencyWrapper<string>>> Get(string username)
         {
             //[Authorize] handles returning 401 if noone is logged in.
+            if (!(User.Identity.Name.Equals(username) || User.IsInRole("admin")))
+            {
+                return StatusCode(403);//Forbidden
+            }
             try
             {
                 return Krepo.GetKeywords().Select(k => new FrequencyWrapper<string>()
@@ -82,7 +88,6 @@ namespace RestaurantAPI.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
         }
         
     }

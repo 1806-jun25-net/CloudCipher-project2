@@ -33,16 +33,22 @@ namespace RestaurantAPI.API.Controllers
         /// Available to all users
         /// </summary>
         /// <returns>List of FrequencyWrapper of string </returns>
+        [ProducesResponseType(500)]
         [HttpGet]
         public ActionResult<List<FrequencyWrapper<string>>> Get()
         {
-            //throw new NotImplementedException();
-            return Krepo.GetKeywords().Select(k => new FrequencyWrapper<string>()
+            try
+            { 
+                return Krepo.GetKeywords().Select(k => new FrequencyWrapper<string>()
+                {
+                    Obj = k.Word,
+                    Frequency = Krepo.GetRestaurantKeywordJunction().Count(w => w.Word.Equals(k.Word))
+                }).ToList();
+            }
+            catch (Exception e)
             {
-                Obj = k.Word,
-                Frequency = Krepo.GetRestaurantKeywordJunction().Count(w => w.Word.Equals(k.Word))
-            }).ToList();
-            //return new List<FrequencyWrapper<string>>() { new FrequencyWrapper<string> { Frequency = 1, Obj = "it works!" } };
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         // GET: api/RestaurantKeywordAnalytics/5
