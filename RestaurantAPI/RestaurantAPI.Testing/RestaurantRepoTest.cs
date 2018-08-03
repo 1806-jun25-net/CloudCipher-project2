@@ -22,6 +22,52 @@ namespace RestaurantAPI.Testing
             }
         }
 
+        public static IEnumerable<object[]> AllRestaurantData =>
+        new List<object[]>
+        {
+            new object[] { "1a", false },
+            new object[] { "2b", false },
+            new object[] { "3c", false },
+            new object[] { "4d", false },
+            new object[] { "1XxX1LLL", false },
+            new object[] { "42__3~!2", false },
+            new object[] { "67", false },
+            new object[] { "324isANumber", false },
+            new object[] { "1a", true },
+            new object[] { "2b", true },
+            new object[] { "3c", true },
+            new object[] { "4d", true },
+            new object[] { "1XxX1LLL", true },
+            new object[] { "42__3~!2", true },
+            new object[] { "67", true },
+            new object[] { "324isANumber", true },
+        };
+
+        public static IEnumerable<object[]> ValidRestaurantData =>
+        new List<object[]>
+        {
+            new object[] { "1a", false },
+            new object[] { "2b", false },
+            new object[] { "3c", false },
+            new object[] { "4d", false },
+            new object[] { "1a", true },
+            new object[] { "2b", true },
+            new object[] { "3c", true },
+            new object[] { "4d", true },
+        };
+
+        public static IEnumerable<object[]> InvalidRestaurantData =>
+        new List<object[]>
+        {
+            new object[] { "1XxX1LLL", false },
+            new object[] { "42__3~!2", false },
+            new object[] { "67", false },
+            new object[] { "324isANumber", false },
+            new object[] { "1XxX1LLL", true },
+            new object[] { "42__3~!2", true },
+            new object[] { "67", true },
+            new object[] { "324isANumber", true },
+        };
 
         //Testing of GetRestaurants()
         [Fact]
@@ -41,6 +87,7 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
+
                     rRepo.GetRestaurants();
                 }
                 catch
@@ -74,15 +121,8 @@ namespace RestaurantAPI.Testing
 
         //Testing of DBContainsRestaurant
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        [InlineData("1XxX1LLL")]
-        [InlineData("42__3~!2")]
-        [InlineData("67")]
-        [InlineData("324isANumber")]
-        public void DBContainsRestaurantShouldNotThrowExceptionIfDBIsEmpty(string Id)
+        [MemberData(nameof(AllRestaurantData))]
+        public void DBContainsRestaurantShouldNotThrowExceptionIfDBIsEmpty(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -96,7 +136,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                rRepo.DBContainsRestaurant(Id);
+                if (useAsync)
+                    rRepo.DBContainsRestaurantAsync(Id).Wait();
+                else
+                    rRepo.DBContainsRestaurant(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -104,15 +147,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        [InlineData("1XxX1LLL")]
-        [InlineData("42__3~!2")]
-        [InlineData("67")]
-        [InlineData("324isANumber")]
-        public void DBContainsRestaurantShouldReturnFalseIfIfDBIsEmpty(string Id)
+        [MemberData(nameof(AllRestaurantData))]
+        public void DBContainsRestaurantShouldReturnFalseIfIfDBIsEmpty(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -125,7 +161,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                result = rRepo.DBContainsRestaurant(Id);
+                if (useAsync)
+                    result = rRepo.DBContainsRestaurantAsync(Id).Result;
+                else
+                    result = rRepo.DBContainsRestaurant(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -133,11 +172,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void DBContainsRestaurantShouldReturnTrueIfRestaurantIdInDB(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void DBContainsRestaurantShouldReturnTrueIfRestaurantIdInDB(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -150,18 +186,18 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                result = rRepo.DBContainsRestaurant(Id);
+                if (useAsync)
+                    result = rRepo.DBContainsRestaurantAsync(Id).Result;
+                else
+                    result = rRepo.DBContainsRestaurant(Id);
             }
             //Assert
             Assert.True(result);
         }
 
         [Theory]
-        [InlineData("1XxX1LLL")]
-        [InlineData("42__3~!2")]
-        [InlineData("67")]
-        [InlineData("324isANumber")]
-        public void DBContainsRestaurantShouldReturnFalseIfRestaurantIdNotInDB(string Id)
+        [MemberData(nameof(InvalidRestaurantData))]
+        public void DBContainsRestaurantShouldReturnFalseIfRestaurantIdNotInDB(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -174,7 +210,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                result = rRepo.DBContainsRestaurant(Id);
+                if (useAsync)
+                    result = rRepo.DBContainsRestaurantAsync(Id).Result;
+                else
+                    result = rRepo.DBContainsRestaurant(Id);
             }
             //Assert
             Assert.False(result);
@@ -182,11 +221,8 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetRestaurantByID
         [Theory]
-        [InlineData("1XxX1LLL")]
-        [InlineData("42__3~!2")]
-        [InlineData("67")]
-        [InlineData("324isANumber")]
-        public void GetRestaurantByIDShouldThrowExceptionIfIdNotFound(string Id)
+        [MemberData(nameof(InvalidRestaurantData))]
+        public void GetRestaurantByIDShouldThrowExceptionIfIdNotFound(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -202,9 +238,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    rRepo.GetRestaurantByID(Id);
+                    if (useAsync)
+                        rRepo.GetRestaurantByIDAsync(Id).Wait();
+                    else
+                        rRepo.GetRestaurantByID(Id);
                 }
                 catch (NotSupportedException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -214,11 +257,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void GetRestaurantByIDShouldNotThrowExceptionIfIdIsInDB(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void GetRestaurantByIDShouldNotThrowExceptionIfIdIsInDB(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -231,7 +271,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                rRepo.GetRestaurantByID(Id);
+                if (useAsync)
+                    rRepo.GetRestaurantByIDAsync(Id).Wait();
+                else
+                    rRepo.GetRestaurantByID(Id);
             }
             //If exception is throw, test will exit before reaching Assert
             //Assert
@@ -239,11 +282,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void GetRestaurantByIDShouldReturnRestaurantWithMatchingId(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void GetRestaurantByIDShouldReturnRestaurantWithMatchingId(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -257,7 +297,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                r = rRepo.GetRestaurantByID(Id);
+                if (useAsync)
+                    r = rRepo.GetRestaurantByIDAsync(Id).Result;
+                else
+                    r = rRepo.GetRestaurantByID(Id);
             }
 
             //Assert
@@ -266,15 +309,17 @@ namespace RestaurantAPI.Testing
         
         //Testing of AddRestaurant
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void AddRestaurantShouldThrowExceptionIfIdAlreadyInDB(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void AddRestaurantShouldThrowExceptionIfIdAlreadyInDB(string Id, bool useAsync)
         {
             //Arrange
+            string dbName;
+            if (useAsync)
+                dbName = "EmptyAddRestaurantAsyncTesting1DB";
+            else
+                dbName = "EmptyAddRestaurantTesting1DB";
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting1DB")
+                .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
 
             Restaurant r = new Restaurant { Id = Id, Name = Id + " Diner", Lat = "loc", Lon = "loc" };
@@ -293,9 +338,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    rRepo.AddRestaurant(r);
+                    if (useAsync)
+                        rRepo.AddRestaurantAsync(r).Wait();
+                    else
+                        rRepo.AddRestaurant(r);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -306,11 +358,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void AddRestaurantShouldThrowExceptionIfNameIsNull(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void AddRestaurantShouldThrowExceptionIfNameIsNull(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -327,9 +376,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    rRepo.AddRestaurant(r);
+                    if (useAsync)
+                        rRepo.AddRestaurantAsync(r).Wait();
+                    else
+                        rRepo.AddRestaurant(r);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -340,11 +396,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void AddRestaurantShouldThrowExceptionIfLocationIsNull(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void AddRestaurantShouldThrowExceptionIfLocationIsNull(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -361,9 +414,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    rRepo.AddRestaurant(r);
+                    if (useAsync)
+                        rRepo.AddRestaurantAsync(r).Wait();
+                    else
+                        rRepo.AddRestaurant(r);
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -374,11 +434,8 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData("1a")]
-        [InlineData("2b")]
-        [InlineData("3c")]
-        [InlineData("4d")]
-        public void AddRestrauntShouldAddCorrectRestauranttoDB(string Id)
+        [MemberData(nameof(ValidRestaurantData))]
+        public void AddRestrauntShouldAddCorrectRestauranttoDB(string Id, bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -393,7 +450,10 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                rRepo.AddRestaurant(r);
+                if (useAsync)
+                    rRepo.AddRestaurantAsync(r).Wait();
+                else
+                    rRepo.AddRestaurant(r);
                 result = context.Restaurant.Find(r.Id);
             }
 
@@ -402,8 +462,10 @@ namespace RestaurantAPI.Testing
         }
 
         //Testing of AddNewRestaurants
-        [Fact]
-        public void AddAllRestaurantsShouldThrowExceptionIfRestaurantListIsNull()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AddAllRestaurantsShouldThrowExceptionIfRestaurantListIsNull(bool useAsync)
         {
             //Arrange
             var options = new DbContextOptionsBuilder<Project2DBContext>()
@@ -418,9 +480,16 @@ namespace RestaurantAPI.Testing
                 rRepo = new RestaurantRepo(context);
                 try
                 {
-                    rRepo.AddNewRestaurants(null, new List<string>());
+                    if (useAsync)
+                        rRepo.AddNewRestaurantsAsync(null, new List<string>()).Wait();
+                    else
+                        rRepo.AddNewRestaurants(null, new List<string>());
                 }
                 catch (DbUpdateException)
+                {
+                    result = true;
+                }
+                catch (AggregateException)
                 {
                     result = true;
                 }
@@ -430,12 +499,19 @@ namespace RestaurantAPI.Testing
             Assert.True(result);
         }
 
-        [Fact]
-        public void AddAllRestaurantsShouldNotThrowExceptionIfKeywordListIsNull()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AddAllRestaurantsShouldNotThrowExceptionIfKeywordListIsNull(bool useAsync)
         {
             //Arrange
+            string dbName;
+            if (useAsync)
+                dbName = "EmptyAddRestaurantAsyncTesting5DB";
+            else
+                dbName = "EmptyAddRestaurantTesting5DB";
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting5DB")
+                .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
             RestaurantRepo rRepo;
             bool result = true;
@@ -444,19 +520,29 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                rRepo.AddNewRestaurants(new List<Restaurant>(), null);
+                if (useAsync)
+                    rRepo.AddNewRestaurantsAsync(new List<Restaurant>(), null).Wait();
+                else
+                    rRepo.AddNewRestaurants(new List<Restaurant>(), null);
             }
             //Test will fail and not reach this point if Exception is thrown
             //Assert
             Assert.True(result);
         }
 
-        [Fact]
-        public void AddAllRestaurantsShouldAddMultipleRestaurantsToDB()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AddAllRestaurantsShouldAddMultipleRestaurantsToDB(bool useAsync)
         {
             //Arrange
+            string dbName;
+            if (useAsync)
+                dbName = "EmptyAddRestaurantAsyncTesting6DB";
+            else
+                dbName = "EmptyAddRestaurantTesting6DB";
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting6DB")
+                .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
             RestaurantRepo rRepo;
             List<Restaurant> resultList;
@@ -465,7 +551,8 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                rRepo.AddNewRestaurants(new List<Restaurant>() {
+                if (useAsync)
+                    rRepo.AddNewRestaurantsAsync(new List<Restaurant>() {
                     new Restaurant { Id = "1a", Name = "1", Lat = "loc", Lon = "loc", Owner = "realUser" },
                     new Restaurant { Id = "2b", Name = "2", Lat = "loc", Lon = "loc" },
                     new Restaurant { Id = "3c", Name = "3", Lat = "loc", Lon = "loc" },
@@ -473,7 +560,17 @@ namespace RestaurantAPI.Testing
                     new Restaurant { Id = "5e", Name = "5", Lat = "loc", Lon = "loc", Owner = "realUser" },
                     new Restaurant { Id = "6f", Name = "6", Lat = "loc", Lon = "loc" },
                     new Restaurant { Id = "7g", Name = "7", Lat = "loc", Lon = "loc" }
-                }, new List<string>());
+                    }, new List<string>()).Wait();
+                else
+                    rRepo.AddNewRestaurants(new List<Restaurant>() {
+                        new Restaurant { Id = "1a", Name = "1", Lat = "loc", Lon = "loc", Owner = "realUser" },
+                        new Restaurant { Id = "2b", Name = "2", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "3c", Name = "3", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "4d", Name = "4", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "5e", Name = "5", Lat = "loc", Lon = "loc", Owner = "realUser" },
+                        new Restaurant { Id = "6f", Name = "6", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "7g", Name = "7", Lat = "loc", Lon = "loc" }
+                    }, new List<string>());
                 context.SaveChanges();
                 resultList = context.Restaurant.AsNoTracking().ToList();
             }
@@ -481,16 +578,20 @@ namespace RestaurantAPI.Testing
             //Assert
             Assert.Equal(7, resultList.Count);
         }
-
-
         
-
-        [Fact]
-        public void AddAllRestaurantsShouldAddOnlyNewRestaurantsToDB()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AddAllRestaurantsShouldAddOnlyNewRestaurantsToDB(bool useAsync)
         {
             //Arrange
+            string dbName;
+            if (useAsync)
+                dbName = "EmptyAddRestaurantAsyncTesting7DB";
+            else
+                dbName = "EmptyAddRestaurantTesting7DB";
             var options = new DbContextOptionsBuilder<Project2DBContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyAddRestaurantTesting7DB")
+                .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
             RestaurantRepo rRepo;
             List<Restaurant> resultList;
@@ -506,8 +607,9 @@ namespace RestaurantAPI.Testing
             using (var context = new Project2DBContext(options))
             {
                 rRepo = new RestaurantRepo(context);
-                
-                rRepo.AddNewRestaurants( new List<Restaurant>() {
+
+                if (useAsync)
+                    rRepo.AddNewRestaurantsAsync(new List<Restaurant>() {
                     new Restaurant { Id = "1a", Name = "1", Lat = "loc", Lon = "loc", Owner = "realUser" },
                     new Restaurant { Id = "2b", Name = "2", Lat = "loc", Lon = "loc" },
                     new Restaurant { Id = "3c", Name = "3", Lat = "loc", Lon = "loc" },
@@ -515,8 +617,18 @@ namespace RestaurantAPI.Testing
                     new Restaurant { Id = "5e", Name = "5", Lat = "loc", Lon = "loc", Owner = "realUser" },
                     new Restaurant { Id = "6f", Name = "6", Lat = "loc", Lon = "loc" },
                     new Restaurant { Id = "7g", Name = "7", Lat = "loc", Lon = "loc" }
-                }, new List<string>());
-                
+                    }, new List<string>()).Wait();
+                else
+                    rRepo.AddNewRestaurants(new List<Restaurant>() {
+                        new Restaurant { Id = "1a", Name = "1", Lat = "loc", Lon = "loc", Owner = "realUser" },
+                        new Restaurant { Id = "2b", Name = "2", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "3c", Name = "3", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "4d", Name = "4", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "5e", Name = "5", Lat = "loc", Lon = "loc", Owner = "realUser" },
+                        new Restaurant { Id = "6f", Name = "6", Lat = "loc", Lon = "loc" },
+                        new Restaurant { Id = "7g", Name = "7", Lat = "loc", Lon = "loc" }
+                    }, new List<string>());
+
                 context.SaveChanges();
                 resultList = context.Restaurant.AsNoTracking().ToList();
             }

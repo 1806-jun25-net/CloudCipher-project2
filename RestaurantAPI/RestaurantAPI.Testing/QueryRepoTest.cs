@@ -22,6 +22,53 @@ namespace RestaurantAPI.Testing
             }
         }
 
+        public static IEnumerable<object[]> AllQueryData =>
+        new List<object[]>
+        {
+            new object[] { "1", false },
+            new object[] { "2", false },
+            new object[] { "3", false },
+            new object[] { "4", false },
+            new object[] { "19", false },
+            new object[] { "4232", false },
+            new object[] { "67", false },
+            new object[] { "324", false },
+            new object[] { "1", true },
+            new object[] { "2", true },
+            new object[] { "3", true },
+            new object[] { "4", true },
+            new object[] { "19", true },
+            new object[] { "4232", true },
+            new object[] { "67", true },
+            new object[] { "324", true },
+        };
+
+        public static IEnumerable<object[]> ValidQueryData =>
+        new List<object[]>
+        {
+            new object[] { "1", false },
+            new object[] { "2", false },
+            new object[] { "3", false },
+            new object[] { "4", false },
+            new object[] { "1", true },
+            new object[] { "2", true },
+            new object[] { "3", true },
+            new object[] { "4", true },
+        };
+
+        public static IEnumerable<object[]> InvalidQueryData =>
+        new List<object[]>
+        {
+            new object[] { "19", false },
+            new object[] { "4232", false },
+            new object[] { "67", false },
+            new object[] { "324", false },
+            new object[] { "19", true },
+            new object[] { "4232", true },
+            new object[] { "67", true },
+            new object[] { "324", true },
+        };
+
         //Testing of GetQueries()
         [Fact]
         public void GetQueriesShouldNotThrowExceptionIfDBIsEmpty()
@@ -73,22 +120,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of DBContainsQuery
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(11, false)]
-        [InlineData(4232, false)]
-        [InlineData(67, false)]
-        [InlineData(324, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
-        [InlineData(11, true)]
-        [InlineData(4232, true)]
-        [InlineData(67, true)]
-        [InlineData(324, true)]
+        [MemberData(nameof(AllQueryData))]
         public void DBContainsQueryShouldNotThrowExceptionIfDBIsEmpty(int Id, bool useAsync)
         {
             //Arrange
@@ -114,22 +146,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(11, false)]
-        [InlineData(4232, false)]
-        [InlineData(67, false)]
-        [InlineData(324, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
-        [InlineData(11, true)]
-        [InlineData(4232, true)]
-        [InlineData(67, true)]
-        [InlineData(324, true)]
+        [MemberData(nameof(AllQueryData))]
         public void DBContainsQueryShouldReturnFalseIfIfDBIsEmpty(int Id, bool useAsync)
         {
             //Arrange
@@ -154,14 +171,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
+        [MemberData(nameof(ValidQueryData))]
         public void DBContainsQueryShouldReturnTrueIfRestaurantIdInDB(int Id, bool useAsync)
         {
             //Arrange
@@ -185,14 +195,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(19, false)]
-        [InlineData(4232, false)]
-        [InlineData(67, false)]
-        [InlineData(324, false)]
-        [InlineData(19, true)]
-        [InlineData(4232, true)]
-        [InlineData(67, true)]
-        [InlineData(324, true)]
+        [MemberData(nameof(InvalidQueryData))]
         public void DBContainsQueryShouldReturnFalseIfQueryIdNotInDB(int Id, bool useAsync)
         {
             //Arrange
@@ -217,14 +220,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetQueryByID
         [Theory]
-        [InlineData(19, false)]
-        [InlineData(4232, false)]
-        [InlineData(67, false)]
-        [InlineData(324, false)]
-        [InlineData(19, true)]
-        [InlineData(4232, true)]
-        [InlineData(67, true)]
-        [InlineData(324, true)]
+        [MemberData(nameof(InvalidQueryData))]
         public void GetQueryByIDShouldThrowExceptionIfIdNotFound(int Id, bool useAsync)
         {
             //Arrange
@@ -260,14 +256,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
+        [MemberData(nameof(ValidQueryData))]
         public void GetQueryByIDShouldNotThrowExceptionIfIdIsInDB(int Id, bool useAsync)
         {
             //Arrange
@@ -292,14 +281,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
+        [MemberData(nameof(ValidQueryData))]
         public void GetQueryByIDShouldReturnQueryWithMatchingId(int Id, bool useAsync)
         {
             //Arrange
@@ -326,14 +308,7 @@ namespace RestaurantAPI.Testing
 
         //Testing of GetRestaurantsInQuery
         [Theory]
-        [InlineData(19, false)]
-        [InlineData(4232, false)]
-        [InlineData(67, false)]
-        [InlineData(324, false)]
-        [InlineData(19, true)]
-        [InlineData(4232, true)]
-        [InlineData(67, true)]
-        [InlineData(324, true)]
+        [MemberData(nameof(InvalidQueryData))]
         public void GetRestaurantsInQueryShouldThrowExceptionIfIdNotFound(int Id, bool useAsync)
         {
             //Arrange
@@ -369,14 +344,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
+        [MemberData(nameof(ValidQueryData))]
         public void GetRestaurantsInQueryShouldNotThrowExceptionIfIdIsInDB(int Id, bool useAsync)
         {
             //Arrange
@@ -401,14 +369,7 @@ namespace RestaurantAPI.Testing
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(4, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        [InlineData(4, true)]
+        [MemberData(nameof(ValidQueryData))]
         public void GetRestaurantsInQueryShouldReturnAllRestaurantsFromJunctionTable(int Id, bool useAsync)
         {
             //Arrange
