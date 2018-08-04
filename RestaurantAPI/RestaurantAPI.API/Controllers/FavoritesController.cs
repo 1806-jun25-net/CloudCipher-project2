@@ -101,7 +101,7 @@ namespace RestaurantAPI.API.Controllers
                 logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return CreatedAtRoute("Getfavorite", new { Id = value }, value);
+            return StatusCode(StatusCodes.Status204NoContent);
         }
 
 

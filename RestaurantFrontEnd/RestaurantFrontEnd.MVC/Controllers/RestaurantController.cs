@@ -49,25 +49,33 @@ namespace RestaurantFrontEnd.MVC.Controllers
                             string jsonString = await response.Content.ReadAsStringAsync();
                             List<QueryResult> user = JsonConvert.DeserializeObject<List<QueryResult>>(jsonString);
 
-                            IEnumerable<Restaurant> GetUserRests()
-                            {
+                            //IEnumerable<Restaurant> GetUserRests()
+                            //{
 
-                                // IEnumerable<Restaurant> user_rests = new List<Restaurant>();
-                                List<Restaurant> user_rests = new List<Restaurant>();
-                                foreach (var m in user)
-                                {
-                                    if (m.QueryObject.Username == (string)TempData.Peek("Username"))
-                                    {
-                                        foreach (var l in m.Restaurants)
-                                        {
-                                            user_rests.Add(l);
-                                        }
-                                    }
-                                }
-                                IEnumerable<Restaurant> userRests = user_rests;
-                                return userRests;
+                            //    // IEnumerable<Restaurant> user_rests = new List<Restaurant>();
+                            //    List<Restaurant> user_rests = new List<Restaurant>();
+                            //    foreach (var m in user)
+                            //    {
+                            //        if (m.QueryObject.Username == (string)TempData.Peek("Username"))
+                            //        {
+                            //            foreach (var l in m.Restaurants)
+                            //            {
+                            //                user_rests.Add(l);
+                            //            }
+                            //        }
+                            //    }
+                            //    IEnumerable<Restaurant> userRests = user_rests;
+                            //    return userRests;
+                            //}
+                            if (user.Count()== 0)
+                            {
+                                return View(@"..\Restaurant\Index");
                             }
-                            return View(@"..\Restaurant\Index", GetUserRests());
+                            else
+                            {
+                                return View(@"..\Restaurant\Index", user);
+                            }
+
                         }
                         catch (HttpRequestException ex)
                         {
@@ -129,7 +137,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
                 kw.Add(character);
             }
-
+            foreach(var k in restobj)
+            {
+                k.Keywords = kw;
+            }
 
 
             QueryResult QR = new QueryResult
@@ -144,10 +155,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
                     Keywords = kw,
                     QueryTime = DateTime.Now.Date
 
-
                 },
                 Restaurants = restobj
-                
+
+
 
 
             };
@@ -182,9 +193,30 @@ namespace RestaurantFrontEnd.MVC.Controllers
         }
 
         // GET: Restaurant/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id)
         {
-            return View();
+            if (id == null)
+                return View("Error");
+            var request = CreateRequestService(HttpMethod.Get, $"api/restaurant/{id}");
+
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                Restaurant restaurant = JsonConvert.DeserializeObject<Restaurant>(jsonString);
+
+                return View(@"..\Restaurant\Details", restaurant);
+            }
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // GET: Restaurant/Create
@@ -254,6 +286,45 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 return View();
             }
+        }
+
+        public async Task<ActionResult> BrowseRestaurants([FromQuery] string search = "")
+        {
+            HttpRequestMessage request;
+
+            if (string.IsNullOrEmpty(search))
+            {
+                request = CreateRequestService(HttpMethod.Get, "api/restaurant");
+            }
+
+            else
+            {
+                request = CreateRequestService(HttpMethod.Get, "api/Keyword/"+search);
+            }
+
+
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                List<Restaurant> restaurant = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
+
+                return View(@"..\Restarant\Index", restaurant);
+            }
+
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
+
+
+
         }
     }
 }
