@@ -8,10 +8,13 @@ import { ApiService} from '../api.service'
   styleUrls: ['./restaurant-list.component.css']
 })
 export class RestaurantListComponent implements OnInit {
-  restaurants: Restaurant[] = [];
+  restaurants: Restaurant[] = []; //all restaurants received back from search
   searchText: string = "";
+  start: number = 0;  // 0 based index for what number to give each result in ol
   currentResultsPage: number = 1;  //for only displaying 4 restaurants per page
-  restaurantsSubset: Restaurant[] = [];
+  resultsPerPage: number = 4; //how many restraunts to display per page
+  maxPages: number = 0;
+  restaurantsSubset: Restaurant[] = []; //the current set of restraunts to put on page
   //take in parameter and store in property
   constructor(private api: ApiService) { }
 
@@ -21,12 +24,15 @@ export class RestaurantListComponent implements OnInit {
 
   //for now, only searches by first keyword if any are given
   searchRestaurants() {
-    this.currentResultsPage = 0;
+    this.currentResultsPage = 1;
+    this.start = 1;
     if (this.searchText === "") {
       this.api.getRestaurants(
         (result) => {
           console.log("successfully retrieved all restaurants");
           this.restaurants = result;
+          this.produceRestaurantsSubset();
+          this.maxPages = Math.ceil(this.restaurants.length/4);
         },
         (res) => console.log("failure")
       );
@@ -35,13 +41,53 @@ export class RestaurantListComponent implements OnInit {
         (result) => {
           console.log("successfully retrieved restaurants by keyword");
           this.restaurants = result;
+          this.produceRestaurantsSubset();
+          this.maxPages = Math.ceil(this.restaurants.length/4);
         },
         (res) => console.log("failure")
       );
     }
   }
 
-  getRestaurantsSubset() {
-    
+  produceRestaurantsSubset() {
+    this.start = (this.currentResultsPage-1)*this.resultsPerPage;
+    this.restaurantsSubset = [];
+    for (var i = 0; i+this.start < this.restaurants.length && i<this.resultsPerPage; i++)
+    {
+      this.restaurantsSubset[i] = this.restaurants[this.start+i];
+    }
+  }
+
+  changeCurrentResultsPage(x) {
+    if (Number.isInteger(x) && x>0 && x<=this.maxPages)
+    {
+      this.currentResultsPage = x;
+      this.produceRestaurantsSubset();
+    }
+  }
+
+  goToPage1()   {
+    this.changeCurrentResultsPage(1);
+  }
+
+  goToPrevPage()   {
+    this.changeCurrentResultsPage(this.currentResultsPage-1);
+  }
+
+  goToNextPage() {
+    this.changeCurrentResultsPage(this.currentResultsPage+1);
+  }
+
+  goToLastPage() {
+    this.changeCurrentResultsPage(this.maxPages);
+  }
+
+  changeResultsPerPage(x) {
+    if (x.isInteger() && x>0)
+    {
+      this.resultsPerPage = x;
+      this.maxPages = Math.ceil(this.restaurants.length/4);
+      this.produceRestaurantsSubset();
+    }
   }
 }

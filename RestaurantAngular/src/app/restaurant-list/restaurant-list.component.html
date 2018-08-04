@@ -8,8 +8,8 @@
 
 <div *ngIf="restaurants && restaurants.length > 0">
   <h3>Restaurant results for: {{searchText}}</h3>
-  <ol>
-    <li *ngFor="let r of restaurants">
+  <ol start="{{start+1}}">
+    <li *ngFor="let r of restaurantsSubset">
       <h3>{{r.name}}</h3>
       <ul>
         <li>Id:  {{r.id}}</li>
@@ -21,6 +21,11 @@
       </ul>
     </li>
   </ol>
+  <button (click)="goToPage1()">Page 1</button>
+  <button (click)="goToPrevPage()">Prev. Page</button>
+  <button disabled>{{currentResultsPage}}</button>
+  <button (click)="goToNextPage()">Next Page</button>
+  <button (click)="goToLastPage()">Page {{maxPages}}</button>
 </div>
 
 <div *ngIf="!(restaurants && restaurants.length > 0)">
