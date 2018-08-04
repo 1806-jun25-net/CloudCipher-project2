@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using RestaurantAPI.API.Models;
 using RestaurantAPI.Data;
 using RestaurantAPI.Library;
@@ -28,6 +30,7 @@ namespace RestaurantAPI.API.Controllers
         public IKeywordRepo Krepo { get; set; }
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Get all queries placed by a username, or all queries in DB if user is an admin.
@@ -71,8 +74,9 @@ namespace RestaurantAPI.API.Controllers
             {
                 q = await Qrepo.GetQueryByIDAsync(id);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             if (!(User.Identity.Name.Equals(q.Username) || User.IsInRole("admin")))
@@ -111,6 +115,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch  (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             try
@@ -127,6 +132,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)  //defining Excpetion as e for debugging purposes even though it's unused and a code smell.
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             return CreatedAtRoute("GetQueryResult", new { id = q.Id }, queryResult);

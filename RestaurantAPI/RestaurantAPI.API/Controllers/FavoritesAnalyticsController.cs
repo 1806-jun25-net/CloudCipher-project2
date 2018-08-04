@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using RestaurantAPI.API.Models;
 using RestaurantAPI.Library;
 using RestaurantAPI.Library.Repos;
@@ -26,12 +28,13 @@ namespace RestaurantAPI.API.Controllers
         public IKeywordRepo Krepo { get; set; }
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         // GET: api/FavoritesAnalytics
         /// <summary>
         /// Return a list of all Restaurants wrapped w/ frequencies.
-        /// Frequencies represent how many users have given restaurant in their favorites.
-        /// Available to all users
+        /// Frequencies represent how many users have given restaurant in their favorites, sorted by descending.
+        /// Available to all users.
         /// </summary>
         /// <returns>List of FrequencyWrapper of RestaurantModel </returns>
         [ProducesResponseType(500)]
@@ -44,10 +47,11 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = Mapper.Map(r),
                     Frequency = r.Favorite.Count()
-                }).ToList();
+                }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -55,7 +59,8 @@ namespace RestaurantAPI.API.Controllers
         // GET: api/FavoritesAnalytics/5
         /// <summary>
         /// Return a list of usernames of users who have favorited a specific restaurant.
-        /// Available to all users (public like facebook likes?) (or admin only?)
+        /// Available to all users 
+        /// -Should- be sorted alphabetically by default...
         /// </summary>
         /// <param name="id">restaurant Id</param>
         /// <returns>List of strings representing usernames</returns>
@@ -69,6 +74,7 @@ namespace RestaurantAPI.API.Controllers
             }
             catch (Exception e)
             {
+                logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

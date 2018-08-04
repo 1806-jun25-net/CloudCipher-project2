@@ -193,9 +193,30 @@ namespace RestaurantFrontEnd.MVC.Controllers
         }
 
         // GET: Restaurant/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(string id)
         {
-            return View();
+            if (id == null)
+                return View("Error");
+            var request = CreateRequestService(HttpMethod.Get, $"api/restaurant/{id}");
+
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                Restaurant restaurant = JsonConvert.DeserializeObject<Restaurant>(jsonString);
+
+                return View(@"..\Restaurant\Details", restaurant);
+            }
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         // GET: Restaurant/Create
@@ -265,6 +286,45 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 return View();
             }
+        }
+
+        public async Task<ActionResult> BrowseRestaurants([FromQuery] string search = "")
+        {
+            HttpRequestMessage request;
+
+            if (string.IsNullOrEmpty(search))
+            {
+                request = CreateRequestService(HttpMethod.Get, "api/restaurant");
+            }
+
+            else
+            {
+                request = CreateRequestService(HttpMethod.Get, "api/Keyword/"+search);
+            }
+
+
+            try
+            {
+                var response = await HttpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return View("Error");
+                }
+
+                string jsonString = await response.Content.ReadAsStringAsync();
+                List<Restaurant> restaurant = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
+
+                return View(@"..\Restarant\Index", restaurant);
+            }
+
+            catch (HttpRequestException ex)
+            {
+                return View("Error", ex);
+            }
+
+
+
         }
     }
 }

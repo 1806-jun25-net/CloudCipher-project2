@@ -84,7 +84,7 @@ namespace RestaurantAPI.API
             });
 
             services.AddAuthentication();
-
+            services.AddCors();
             services.AddMvc()
                 .AddXmlSerializerFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -109,6 +109,13 @@ namespace RestaurantAPI.API
 
             //Part of Identity and Swagger Implementation
             app.UseAuthentication();
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin() //Could put just angular url here
+                .AllowCredentials()
+                );
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
