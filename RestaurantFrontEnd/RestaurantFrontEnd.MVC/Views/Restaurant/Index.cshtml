@@ -5,10 +5,11 @@
 
     .test2 {
         margin-top: 5px;
+        outline:none;
     }
 
     #map {
-        margin-top:10px;;
+        margin-top:10px;
         height: 300px;
         width: 100%;
         border-radius:25px;
@@ -51,112 +52,113 @@
 }
 <body >
     <div id="map"></div>
- <div id="overlay">
+    <div id="overlay">
 
 
-<form asp-action="Index" method="get">
-    <h3><b>Search for a Restaurant:</b></h3> 
-    <input class="text-center" id="restsrch" type="search" name="search">
-    <button type="submit" class="test2">Submit</button>
-</form>
-     <hr/>
-<!--Keeping this around just in case-->
-@*<p>
-        <a asp-action="Create">Create New</a>
-    </p>*@
+        <form asp-action="Index" method="get">
+            <h3><b>Search for a Restaurant:</b></h3>
+            <input class="text-center" id="restsrch" type="search" name="search">
+            <button type="submit" class="test2">Submit</button>
+        </form>
+        <hr />
+        <!--Keeping this around just in case-->
+        @*<p>
+            <a asp-action="Create">Create New</a>
+        </p>*@
 
-@*@if (query != null && query != ""){}*@
-
-
-    <!--<div id="map"></div>-->
-    <div id="right-panel">
-        <div id="output"></div>
-    </div>
-    <div class="loc"></div>
+        @*@if (query != null && query != ""){}*@
 
 
+        <!--<div id="map"></div>-->
+        <div id="right-panel">
+            <div id="output"></div>
+        </div>
+        <div class="loc"></div>
 
 
 
-@if (Model != null)
-{
-    <h1>
-        <b>Try These:</b><br/>
-        Based On Your Recent Searches<br />
-    </h1>
-   <br />
 
-    List<string> restnames = new List<string>();
-    List<string> KWs = new List<string>();
-    string kwords = "";
-    var counter = 0;
 
-    foreach (var l in Model.Reverse())
-    {
-        if (counter < 3)
+        @if (Model != null)
         {
+            <h1>
+                <b>Try These:</b><br />
+                Based On Your Recent Searches<br />
+            </h1>
+            <br />
 
+            List<string> restnames = new List<string>();
+            List<string> KWs = new List<string>();
+            string kwords = "";
+            var counter = 0;
 
-
-            KWs = new List<string>();
-            restnames = new List<string>();
-            kwords = "";
-
-            <h2>
-
-                @foreach (var q in l.QueryObject.Keywords)
-                {
-                    if (!KWs.Contains(q))
-                    {
-                        KWs.Add(q);
-
-                    }
-
-                }
-                @{kwords += KWs[0];
-                    for (var i = 1; i < KWs.Count(); i++)
-                    {
-                        kwords += "/" + KWs[i];
-
-                    }
-
-                }
-                <b>(@kwords)</b>
-            </h2>
-            <b style="color:red">DATE:</b> <p>@Html.DisplayFor(time => l.QueryObject.QueryTime)</p>
-
-            foreach (var n in l.Restaurants)
+            foreach (var l in Model.Reverse())
             {
-                @if (restnames.Count() < 3)
+                if (counter < 3)
                 {
-                    if (!restnames.Contains(n.Name))
-                    {
-                        restnames.Add(n.Name);
 
-                        <h3>@Html.DisplayFor(restitem => n.Name)</h3>
-                        <p>@Html.DisplayFor(restitem => n.Address)</p>
-                        <p>price range:@Html.DisplayFor(restitem => n.PriceLevel)</p>
-                        <p>rating:@Html.DisplayFor(restitem => n.Rating)</p>
+
+
+                    KWs = new List<string>();
+                    restnames = new List<string>();
+                    kwords = "";
+
+                    <h2>
+
+                        @foreach (var q in l.QueryObject.Keywords)
+                        {
+                            if (!KWs.Contains(q))
+                            {
+                                KWs.Add(q);
+
+                            }
+
+                        }
+                        @{kwords += KWs[0];
+                            for (var i = 1; i < KWs.Count(); i++)
+                            {
+                                kwords += "/" + KWs[i];
+
+                            }
+
+                        }
+                        <b>(@kwords)</b>
+                    </h2>
+                    <b style="color:red">DATE:</b> <p>@Html.DisplayFor(time => l.QueryObject.QueryTime)</p>
+
+                    foreach (var n in l.Restaurants)
+                    {
+                        @if (restnames.Count() < 3)
+                        {
+                            if (!restnames.Contains(n.Name))
+                            {
+                                restnames.Add(n.Name);
+
+                                <h3>@Html.DisplayFor(restitem => n.Name)</h3>
+                                <p>@Html.DisplayFor(restitem => n.Address)</p>
+                                <p>price range:@Html.DisplayFor(restitem => n.PriceLevel)</p>
+                                <p>rating:@Html.DisplayFor(restitem => n.Rating)</p>
+                                <a href="https://maps.google.com/?q= @Html.DisplayFor(restitem => n.Name),@Html.DisplayFor(restitem => n.Address)" target='_blank'><button class='googlenav'>directions</button></a>
+                            }
+                        }
+
                     }
+
+
+
+
+
+                    <br /><br />
+                    counter++;
                 }
 
-            }
 
 
+            };
 
 
-
-            <br /><br />
-            counter++;
         }
-
-
-
-    };
-
-
-}
-</div>
+    </div>
 </body>
 
 

@@ -158,7 +158,10 @@ function initMap() {
                                 outputDiv.innerHTML += "<b>" + destinationNames[j] + ":</b><br/>" + destinationList[j] +
                                     ' <br/> ' + "<span style='color:red'>" +
                                     results[j].duration.text + " drive</span>(" +
-                                    results[j].distance.text + ')<br><br>';
+                                    results[j].distance.text + ")<br>"+
+                                    "<a href='https://maps.google.com/?q=" + destinationNames[j] + "," + destinationList[j] + "' target='_blank'><button class='googlenav'>directions</button></a>" + " " +
+                                    "<a href='Favorites/Create/" +json.results[j].id+"'><button class='googlenav'> add to faves</button></a> <br><br>";
+                                //https://maps.google.com/?q=Matsutake, 13049 Worldgate Dr, Herndon
                             }
                         }
                     }

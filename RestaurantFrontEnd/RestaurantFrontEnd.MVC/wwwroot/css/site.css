@@ -12,6 +12,7 @@ button, .btn {
     color: white;
     /*box-shadow: 0px 0px 2px 1px black;*/
     background-color: #8c101f;
+    outline: none;
         
 }
 #restsrch {
@@ -19,6 +20,13 @@ button, .btn {
     box-shadow: 0px 0px 2px 0.5px black inset;
     outline: none;
     border: none;
+}
+.googlenav {
+    background-color: #9d9d9d;
+}
+.googlenav:hover{
+    background-color:black;
+    color:white;
 }
 
 .navi {
