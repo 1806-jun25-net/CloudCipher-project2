@@ -9,13 +9,21 @@ body {
 button, .btn {
     border-radius: 50px;
     border: none;
-    color:white;
-    box-shadow: 0px 0px 2px 1px black;
+    color: white;
+    /*box-shadow: 0px 0px 2px 1px black;*/
     background-color: #8c101f;
+        
 }
-.navi{
+input {
+    border-radius: 45px;
+    box-shadow: 0px 0px 2px 0.5px black inset;
+    outline:none;
+    border: none;
+}
+
+.navi {
     background-color: #8c101f;
-    box-shadow:2px 0.5px 5px 1px black;
+    box-shadow: 2px 0.5px 5px 1px black;
 }
 
 .hoover{

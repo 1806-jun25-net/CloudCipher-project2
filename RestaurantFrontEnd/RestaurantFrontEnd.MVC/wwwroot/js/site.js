@@ -32,11 +32,13 @@ function initMap() {
             'chst=d_map_pin_letter&chld=O|FFFF00|000000';
         var map = new google.maps.Map(document.getElementById('map'), {
             center: { lat: 37.1925852, lng: -123.8105744 },//:38.9706559,"lng":-77.3854458
-            zoom: 100
+            zoom: 100,
+            mapTypeId: 'satellite',
         });
         map.setCenter(pos);
         var origin1 = { lat: pos.lat, lng: pos.lng };
 
+        if (query != null && query != "") {
 
         //////////////////\//////////////
         //IMPLEMENTING PLACES FUNCTI
@@ -47,7 +49,7 @@ function initMap() {
         var destinationNames = [];
         var queryarr = [];
         var restarr = [];
-        
+
         var kwarr = [];
         queryarr.push(origin1.lat);
         queryarr.push(origin1.lng);
@@ -87,8 +89,8 @@ function initMap() {
                         //kwarr
                         var queryString = query;
                         var queryArray = queryString.split("amp;"); 
-                       
-                       
+
+
                         kwarr=queryArray;
                         //queryarr
                         //queryarr.push(origin1.lat);
@@ -96,11 +98,11 @@ function initMap() {
                         while (queryarr.length <= 2) {
                             queryarr.push('2000');
                         }
-                        
-                        //resarr
-                       
 
-        
+                        //resarr
+
+
+
                         /////
                         console.log(restarr);
                         $.post("/Restaurant/GetQueryResults", { queryobj:queryarr,restobj:restarr,keyobj:kwarr }, function (data) {
@@ -108,8 +110,8 @@ function initMap() {
                         });
                     }
                 }
-                
-                
+
+
                 var geocoder = new google.maps.Geocoder;
 
                 var service = new google.maps.DistanceMatrixService;
@@ -170,9 +172,10 @@ function initMap() {
             }
         });
 
-        //////////
+        ////////
 
 
+        }
 
     });
 
@@ -181,6 +184,10 @@ function initMap() {
 
 
 }
+
+//google.maps.event.addDomListener(window, 'load', initMap);
+
+
 
 
 // }
