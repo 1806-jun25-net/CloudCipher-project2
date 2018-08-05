@@ -1,0 +1,11 @@
+<a routerLink="/browse">
+  Browse Restaurants
+</a>
+<div *ngIf="!getAccountKey()">
+  <a routerLink="/login">
+    Login
+  </a>
+</div>
+<div *ngIf="getAccountKey()">
+    <button (click)="logout()">Logout</button>
+</div>

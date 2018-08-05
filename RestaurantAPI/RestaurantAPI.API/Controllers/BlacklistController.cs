@@ -31,7 +31,7 @@ namespace RestaurantAPI.API.Controllers
         public IRestaurantRepo Rrepo { get; set; }
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        //Return list of all favorited Restaurants for a given user
+        //Return list of all blacklisted Restaurants for a given user
         // GET: api/Blacklist
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
@@ -72,7 +72,7 @@ namespace RestaurantAPI.API.Controllers
             }
         }
 
-        //Given a restaurant id as a parameter, add the restaurant to the current user's favorites
+        //Given a restaurant id as a parameter, add the restaurant to the current user's blacklist
         // POST: api/Blacklist
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -105,7 +105,7 @@ namespace RestaurantAPI.API.Controllers
         }
 
 
-        //Given a restaurant id as a parameter, remove the restaurant from the current user's favorites
+        //Given a restaurant id as a parameter, remove the restaurant from the current user's blacklist
         // DELETE: api/Blacklist/5
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]

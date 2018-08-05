@@ -1,0 +1,21 @@
+<h2>Restaurant Details</h2>
+<div *ngIf="restaurant">
+  <h3>{{restaurant.name}}</h3>
+  <ul>
+    <li>Address:  {{restaurant.address}}</li>
+    <li>Hours:  {{restaurant.hours}}</li>
+    <li>Rating:  {{restaurant.rating}}</li>
+    <li>Price Level:  {{restaurant.priceLevel}}</li>
+    <li>Keywords:
+      <ul>
+        <li *ngFor="let k of restaurant.keywords">
+            {{k}}
+        </li>
+      </ul>
+    </li>
+    <li>Id:  {{restaurant.id}}</li>
+  </ul>
+</div>
+<div *ngIf="favCount">Favorited by -{{favCount}}- users</div>
+<div *ngIf="blackCount">Blacklisted by -{{blackCount}}- users</div>
+<button (click)="goBack()">go back</button>
