@@ -103,7 +103,7 @@ SELECT * FROM RestaurantSite.Query;
 
 SELECT * FROM RestaurantSite.QueryKeywordJunction;
 
-SELECT * FROM RestaurantSite.Restaurant;
+SELECT * FROM RestaurantSite.Restaurant WHERE (id = '0127471a8a3d756da547539e218e843a22283595') Order By Name;
 
 SELECT * FROM RestaurantSite.RestaurantKeywordJunction;
 
@@ -111,6 +111,9 @@ SELECT * FROM RestaurantSite.Keyword;
 
 SELECT * FROM RestaurantSite.QueryRestaurantJunction;
 
+SELECT * FROM RestaurantSite.Blacklist WHERE (Username = 'admin.2');
+
+SELECT * FROM RestaurantSite.Favorite;
 /*
 DELETE FROM RestaurantSite.QueryKeywordJunction;
 DELETE FROM RestaurantSite.QueryRestaurantJunction;

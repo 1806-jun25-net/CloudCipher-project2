@@ -1,6 +1,4 @@
-<p>
-  restaurant list still works
-</p>
+<h2>Browse Restaurants</h2>
 <div>
   <input type="text" [(ngModel)]="searchText" />
   <button (click)="searchRestaurants()">Search</button>
@@ -14,10 +12,13 @@
       <ul>
         <li>Id:  {{r.id}}</li>
         <li>Address:  {{r.address}}</li>
-        <li>Hours:  {{r.hours}}</li>
         <li>Rating:  {{r.rating}}</li>
         <li>Price Level:  {{r.priceLevel}}</li>
-        <li>Link to details view </li>
+        <li>
+          <a routerLink="/details/{{r.id}}">
+            View Details
+          </a>
+        </li>
       </ul>
     </li>
   </ol>
@@ -28,6 +29,6 @@
   <button (click)="goToLastPage()">Page {{maxPages}}</button>
 </div>
 
-<div *ngIf="!(restaurants && restaurants.length > 0)">
+<div *ngIf="!restaurants.length&&emptyResults">
   <span>No restaurants found :(</span>
 </div>
