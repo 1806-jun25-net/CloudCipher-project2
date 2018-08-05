@@ -2,16 +2,20 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <style>
+
     .test2 {
         margin-top: 5px;
+        outline:none;
     }
 
     #map {
-        height: 100px;
-        width: 500px;
+        margin-top:10px;
+        height: 300px;
+        width: 100%;
+        border-radius:25px;
     }
-
-
+    #overlay {
+    }
     #output {
         font-size: 11px;
     }
@@ -30,8 +34,9 @@
 
 }
 
-@if (query != null && query != "")
-{
+@*@if (query != null && query != "") { }*@
+
+
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script async deferer
@@ -39,175 +44,122 @@
     </script>
 
 
-}
 
 
 
 @{
     ViewData["Title"] = "Index";
 }
+<body >
+    <div id="map"></div>
+    <div id="overlay">
 
 
-<h2>Index</h2>
+        <form asp-action="Index" method="get">
+            <h3><b>Search for a Restaurant:</b></h3>
+            <input class="text-center" id="restsrch" type="search" name="search">
+            <button type="submit" class="test2">Submit</button>
+        </form>
+        <hr />
+        <!--Keeping this around just in case-->
+        @*<p>
+            <a asp-action="Create">Create New</a>
+        </p>*@
 
-<form asp-action="Index" method="get">
-    Search for a Restaurant: <br />
-    <input id="restsrch" type="search" name="search">
-    <button type="submit" class="test2">Submit</button>
-</form>
-<!--Keeping this around just in case-->
-@*<p>
-        <a asp-action="Create">Create New</a>
-    </p>*@
-
-
-<div id="map"></div>
-<div id="right-panel">
-    <div>
-        <strong>Results</strong>
-    </div>
-    <div id="output"></div>
-</div>
-<div class="loc"></div>
-
-@if (Model != null)
-{
-    <h1>Try These Restaurants Again!</h1>
-
-    List<string> restnames = new List<string>();
-    List<string> KWs = new List<string>();
-    string kwords = "";
-    foreach (var l in Model)
-    {
-        KWs =new List<string>();
-        restnames = new List<string>();
-        kwords = "";
-        <b style="color:red">DATE:</b> <p>@Html.DisplayFor(time => l.QueryObject.QueryTime)</p>
-        <h2>
-            KeyWords:
-            @foreach (var q in l.QueryObject.Keywords)
-            {
-                if (!KWs.Contains(q))
-                {
-                    KWs.Add(q);
-
-                }
-
-            }
-            @{kwords += KWs[0];
-                for (var i = 1; i < KWs.Count(); i++)
-                {
-                    kwords += ", " + KWs[i];
-
-                }
-
-            }
-            @kwords
-        </h2>
+        @*@if (query != null && query != ""){}*@
 
 
-        foreach (var n in l.Restaurants)
+        <!--<div id="map"></div>-->
+        <div id="right-panel">
+            <div id="output"></div>
+        </div>
+        <div class="loc"></div>
+
+
+
+
+
+        @if (Model != null)
         {
-            @if (restnames.Count() < 3)
-            {
-                if (!restnames.Contains(n.Name))
-                {
-                    restnames.Add(n.Name);
+            <h1>
+                <b>Try These:</b><br />
+                Based On Your Recent Searches<br />
+            </h1>
+            <br />
 
-                    <h3>@Html.DisplayFor(restitem => n.Name)</h3>
-                    <p>@Html.DisplayFor(restitem => n.Address)</p>
-                    <p>price range:@Html.DisplayFor(restitem => n.PriceLevel)</p>
-                    <p>rating:@Html.DisplayFor(restitem => n.Rating)</p>
+            List<string> restnames = new List<string>();
+            List<string> KWs = new List<string>();
+            string kwords = "";
+            var counter = 0;
+
+            foreach (var l in Model.Reverse())
+            {
+                if (counter < 3)
+                {
+
+
+
+                    KWs = new List<string>();
+                    restnames = new List<string>();
+                    kwords = "";
+
+                    <h2>
+
+                        @foreach (var q in l.QueryObject.Keywords)
+                        {
+                            if (!KWs.Contains(q))
+                            {
+                                KWs.Add(q);
+
+                            }
+
+                        }
+                        @{kwords += KWs[0];
+                            for (var i = 1; i < KWs.Count(); i++)
+                            {
+                                kwords += "/" + KWs[i];
+
+                            }
+
+                        }
+                        <b>(@kwords)</b>
+                    </h2>
+                    <b style="color:red">DATE:</b> <p>@Html.DisplayFor(time => l.QueryObject.QueryTime)</p>
+
+                    foreach (var n in l.Restaurants)
+                    {
+                        @if (restnames.Count() < 3)
+                        {
+                            if (!restnames.Contains(n.Name))
+                            {
+                                restnames.Add(n.Name);
+
+                                <h3>@Html.DisplayFor(restitem => n.Name)</h3>
+                                <p>@Html.DisplayFor(restitem => n.Address)</p>
+                                <p>price range:@Html.DisplayFor(restitem => n.PriceLevel)</p>
+                                <p>rating:@Html.DisplayFor(restitem => n.Rating)</p>
+                                <a href="https://maps.google.com/?q= @Html.DisplayFor(restitem => n.Name),@Html.DisplayFor(restitem => n.Address)" target='_blank'><button class='googlenav'>directions</button></a>
+                            }
+                        }
+
+                    }
+
+
+
+
+
+                    <br /><br />
+                    counter++;
                 }
-            }
+
+
+
+            };
+
 
         }
-
-
-
-
-
-        <br /><br />
-    };
-    @*<table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Hours)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Lat)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Lon)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Address)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Rating)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PriceLevel)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Owner)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Hours)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Lat)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Lon)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Address)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Rating)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PriceLevel)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Owner)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>*@
-
-
-}
-
-
-
+    </div>
+</body>
 
 
 

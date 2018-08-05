@@ -20,9 +20,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
         }
 
         // GET: Favorites
-        public async Task<ActionResult> Index([FromQuery] string search = "")
+        public async Task<ActionResult> Index()
         {
-            var request = CreateRequestService(HttpMethod.Get, "api/user");
+            var request = CreateRequestService(HttpMethod.Get, "api/favorites");
 
             var response = await HttpClient.SendAsync(request);
 
@@ -34,61 +34,92 @@ namespace RestaurantFrontEnd.MVC.Controllers
             string jsonString = await response.Content.ReadAsStringAsync();
             List<Restaurant> user = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
 
-            return View(@"..\User\Index", user);
+            return View(@"..\Favorites\view_faves", user);
 
              
         }
 
-        // GET: Favorites/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        //// GET: Favorites/Details/5
+        //public ActionResult Details(int id)
+        //{
+        //    //var request = CreateRequestService(HttpMethod., "api/favorites");
+        //    return View();
+        //}
 
         // GET: Favorites/Create
-        public async Task<ActionResult> Create(string id)
+        public async Task<ActionResult> Create(string id)//ADD REST TO FAVES 
         {
-
+            //check if rest already in faves before trying to add
             try
             {
                 string jsonString = JsonConvert.SerializeObject(id);
-                //var uri = apiserviceuri + "user";
-                var request = CreateRequestService(HttpMethod.Post, "api/favorites");
-
+                var request = CreateRequestService(HttpMethod.Get, "api/favorites/"+id);
                 request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-
                 var response = await HttpClient.SendAsync(request);
-
                 if (!response.IsSuccessStatusCode)
                 {
                     return View("Error");
                 }
-                TempData["Message"] = "Added to Favorites"; 
+                string jsonString2 = await response.Content.ReadAsStringAsync();
+                bool user = JsonConvert.DeserializeObject<bool>(jsonString2);
+                TempData.Add("restfavecheck", user);
             }
             catch
             {
                 TempData["Message"] = "Sorry, something went wrong";
             }
-            return Redirect(Url.Action("Details", "Restaurant") + "/" + id);
+           
+
+           //if new rest fave,then add
+            if(!(bool)TempData.Peek("restfavecheck"))
+            {
+                try
+                {
+                    string jsonString = JsonConvert.SerializeObject(id);
+                    //var uri = apiserviceuri + "user";
+                    var request = CreateRequestService(HttpMethod.Post, "api/favorites");
+
+                    request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+
+                    var response = await HttpClient.SendAsync(request);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return View("Error");
+                    }
+                    TempData["Message"] = "Added to Favorites";
+                    
+                }
+                catch
+                {
+                    TempData["Message"] = "Sorry, something went wrong";
+                }
+                return Redirect(Url.Action("Index", "Favorites"));//EVENTUALLY CHANGE TO A SIMPLE ALERT/NOTIFICATION
+
+            }
+            else
+            {
+                return Redirect(Url.Action("Index", "Favorites"));
+            }
         }
 
-        // POST: Favorites/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
+        //// POST: Favorites/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create(IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        // TODO: Add insert logic here
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
 
         // GET: Favorites/Edit/5
         public ActionResult Edit(int id)
@@ -119,7 +150,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             
             if (id == null)
                 return View("Error");
-            var request = CreateRequestService(HttpMethod.Get, $"api/favorites/{id}");
+            var request = CreateRequestService(HttpMethod.Delete, $"api/favorites/{id}");
 
             try
             {
@@ -132,7 +163,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
                 
 
-                return View(@"..\restaurant\Details", id);
+                return RedirectToAction(nameof(Index));
             }
             catch (HttpRequestException ex)
             {
@@ -141,6 +172,8 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
            
         }
+
+
 
         // POST: Favorites/Delete/5
         [HttpPost]

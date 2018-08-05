@@ -137,7 +137,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
                 kw.Add(character);
             }
-
+            foreach(var k in restobj)
+            {
+                k.Keywords = kw;
+            }
 
 
             QueryResult QR = new QueryResult
@@ -152,10 +155,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
                     Keywords = kw,
                     QueryTime = DateTime.Now.Date
 
-
                 },
                 Restaurants = restobj
-                
+
+
 
 
             };

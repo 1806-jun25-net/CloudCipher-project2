@@ -1,0 +1,33 @@
+<p>
+  restaurant list still works
+</p>
+<div>
+  <input type="text" [(ngModel)]="searchText" />
+  <button (click)="searchRestaurants()">Search</button>
+</div>
+
+<div *ngIf="restaurants && restaurants.length > 0">
+  <h3>Restaurant results for: {{searchText}}</h3>
+  <ol start="{{start+1}}">
+    <li *ngFor="let r of restaurantsSubset">
+      <h3>{{r.name}}</h3>
+      <ul>
+        <li>Id:  {{r.id}}</li>
+        <li>Address:  {{r.address}}</li>
+        <li>Hours:  {{r.hours}}</li>
+        <li>Rating:  {{r.rating}}</li>
+        <li>Price Level:  {{r.priceLevel}}</li>
+        <li>Link to details view </li>
+      </ul>
+    </li>
+  </ol>
+  <button (click)="goToPage1()">Page 1</button>
+  <button (click)="goToPrevPage()">Prev. Page</button>
+  <button disabled>{{currentResultsPage}}</button>
+  <button (click)="goToNextPage()">Next Page</button>
+  <button (click)="goToLastPage()">Page {{maxPages}}</button>
+</div>
+
+<div *ngIf="!(restaurants && restaurants.length > 0)">
+  <span>No restaurants found :(</span>
+</div>
