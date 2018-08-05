@@ -39,14 +39,12 @@ export class ApiService {
   }
 
   //gets all restaurants matching the search string
-  //for now, only checks the first keyword given
-  getRestaurantsByKeyword(
+  searchRestaurants(
     searchText: string,
     success,
     failure
   ) {
-    let keyword: string[] = searchText.split(" ");
-    let url = this.apiUrl+"keyword/"+keyword[0];
+    let url = this.apiUrl+"BrowseRestaurant/"+searchText;
     let request = this.httpClient.get(url);
     //let request = this.httpClient.get(url, { withCredentials: true });
     let promise = request.toPromise();

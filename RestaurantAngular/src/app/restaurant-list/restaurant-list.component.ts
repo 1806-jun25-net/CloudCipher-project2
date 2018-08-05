@@ -44,7 +44,7 @@ export class RestaurantListComponent implements OnInit {
       // do nothing
       this.emptyResults = false;
     } else {
-      this.api.getRestaurantsByKeyword(this.searchText,
+      this.api.searchRestaurants(this.searchText,
         (result) => {
           console.log("successfully retrieved restaurants by keyword");
           this.restaurants = result;
