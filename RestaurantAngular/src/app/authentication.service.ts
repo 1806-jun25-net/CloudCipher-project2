@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Account } from './models/account';
-import { environment } from '../environments/environment';
+//import { environment } from '../environments/environment';
 
 
 @Injectable({
@@ -22,7 +22,7 @@ export class AuthenticationService {
     this.http.post(
       this.apiUrl + 'account/login',
       client,
-      { withCredentials: true }
+      { withCredentials: true}
     ).subscribe(
       data => {
         client = <Account>data;
@@ -31,11 +31,11 @@ export class AuthenticationService {
       },
       fail
     );
-    this.http.post(
-      this.mvcUrl + 'account/login',
-      client,
-      { withCredentials: true }
-    )
+    // this.http.post(
+    //   this.mvcUrl + 'account/login',
+    //   client,
+    //   { withCredentials: true }
+    //);
   }
   
 }
