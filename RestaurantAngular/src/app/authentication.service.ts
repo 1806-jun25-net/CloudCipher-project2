@@ -9,8 +9,8 @@ import { Account } from './models/account';
 })
 
 export class AuthenticationService {
-  apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
-  //apiUrl: string = "http://localhost:58756";
+  //apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
+  apiUrl: string = "http://localhost:58756/api/";
   mvcUrl: string = "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/";
 
   constructor(private http: HttpClient) { }
@@ -18,8 +18,6 @@ export class AuthenticationService {
   httpOptions = {
     headers: new HttpHeaders({ 
       'Access-Control-Allow-Origin':'*',
-      'Authorization':'authkey',
-      'userid':'1',
       'withCredentials' : 'true'
     })
   };
@@ -35,17 +33,20 @@ export class AuthenticationService {
       this.httpOptions
     ).subscribe(
       data => {
-        client = <Account>data;
         sessionStorage.setItem("AccountKey", JSON.stringify(client));
         pass(data);
+        console.log(data);
+        console.log( JSON.stringify(client));
+        console.log(sessionStorage.getItem("AccountKey"));
       },
       fail
     );
+    //potential code for getting logged into mvc as well
     // this.http.post(
-    //   this.mvcUrl + 'account/login',
-    //   client,
-    //   { withCredentials: true }
-    //);
+    // this.mvcUrl + 'account/login',
+    // client,
+    // this.httpOptions
+    // );
   }
   
   logout(pass = (data: Object) => { }, fail = err => { }): void {

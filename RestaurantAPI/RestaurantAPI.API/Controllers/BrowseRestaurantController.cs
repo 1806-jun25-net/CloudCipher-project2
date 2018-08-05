@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NLog;
 using RestaurantAPI.API.Models;
 using RestaurantAPI.Library;
 using RestaurantAPI.Library.Repos;
@@ -27,7 +29,8 @@ namespace RestaurantAPI.API.Controllers
         public IKeywordRepo Krepo { get; set; }
         public IQueryRepo Qrepo { get; set; }
         public IRestaurantRepo Rrepo { get; set; }
-    
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         // GET: api/BrowseRestaurant
         [HttpGet]
         public IEnumerable<string> Get()
@@ -53,6 +56,7 @@ namespace RestaurantAPI.API.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
+                    logger.Error(ex, ex.ToString());
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }

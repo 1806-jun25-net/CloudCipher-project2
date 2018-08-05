@@ -103,7 +103,7 @@ SELECT * FROM RestaurantSite.Query;
 
 SELECT * FROM RestaurantSite.QueryKeywordJunction;
 
-SELECT * FROM RestaurantSite.Restaurant WHERE (id = '6bd3e66641e94e73f5833bc503b776273a3c21a0') Order By Name;
+SELECT * FROM RestaurantSite.Restaurant WHERE (id = '23128183dd152237b6a91accbed5035268e88027') Order By Name;
 
 SELECT * FROM RestaurantSite.RestaurantKeywordJunction;
 

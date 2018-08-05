@@ -67,7 +67,8 @@ namespace RestaurantAPI.API
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "Project2Auth";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = false;
+                options.ExpireTimeSpan = TimeSpan.FromDays(3);
                 options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = ctx =>
@@ -107,15 +108,16 @@ namespace RestaurantAPI.API
                 app.UseDeveloperExceptionPage();
             }
 
-            //Part of Identity and Swagger Implementation
-            app.UseAuthentication();
+            
             app.UseCors(builder => builder
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin() //Could put just angular url here
-                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/", "http://localhost:4200")
+                //.WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/", "http://localhost:4200")
                 .AllowCredentials()
                 );
+            //Part of Identity and Swagger Implementation
+            app.UseAuthentication();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
