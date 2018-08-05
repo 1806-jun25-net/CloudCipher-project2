@@ -10,21 +10,7 @@ export class ApiService {
   //Create an HttpClient property equal to parameter taken in
   constructor(private httpClient: HttpClient) { }
 
-  //get a specific restaurant by its id
-  getRestaurant(
-    rId: string, //Id of restaurant to get details for
-    success,
-    failure
-  ) {
-    let url = this.apiUrl+"restaurant/" + rId;
-    let request = this.httpClient.get(url, { withCredentials: true });
-
-    let promise = request.toPromise();
-
-    promise.then(success,failure);
-  }
-
-  //get all restaurants in db
+   //get all restaurants in db
   getRestaurants(
     success,
     failure
@@ -61,6 +47,32 @@ export class ApiService {
   ) {
     let keyword: string[] = searchText.split(" ");
     let url = this.apiUrl+"keyword/"+keyword[0];
+    let request = this.httpClient.get(url);
+    //let request = this.httpClient.get(url, { withCredentials: true });
+    let promise = request.toPromise();
+
+    promise.then(success, failure);
+  }
+
+  getBlacklistedForRestaurant(
+    rId: string,
+    success,
+    failure
+  ) {
+    let url = this.apiUrl+"blacklistAnalytics/"+rId;
+    let request = this.httpClient.get(url);
+    //let request = this.httpClient.get(url, { withCredentials: true });
+    let promise = request.toPromise();
+
+    promise.then(success, failure);
+  }
+
+  getFavoritedForRestaurant(
+    rId: string,
+    success,
+    failure
+  ) {
+    let url = this.apiUrl+"favoritesAnalytics/"+rId;
     let request = this.httpClient.get(url);
     //let request = this.httpClient.get(url, { withCredentials: true });
     let promise = request.toPromise();

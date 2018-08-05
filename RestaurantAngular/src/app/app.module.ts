@@ -5,16 +5,22 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { RestaurantListComponent } from './restaurant-list/restaurant-list.component';
+import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
+import { AppRoutingModule } from './/app-routing.module';
+import { RouterModule } from '../../node_modules/@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RestaurantListComponent
+    RestaurantListComponent,
+    RestaurantDetailComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule,
+    RouterModule
 
   ],
   providers: [],

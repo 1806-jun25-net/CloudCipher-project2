@@ -9,23 +9,26 @@ import { ApiService} from '../api.service'
 })
 export class RestaurantListComponent implements OnInit {
   restaurants: Restaurant[] = []; //all restaurants received back from search
-  searchText: string = "";
+  searchText: string;
   start: number = 0;  // 0 based index for what number to give each result in ol
   currentResultsPage: number = 1;  //for only displaying 4 restaurants per page
   resultsPerPage: number = 4; //how many restraunts to display per page
   maxPages: number = 0;
   restaurantsSubset: Restaurant[] = []; //the current set of restraunts to put on page
+  emptyResults: boolean = false;
+
   //take in parameter and store in property
   constructor(private api: ApiService) { }
 
   //user for view setup
   ngOnInit() {
+    this.searchRestaurants();
   }
 
   //for now, only searches by first keyword if any are given
   searchRestaurants() {
     this.currentResultsPage = 1;
-    this.start = 1;
+    this.start = 0;
     if (this.searchText === "") {
       this.api.getRestaurants(
         (result) => {
@@ -33,9 +36,13 @@ export class RestaurantListComponent implements OnInit {
           this.restaurants = result;
           this.produceRestaurantsSubset();
           this.maxPages = Math.ceil(this.restaurants.length/4);
+          this.emptyResults = true;
         },
-        (res) => console.log("failure")
+        (result) => console.log("failure")
       );
+    } else if (!this.searchText) {
+      // do nothing
+      this.emptyResults = false;
     } else {
       this.api.getRestaurantsByKeyword(this.searchText,
         (result) => {
@@ -43,13 +50,14 @@ export class RestaurantListComponent implements OnInit {
           this.restaurants = result;
           this.produceRestaurantsSubset();
           this.maxPages = Math.ceil(this.restaurants.length/4);
+          this.emptyResults = true;
         },
-        (res) => console.log("failure")
+        (result) => console.log("failure")
       );
     }
   }
 
-  produceRestaurantsSubset() {
+  produceRestaurantsSubset(): void {
     this.start = (this.currentResultsPage-1)*this.resultsPerPage;
     this.restaurantsSubset = [];
     for (var i = 0; i+this.start < this.restaurants.length && i<this.resultsPerPage; i++)
@@ -58,7 +66,7 @@ export class RestaurantListComponent implements OnInit {
     }
   }
 
-  changeCurrentResultsPage(x) {
+  changeCurrentResultsPage(x): void {
     if (Number.isInteger(x) && x>0 && x<=this.maxPages)
     {
       this.currentResultsPage = x;
@@ -66,23 +74,23 @@ export class RestaurantListComponent implements OnInit {
     }
   }
 
-  goToPage1()   {
+  goToPage1(): void   {
     this.changeCurrentResultsPage(1);
   }
 
-  goToPrevPage()   {
+  goToPrevPage(): void   {
     this.changeCurrentResultsPage(this.currentResultsPage-1);
   }
 
-  goToNextPage() {
+  goToNextPage(): void {
     this.changeCurrentResultsPage(this.currentResultsPage+1);
   }
 
-  goToLastPage() {
+  goToLastPage(): void {
     this.changeCurrentResultsPage(this.maxPages);
   }
 
-  changeResultsPerPage(x) {
+  changeResultsPerPage(x): void {
     if (x.isInteger() && x>0)
     {
       this.resultsPerPage = x;

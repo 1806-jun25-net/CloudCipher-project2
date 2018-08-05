@@ -7,6 +7,7 @@ export class Restaurant {
     address: string;
     rating: number;
     priceLeve: number;
+    owner: string;
 
     keywords: string[] = [] ;
 }
