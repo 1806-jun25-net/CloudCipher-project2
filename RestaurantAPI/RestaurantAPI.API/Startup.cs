@@ -113,6 +113,7 @@ namespace RestaurantAPI.API
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin() //Could put just angular url here
+                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net")
                 .AllowCredentials()
                 );
 

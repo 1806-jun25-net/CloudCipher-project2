@@ -10,6 +10,7 @@ import { Account } from './models/account';
 
 export class AuthenticationService {
   apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
+  //apiUrl: string = "http://localhost:58756";
   mvcUrl: string = "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/";
 
   constructor(private http: HttpClient) { }
