@@ -65,9 +65,23 @@ namespace RestaurantAPI.API.Controllers
                 foreach (var restaurant in list)
                 {
                     //output each restaurant from each list that matches what was searched
-                    if (!results.Contains(restaurant))
+                    if (User.Identity.IsAuthenticated)
                     {
-                        results.Add(restaurant);
+                       if (!Arepo.GetBlacklistForUser(User.Identity.Name).Any(c => c.Id.Equals(restaurant.Id)) )
+                       {
+                            if (!results.Contains(restaurant))
+                            {
+                                results.Add(restaurant);
+                            }
+                       }
+
+                    }
+                    else
+                    {
+                        if (!results.Contains(restaurant))
+                        {
+                            results.Add(restaurant);
+                        }
                     }
 
                 }
