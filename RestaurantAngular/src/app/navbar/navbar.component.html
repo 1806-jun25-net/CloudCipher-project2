@@ -1,0 +1,13 @@
+<a routerLink="/browse">
+  Browse Restaurants
+</a>
+<div *ngIf="!accountString">
+  <a routerLink="/login">
+    Login
+  </a>
+</div>
+<div *ngIf="accountString">
+  <a routerLink="/logout">
+    Logout
+  </a>
+</div>

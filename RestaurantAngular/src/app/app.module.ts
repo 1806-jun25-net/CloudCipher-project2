@@ -8,12 +8,16 @@ import { RestaurantListComponent } from './restaurant-list/restaurant-list.compo
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { RouterModule } from '../../node_modules/@angular/router';
+import { LoginComponent } from './login/login.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RestaurantListComponent,
-    RestaurantDetailComponent
+    RestaurantDetailComponent,
+    LoginComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
