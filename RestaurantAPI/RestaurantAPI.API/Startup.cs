@@ -112,8 +112,8 @@ namespace RestaurantAPI.API
             app.UseCors(builder => builder
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin() //Could put just angular url here
-                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net")
+                //.AllowAnyOrigin() //Could put just angular url here
+                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/")
                 .AllowCredentials()
                 );
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
+import { Router, } from '@angular/router';
 
 import { Account } from '../models/account';
 
@@ -9,9 +10,10 @@ import { Account } from '../models/account';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  account: Account;
+  account: Account = new Account;
 
-  constructor(private authService: AuthenticationService) { }
+  constructor(private authService: AuthenticationService,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -21,6 +23,7 @@ export class LoginComponent implements OnInit {
       this.account,
       (result) => {
         console.log("log in successful");
+        this.router.navigateByUrl("/browse");
       },
       (result) => console.log("log in failure:"+ result)
     );

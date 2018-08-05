@@ -23,7 +23,7 @@ export class AuthenticationService {
     this.http.post(
       this.apiUrl + 'account/login',
       client,
-      { withCredentials: true}
+      { withCredentials: true }
     ).subscribe(
       data => {
         client = <Account>data;
