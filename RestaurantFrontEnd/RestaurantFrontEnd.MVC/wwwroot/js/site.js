@@ -2,6 +2,19 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+function blacklist(blistId) {
+    $.post("/blacklist/Create", { id: blistId }, function (data) {
+        alert(data);
+    });
+};
+function fave(faveid) {
+    
+    $.post("/favorites/Create", { id:faveid }, function (data) {
+        alert(data);
+    });
+
+    
+};
 
 function initMap() {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -105,8 +118,11 @@ function initMap() {
 
                         /////
                         console.log(restarr);
+                        
                         $.post("/Restaurant/GetQueryResults", { queryobj:queryarr,restobj:restarr,keyobj:kwarr }, function (data) {
-                            alert(data);
+                            if (data == "error") {
+                                alert(data);
+                            }
                         });
                     }
                 }
@@ -155,13 +171,19 @@ function initMap() {
                             for (var j = 0; j < results.length; j++) {
                                 geocoder.geocode({ 'address': destinationList[j] },
                                     showGeocodedAddressOnMap(true));
-                                outputDiv.innerHTML += "<b>" + destinationNames[j] + ":</b><br/>" + destinationList[j] +
-                                    ' <br/> ' + "<span style='color:red'>" +
-                                    results[j].duration.text + " drive</span>(" +
-                                    results[j].distance.text + ")<br>"+
-                                    "<a href='https://maps.google.com/?q=" + destinationNames[j] + "," + destinationList[j] + "' target='_blank'><button class='googlenav'>directions</button></a>" + " " +
-                                    "<a href='Favorites/Create/" +json.results[j].id+"'><button class='googlenav'> add to faves</button></a> <br><br>";
-                                //https://maps.google.com/?q=Matsutake, 13049 Worldgate Dr, Herndon
+                                //BLACKLIST CHECK
+                                if (blistarr.indexOf(json.results[j].id)==-1){
+                                    outputDiv.innerHTML += "<div class='rez'><b><u>" + destinationNames[j] + "</u>:</b><br/>" + destinationList[j] +
+                                        ' <br/> ' + "<span style='color:red'>" +
+                                        results[j].duration.text + " drive</span>(" +
+                                        results[j].distance.text + ")<br>" +
+                                        "<a href='https://maps.google.com/?q=" + destinationNames[j] + "," + destinationList[j] + "' target='_blank'><button class='googlenav'>directions</button></a>" + " " +
+                                        "<button class='googlenav' onclick='fave(" + JSON.stringify(json.results[j].id) + ")'> add to faves</button><br>" +
+                                        "<button class='googlenav' onclick='blacklist(" + JSON.stringify(json.results[j].id) + ")'> add to blacklist</button ></div> <br> <br>";
+
+                                }
+                               
+                              
                             }
                         }
                     }

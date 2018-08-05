@@ -42,7 +42,7 @@ namespace RestaurantAPI.API.Controllers
             //Since this method is authorized by Identity, it will automatically handle returning 401 if user isn't logged in.
             try
             {
-                return Mapper.Map(await Arepo.GetFavoritesForUserAsync(User.Identity.Name)).ToList();
+                return Mapper.Map(await Arepo.GetBlacklistForUserAsync(User.Identity.Name)).ToList();
             }
             catch (Exception e)
             {
@@ -132,7 +132,7 @@ namespace RestaurantAPI.API.Controllers
                 logger.Error(e, e.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            return CreatedAtRoute("RemoveBlacklist", new { Id = value }, value);
+            return StatusCode(StatusCodes.Status204NoContent);
         }
     }
 }

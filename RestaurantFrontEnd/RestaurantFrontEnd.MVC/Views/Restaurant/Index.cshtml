@@ -5,17 +5,35 @@
 
     .test2 {
         margin-top: 5px;
-        outline:none;
+        outline: none;
     }
 
     #map {
-        margin-top:10px;
+        margin-top: 10px;
         height: 300px;
         width: 100%;
-        border-radius:25px;
+        border-radius: 25px;
     }
+
     #overlay {
     }
+
+    .rez {
+        padding: 10px;
+        width: 30%;
+        background-color: rgba(216, 216, 216,0.8);
+        border-radius: 25px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .rez2 {
+        padding: 10px;
+        width: 30%;
+        background-color: rgba(216, 216, 216,0.8);
+        border-radius: 25px;
+    }
+
     #output {
         font-size: 11px;
     }
@@ -23,34 +41,50 @@
 
 @{
     string query = (string)ViewData["query"];
+    //string faveresult = (string)ViewData["addedfave"];
 }
+@{
+    string[] blacklist1 = (string[])TempData.Peek("blacklistcheck1");
+    string longid = "";
+    List<string> blacklist2 = blacklist1.ToList();
+}
+
+
 
 @section query_string {
-
+    
     <script type="text/javascript">
         var query = '@query';
+        
+        @foreach(var n in blacklist2 ){
 
+            longid += n + "_";
+        }
+        var blackLister = '@longid';
+        var blistarr = blackLister.split("_");
+        
     </script>
 
 }
 
-@*@if (query != null && query != "") { }*@
 
 
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script async deferer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
-    </script>
+
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script async deferer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
+</script>
 
 
 
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Find A Restaurant";
 }
-<body >
+<body>
     <div id="map"></div>
     <div id="overlay">
 
@@ -128,36 +162,50 @@
 
                     foreach (var n in l.Restaurants)
                     {
-                        @if (restnames.Count() < 3)
+                       
+                        if (!blacklist1.Contains(n.Id))//BLACKLIST CHECK    
                         {
-                            if (!restnames.Contains(n.Name))
+                            @if (restnames.Count() < 3)
                             {
-                                restnames.Add(n.Name);
+                                if (!restnames.Contains(n.Name))
+                                {
+                                    restnames.Add(n.Name);
 
-                                <h3>@Html.DisplayFor(restitem => n.Name)</h3>
-                                <p>@Html.DisplayFor(restitem => n.Address)</p>
-                                <p>price range:@Html.DisplayFor(restitem => n.PriceLevel)</p>
-                                <p>rating:@Html.DisplayFor(restitem => n.Rating)</p>
-                                <a href="https://maps.google.com/?q= @Html.DisplayFor(restitem => n.Name),@Html.DisplayFor(restitem => n.Address)" target='_blank'><button class='googlenav'>directions</button></a>
+                                    <div class="rez2 ">
+                                        <h4><u>@Html.DisplayFor(restitem => n.Name)</u></h4>
+                                        <p>@Html.DisplayFor(restitem => n.Address)</p>
+                                        <p>price range:@Html.DisplayFor(restitem => n.PriceLevel)</p>
+                                        <p>rating:@Html.DisplayFor(restitem => n.Rating)</p>
+                                        <a href="https://maps.google.com/?q= @Html.DisplayFor(restitem => n.Name),@Html.DisplayFor(restitem => n.Address)" target='_blank'><button class='googlenav'>directions</button></a>
+                                        <button class='googlenav' onclick="fave('@n.Id')"> add to faves</button><br />
+                                        <button class='googlenav' onclick="blacklist('@n.Id')"> add to blacklist</button>
+                                    </div><br /><br />
+                                }
                             }
+
                         }
+
+
 
                     }
 
 
-
-
-
-                    <br /><br />
-                    counter++;
                 }
 
 
 
-            };
 
 
-        }
+                <br /><br />
+                counter++;
+            }
+
+
+
+         }
+
+
+        
     </div>
 </body>
 

@@ -21,9 +21,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
 
         // GET: Blacklist
-        public async Task<ActionResult> Index([FromQuery] string search = "")
+        public async Task<ActionResult> Index()
         {
-            var request = CreateRequestService(HttpMethod.Get, "api/user");
+            var request = CreateRequestService(HttpMethod.Get, "api/blacklist");
 
             var response = await HttpClient.SendAsync(request);
 
@@ -35,7 +35,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             string jsonString = await response.Content.ReadAsStringAsync();
             List<Restaurant> user = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString);
 
-            return View(@"..\User\Index", user);
+            return View(@"..\Blacklist\view_blacklist", user);
 
 
         }
@@ -47,49 +47,84 @@ namespace RestaurantFrontEnd.MVC.Controllers
         }
 
         // GET: Blacklist/Create
-        public async Task<ActionResult> Create(string id)
+        public async Task<string> Create(string id)
         {
 
+            //check if rest already in faves before trying to add
             try
             {
                 string jsonString = JsonConvert.SerializeObject(id);
-                //var uri = apiserviceuri + "user";
-                var request = CreateRequestService(HttpMethod.Post, "api/Blacklist");
-
+                var request = CreateRequestService(HttpMethod.Get, "api/blacklist/" + id);
                 request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-
                 var response = await HttpClient.SendAsync(request);
-
                 if (!response.IsSuccessStatusCode)
                 {
-                    return View("Error");
+                    ViewData["addedblacklist"] = "Error in check blacklist response";
+                    return (string)ViewData["addedblacklist"];
                 }
-                TempData["Message"] = "Added to Blacklist";
+                string jsonString2 = await response.Content.ReadAsStringAsync();
+                bool user = JsonConvert.DeserializeObject<bool>(jsonString2);
+                TempData.Add("restblistcheck", user);
             }
             catch
             {
                 TempData["Message"] = "Sorry, something went wrong";
             }
-            return Redirect(Url.Action("Details", "Restaurant") + "/" + id);
+
+
+            //if new rest fave,then add
+            if ((bool)TempData["restblistcheck"] == false)
+            {
+                try
+                {
+                    string jsonString = JsonConvert.SerializeObject(id);
+                    //var uri = apiserviceuri + "user";
+                    var request = CreateRequestService(HttpMethod.Post, "api/blacklist");
+
+                    request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+
+                    var response = await HttpClient.SendAsync(request);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        ViewData["errorfave"] = "Error in adding blaclisted restaurant to db";
+                        return (string)ViewData["errorblacklist"];
+                    }
+                    ViewData["Message"] = "Added to Favorites";
+
+                }
+                catch
+                {
+                    TempData["Message"] = "Sorry, something went wrong";
+                }
+                ViewData["addedblacklist"] = "blacklisted";
+                return (string)ViewData["addedblacklist"]; ;//EVENTUALLY CHANGE TO A SIMPLE ALERT/NOTIFICATION
+
+            }
+            else
+            {
+                TempData["alreadyblacklisted"] = "restaurant already blacklisted";
+                return (string)TempData["alreadyblacklisted"];
+            }
         }
 
         // POST: Blacklist/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create(IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        // TODO: Add insert logic here
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
 
         // GET: Blacklist/Edit/5
         public ActionResult Edit(int id)
@@ -118,9 +153,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
         public async Task<ActionResult> Delete(string id)
         {
 
+
             if (id == null)
                 return View("Error");
-            var request = CreateRequestService(HttpMethod.Get, $"api/favorites/{id}");
+            var request = CreateRequestService(HttpMethod.Delete, $"api/blacklist/{id}");
 
             try
             {
@@ -133,12 +169,13 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
 
 
-                return View(@"..\restaurant\Details", id);
+                return RedirectToAction(nameof(Index));
             }
             catch (HttpRequestException ex)
             {
                 return View("Error", ex);
             }
+
 
 
         }

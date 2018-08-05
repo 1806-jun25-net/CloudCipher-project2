@@ -1,26 +1,25 @@
 ﻿@model IEnumerable<RestaurantFrontEnd.Library.API_Models.Restaurant>
 
 @{
-    ViewData["Title"] = "Faves";
+    ViewData["Title"] = "Blacklist";
 }
 
+<h2>@TempData.Peek("Username")'s Blacklist</h2>
 
-<h2>@TempData.Peek("Username")'s Faves</h2>
-
-@*<p>
+<p>
     <a asp-action="Create">Create New</a>
-</p>*@
+</p>
 <table class="table">
     <thead>
         <tr>
-   
+            
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Hours)
             </th>
-           
+            
             <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
@@ -30,7 +29,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.PriceLevel)
             </th>
-            
+           
             <th></th>
         </tr>
     </thead>
@@ -44,7 +43,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Hours)
             </td>
-        
+           
             <td>
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
@@ -56,8 +55,9 @@
             </td>
             
             <td>
-               <a href="@Url.Action("Delete", "Favorites")/@item.Id
-                  ">remove from faves</a>
+                 <a href="@Url.Action("Delete", "Blacklist")/@item.Id
+                  ">remove from blacklist</a>
+            
             </td>
         </tr>
 }
