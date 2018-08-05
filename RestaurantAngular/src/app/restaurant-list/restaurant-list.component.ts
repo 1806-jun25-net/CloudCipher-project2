@@ -10,6 +10,7 @@ import { ApiService} from '../api.service'
 export class RestaurantListComponent implements OnInit {
   restaurants: Restaurant[] = []; //all restaurants received back from search
   searchText: string;
+  fixedText: string;
   start: number = 0;  // 0 based index for what number to give each result in ol
   currentResultsPage: number = 1;  //for only displaying 4 restaurants per page
   resultsPerPage: number = 4; //how many restraunts to display per page
@@ -29,6 +30,7 @@ export class RestaurantListComponent implements OnInit {
   searchRestaurants() {
     this.currentResultsPage = 1;
     this.start = 0;
+    this.fixedText = this.searchText;
     if (this.searchText === "") {
       this.api.getRestaurants(
         (result) => {

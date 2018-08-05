@@ -4,8 +4,13 @@
   <button (click)="searchRestaurants()">Search</button>
 </div>
 
+<div *ngIf="fixedText">
+  <h3>Restaurant results for: {{fixedText}}</h3>
+</div>
+<div *ngIf="!fixedText&&restaurants.length">
+  <h3>All Restaurants:</h3>
+</div>
 <div *ngIf="restaurants && restaurants.length > 0">
-  <h3>Restaurant results for: {{searchText}}</h3>
   <ol start="{{start+1}}">
     <li *ngFor="let r of restaurantsSubset">
       <h3>{{r.name}}</h3>
