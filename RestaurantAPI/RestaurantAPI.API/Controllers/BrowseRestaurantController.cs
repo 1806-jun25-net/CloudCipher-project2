@@ -45,11 +45,11 @@ namespace RestaurantAPI.API.Controllers
             
             foreach (var word in stringarray)
             {
-
+               
                 try
                 {
                     Listoflists.Add(Rrepo.GetRestaurants(true).Where(k => k.RestaurantKeywordJunction.Any(rkj => rkj.Word.Equals(word))).Select(k => Mapper.Map(k)).ToList());
-                   
+                    Listoflists.Add(Rrepo.GetRestaurants(true).Where(k => k.Name.Contains(word)).Select(k => Mapper.Map(k)).ToList());
                 }
                 catch (DbUpdateException ex)
                 {
@@ -61,7 +61,7 @@ namespace RestaurantAPI.API.Controllers
 
             foreach (var list in Listoflists)
             {
-
+                
                 foreach (var restaurant in list)
                 {
                     //output each restaurant from each list that matches what was searched
