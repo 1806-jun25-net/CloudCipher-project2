@@ -1,6 +1,7 @@
 <ul class="nav navbar-nav">
-  <li><a routerLink=""><b>TasteMaker-ng!</b></a></li>
+  <li><a routerLink=""><strong>TasteMaker-ng!</strong></a></li>
   <li><a routerLink="/browse">Browse Restaurants</a></li>
+  <li><a routerLink="/stats">Statistics</a></li>
   <div *ngIf="!getAccountKey()">
     <li><a routerLink="/login">Login</a></li>
   </div>
@@ -8,3 +9,4 @@
       <li><button (click)="logout()">Logout</button></li>
   </div>
 </ul>
+<hr />

@@ -27,7 +27,7 @@ export class RestaurantListComponent implements OnInit {
 
   //user for view setup
   ngOnInit() {
-    let searchText = this.route.snapshot.paramMap.get("searchText");
+    this.searchText = this.route.snapshot.paramMap.get("searchText");
     this.searchRestaurants();
   }
 

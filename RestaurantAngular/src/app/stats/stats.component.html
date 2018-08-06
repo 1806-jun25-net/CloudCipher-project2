@@ -1,3 +1,82 @@
-<p>
-  stats works!
-</p>
+<h2>Statistics</h2>
+<hr />
+<button (click)="changeView(1)">Keywords</button>
+<button (click)="changeView(2)">Favorites</button>
+<button (click)="changeView(3)">Blacklist</button>
+<button (click)="changeView(4)">Queries</button>
+<div *ngIf="view==1">
+<h3>Top 10 Keywords</h3>
+<ol>
+  <li *ngFor="let k of topKeywords">
+    {{k.obj}} in {{k.frequency}} qureies
+  </li>
+</ol>
+</div>
+<div *ngIf="view==2">
+<h3>Most Favorited Restaurants</h3>
+<ol>
+  <li *ngFor="let r of topFavorites">
+    Favorited by {{r.frequency}} users:
+    <h4>{{r.obj.name}}</h4>
+      <ul>
+        <li>Id:  {{r.obj.id}}</li>
+        <li>Address:  {{r.obj.address}}</li>
+        <li>Rating:  {{r.obj.rating}}</li>
+        <li>Price Level:  {{r.obj.priceLevel}}</li>
+        <li>
+          <a routerLink="/details/{{r.obj.id}}">
+            View Details
+          </a>
+        </li>
+      </ul>
+      <br><br>
+  </li>
+</ol>
+</div>
+<div *ngIf="view==3">
+<h3>Most Blacklisted Restaurants</h3>
+<ol>
+  <li *ngFor="let r of topBlacklisted">
+    Blacklisted by {{r.frequency}} users:
+    <h4>{{r.obj.name}}</h4>
+      <ul>
+        <li>Id:  {{r.obj.id}}</li>
+        <li>Address:  {{r.obj.address}}</li>
+        <li>Rating:  {{r.obj.rating}}</li>
+        <li>Price Level:  {{r.obj.priceLevel}}</li>
+        <li>
+          <a routerLink="/details/{{r.obj.id}}">
+            View Details
+          </a>
+        </li>
+      </ul>
+      <br><br>
+  </li>
+</ol>
+</div>
+<div *ngIf="view==4">
+<h3>Most Queried Restaurants</h3>
+<ol>
+    <li *ngFor="let r of topQueried">
+      Appearing in {{r.frequency}} queries:
+      <h4>{{r.obj.name}}</h4>
+        <ul>
+          <li>Id:  {{r.obj.id}}</li>
+          <li>Address:  {{r.obj.address}}</li>
+          <li>Rating:  {{r.obj.rating}}</li>
+          <li>Price Level:  {{r.obj.priceLevel}}</li>
+          <li>
+            <a routerLink="/details/{{r.obj.id}}">
+              View Details
+            </a>
+          </li>
+        </ul>
+        <br><br>
+    </li>
+  </ol>
+</div>
+
+<button (click)="changeView(1)">Keywords</button>
+<button (click)="changeView(2)">Favorites</button>
+<button (click)="changeView(3)">Blacklist</button>
+<button (click)="changeView(4)">Queries</button>

@@ -161,4 +161,32 @@ export class ApiService {
     this.deleteRequestWithCredentials(this.apiUrl+"blacklist/"+rId, success, failure);
   }
 
+  getMostSearchedKeywords(
+    success,
+    failure
+  ) {
+    this.getRequestWithoutCredentials(this.apiUrl+"QueryKeywordAnalytics", success, failure);
+  }
+
+  getMostFavoritedRestaurants(
+    success,
+    failure
+  ) {
+    this.getRequestWithoutCredentials(this.apiUrl+"FavoritesAnalytics", success, failure);
+  }
+
+  getMostBlacklistedRestaurants(
+    success,
+    failure
+  ) {
+    this.getRequestWithoutCredentials(this.apiUrl+"BlacklistAnalytics", success, failure);
+  }
+
+  getMostQueriedRestaurants(
+    success,
+    failure
+  ) {
+    this.getRequestWithoutCredentials(this.apiUrl+"QueryRestaurantAnalytics", success, failure);
+  }
+
 }
