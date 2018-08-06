@@ -50,7 +50,12 @@ namespace RestaurantFrontEnd.MVC.Controllers
         // GET: Favorites/Create
         public async Task<string> Create(string id)//ADD REST TO FAVES 
         {
-            
+
+            stringmodel favemodel = new stringmodel() {
+                value = id,
+            };
+
+
             //check if rest already in faves before trying to add
             try
             {
@@ -82,7 +87,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 try
                 {
-                    string jsonString = JsonConvert.SerializeObject(id);
+                    string jsonString = JsonConvert.SerializeObject(favemodel);
                     //var uri = apiserviceuri + "user";
                     var request = CreateRequestService(HttpMethod.Post, "api/favorites");
 
