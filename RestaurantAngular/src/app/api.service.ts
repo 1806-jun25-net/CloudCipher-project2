@@ -1,15 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+const httpOptions = {
+  headers: new HttpHeaders()
+    .set('Access-Control-Allow-Origin','http://localhost:4200, https://restaurantrecommendationsangular.azurewebsites.net')
+    .set('withCredentials','true')
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  //apiUrl: string = "https://cors-anywhere.herokuapp.com/https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
   apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
   //apiUrl: string = "http://localhost:58756/api/";
 
   //Create an HttpClient property equal to parameter taken in
   constructor(private httpClient: HttpClient) { }
+
+  
 
    //get all restaurants in db
   getRestaurants(
@@ -61,8 +70,8 @@ export class ApiService {
     failure
   ) {
     let url = this.apiUrl+"blacklistAnalytics/"+rId;
-    let request = this.httpClient.get(url);
-    //let request = this.httpClient.get(url, { withCredentials: true });
+    //let request = this.httpClient.get(url);
+    let request = this.httpClient.get(url, { withCredentials: true,  });
     let promise = request.toPromise();
 
     promise.then(success, failure);
