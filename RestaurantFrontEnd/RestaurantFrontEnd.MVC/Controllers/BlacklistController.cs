@@ -64,7 +64,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
         // GET: Blacklist/Create
         public async Task<string> Create(string id)
         {
-
+            stringmodel blistmodel = new stringmodel()
+            {
+                value = id,
+            };
             //check if rest already in faves before trying to add
             try
             {
@@ -95,7 +98,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             {
                 try
                 {
-                    string jsonString = JsonConvert.SerializeObject(id);
+                    string jsonString = JsonConvert.SerializeObject(blistmodel);
                     //var uri = apiserviceuri + "user";
                     var request = CreateRequestService(HttpMethod.Post, "api/blacklist");
 
