@@ -16,6 +16,10 @@ export class RestaurantDetailComponent implements OnInit {
   restaurant: Restaurant;
   favCount: number;
   blackCount: number;
+  isFav: boolean;
+  isBlack: boolean;
+  favStatus: string;
+  blackStatus: string;
   
   constructor(
     private route: ActivatedRoute,
@@ -50,10 +54,133 @@ export class RestaurantDetailComponent implements OnInit {
       },
       (result) => console.log("failure to retrieve blacklisted list")
     );
+    this.api.getIfRestaurantIsFavorite(rId,
+      (result) => {
+        console.log("successfully checked if favorited");
+        console.log(JSON.stringify(result));
+        this.isFav = result;
+      },
+      (result) => console.log("failure to check if favorited")
+    )
+    this.api.getIfRestaurantIsBlacklisted(rId,
+      (result) => {
+        console.log("successfully checked if blacklisted");
+        console.log(JSON.stringify(result));
+        this.isBlack = result;
+      },
+      (result) => console.log("failure to check if blacklisted")
+    )
+    this.setBlackStatus();
+    this.setFavStatus();
+  }
+
+  setBlackStatus()
+  {
+    if (this.isBlack)
+    {
+      this.blackStatus = "Remove From Blacklist";
+    }
+    else
+    {
+      this.blackStatus = "Add To Blacklist";
+    }
+  }
+
+  setFavStatus()
+  {
+    if (this.isFav)
+    {
+      this.favStatus = "Remove From Favorites";
+    }
+    else
+    {
+      this.favStatus = "Add To Favorites";
+    }
   }
 
   goBack(): void {
     this.location.back();
   }
+
+  addToFavs(): void {
+    this.api.addToFavorites(this.restaurant.id,
+      (result) => {
+        this.isFav=true;
+        console.log("successfully added to favorites");
+        this.setFavStatus();
+      },
+      (result) => {
+        console.log("failed to add to favorites");
+        this.setFavStatus();
+      }
+    )
+  }
+
+  addToBlack(): void {
+    this.api.addToBlacklist(this.restaurant.id,
+      (result) => {
+        this.isBlack=true;
+        console.log("successfully added to blacklist");
+        this.setBlackStatus();
+      },
+      (result) => {
+        console.log("failed to add to blacklist");
+        this.setBlackStatus();
+      }
+    )
+  }
+
+  removeFromFavs(): void {
+    this.api.removeFromFavorites(this.restaurant.id,
+      (result) => {
+        this.isFav=false;
+        console.log("successfully removed from favorites");
+        this.setFavStatus();
+      },
+      (result) => {
+        console.log("failed to removed from favorites");
+        this.setFavStatus();
+      }
+    )
+  }
+
+  removeFromBlack(): void {
+    this.api.removeFromBlacklist(this.restaurant.id,
+      (result) => {
+        this.isFav=false;
+        console.log("successfully removed from blacklist");
+        this.setBlackStatus();
+      },
+      (result) => {
+        console.log("failed to removed from blacklist");
+        this.setBlackStatus();
+      }
+    )
+  }
+
+  toggleFavs(): void {
+    this.favStatus = "Working...";
+    if (!this.isFav)
+    {
+      this.addToFavs();
+    }
+    else 
+    {
+      this.removeFromFavs();
+    }
+  }
+
+  toggleBlack(): void {
+    this.blackStatus = "Working...";
+    if (!this.isBlack)
+    {
+      this.addToBlack();
+    }
+    else 
+    {
+      this.removeFromBlack();
+    }
+  }
+
 
 }

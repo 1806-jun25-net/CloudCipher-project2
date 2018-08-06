@@ -34,6 +34,27 @@ export class ApiService {
     promise.then(success,failure);
   }
 
+  postRequestWithCredentials(
+    url: string,
+    value,
+    success,
+    failure
+  ) {
+    let request = this.httpClient.post(url, '\"'+value+'\"', { withCredentials: true});
+    let promise = request.toPromise();
+    promise.then(success,failure);
+  }
+
+  deleteRequestWithCredentials(
+    url: string,
+    success,
+    failure
+  ) {
+    let request = this.httpClient.delete(url, { withCredentials: true});
+    let promise = request.toPromise();
+    promise.then(success,failure);
+  }
+
    //get all restaurants in db
   getRestaurants(
     success,
@@ -104,6 +125,39 @@ export class ApiService {
     failure
   ) {
     this.getRequestWithCredentials(this.apiUrl+"blacklist", success, failure);
+  }
+
+  addToFavorites(
+    rId: string,
+    success,
+    failure
+  ) {
+    this.postRequestWithCredentials(this.apiUrl+"favorites", '\"'+rId+'\"', success, failure);
+  }
+
+  addToBlacklist(
+    rId: string,
+    success,
+    failure
+  ) {
+    console.log('\"'+rId+'\"');
+    this.postRequestWithCredentials(this.apiUrl+"blacklist", rId, success, failure);
+  }
+
+  removeFromFavorites(
+    rId: string,
+    success,
+    failure
+  ) {
+    this.deleteRequestWithCredentials(this.apiUrl+"favorites/"+rId, success, failure);
+  }
+
+  removeFromBlacklist(
+    rId: string,
+    success,
+    failure
+  ) {
+    this.deleteRequestWithCredentials(this.apiUrl+"blacklist/"+rId, success, failure);
   }
 
 }
