@@ -2,6 +2,51 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+$.get("/blacklist/LoginCheck", function (data) {
+
+    if (data == "logged out") {
+        document.getElementById("loggedin1").style.display="none";
+        document.getElementById("loggedinbrowse").style.display = "none";
+        document.getElementById("loggedin2").style.display = "none";
+        document.getElementById("loggedin4").style.display = "none";
+        if (document.getElementById("loggedin3") != null) {
+            document.getElementById("loggedin3").style.display = "none";
+        }
+        document.getElementById("loggedin5").style.display = "none";
+        document.getElementById("loggedin6").style.display = "none";
+        document.getElementById("loggedin7").style.display = "none";
+
+        document.getElementById("loggedout1").innerHTML = "Login";
+        document.getElementById("loggedout0").innerHTML = "Register"
+    }
+    else {
+        document.getElementById("loggedout0").style.display = "none";
+        document.getElementById("loggedout1").style.display = "none";
+        document.getElementById("loggedinbrowse").innerHTML = "Browse";
+        document.getElementById("loggedin1").innerHTML = "User-Index";
+        document.getElementById("loggedin2").innerHTML = "User-Create";
+        document.getElementById("loggedin3").innerHTML = data;
+        document.getElementById("loggedin4").innerHTML = "Logout";
+        document.getElementById("loggedin5").innerHTML = "Favorites";
+        document.getElementById("loggedin6").innerHTML = "Blacklist";
+        document.getElementById("loggedin7").innerHTML = "Find A Restaurant";
+    }
+    
+    
+
+
+   
+    //if (data == "logged in") {
+    //    lak.style.display = "none";
+    //    alert(data);
+    //}
+    //else {
+    //    lok.style.display = "none";
+    //    alert(data);
+    //}
+    
+});
+
 function blacklist(blistId) {
     $.post("/blacklist/Create", { id: blistId }, function (data) {
         alert(data);

@@ -1,9 +1,10 @@
 <h2>Browse Restaurants</h2>
 <div>
-  <input type="text" [(ngModel)]="searchText" />
+  <input type="text" [(ngModel)]="searchText" class="login" />
   <button (click)="searchRestaurants()">Search</button>
 </div>
-
+<br>
+<hr>
 <div *ngIf="fixedText">
   <h3>Restaurant results for: {{fixedText}}</h3>
 </div>
@@ -27,11 +28,16 @@
       </ul>
     </li>
   </ol>
+  <div style="text-align:center">
   <button (click)="goToPage1()">Page 1</button>
   <button (click)="goToPrevPage()">Prev. Page</button>
+  ||
   <button disabled>{{currentResultsPage}}</button>
+  ||
   <button (click)="goToNextPage()">Next Page</button>
   <button (click)="goToLastPage()">Page {{maxPages}}</button>
+  </div>
+
 </div>
 
 <div *ngIf="!restaurants.length&&emptyResults">

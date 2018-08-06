@@ -26,7 +26,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             var request = CreateRequestService(HttpMethod.Get, "api/blacklist");
 
             var response = await HttpClient.SendAsync(request);
-
+            
             if (!response.IsSuccessStatusCode)
             {
                 return View("Error");
@@ -38,6 +38,21 @@ namespace RestaurantFrontEnd.MVC.Controllers
             return View(@"..\Blacklist\view_blacklist", user);
 
 
+        }
+
+        public async Task<string> LoginCheck()
+        {
+            var request = CreateRequestService(HttpMethod.Get, "api/blacklist");
+
+            var response = await HttpClient.SendAsync(request);
+            
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Username"] = null;
+                return "logged out";
+            }
+            return (string)TempData.Peek("Username");
         }
 
         // GET: Blacklist/Details/5
@@ -56,6 +71,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 string jsonString = JsonConvert.SerializeObject(id);
                 var request = CreateRequestService(HttpMethod.Get, "api/blacklist/" + id);
                 request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+              
+
                 var response = await HttpClient.SendAsync(request);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -157,6 +175,8 @@ namespace RestaurantFrontEnd.MVC.Controllers
             if (id == null)
                 return View("Error");
             var request = CreateRequestService(HttpMethod.Delete, $"api/blacklist/{id}");
+
+            
 
             try
             {

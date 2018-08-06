@@ -1,25 +1,26 @@
 ﻿@model IEnumerable<RestaurantFrontEnd.Library.API_Models.Restaurant>
 
 @{
-    ViewData["Title"] = "Blacklist";
+    ViewData["Title"] = "view_blacklist";
 }
 
-<h2>@TempData.Peek("Username")'s Blacklist</h2>
+<h2>Blacklist</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            
+
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Hours)
             </th>
-            
+
             <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
@@ -29,37 +30,38 @@
             <th>
                 @Html.DisplayNameFor(model => model.PriceLevel)
             </th>
-           
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hours)
-            </td>
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PriceLevel)
-            </td>
-            
-            <td>
-                 <a href="@Url.Action("Delete", "Blacklist")/@item.Id
-                  ">remove from blacklist</a>
-            
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hours)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PriceLevel)
+                </td>
+
+                <td>
+                    <a href="@Url.Action("Delete", "Blacklist")/@item.Id
+                  "><button class='googlenav'>remove from blacklist</button></a>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

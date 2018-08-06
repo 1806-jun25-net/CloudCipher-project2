@@ -16,7 +16,7 @@ export class AuthenticationService {
   constructor(private http: HttpClient) { }
 
   httpOptions = {
-    headers: new HttpHeaders({ 
+    headers: new HttpHeaders({
       'Access-Control-Allow-Origin':'*',
       'Authorization':'authkey',
       'userid':'1',
@@ -47,7 +47,7 @@ export class AuthenticationService {
     //   { withCredentials: true }
     //);
   }
-  
+
   logout(pass = (data: Object) => { }, fail = err => { }): void {
     var client = JSON.parse(sessionStorage.getItem('AccountKey'));
     this.http.post(

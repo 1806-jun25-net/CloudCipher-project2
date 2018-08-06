@@ -5,7 +5,7 @@
 }
 
 
-<h2>@TempData.Peek("Username")'s Faves</h2>
+<h2>Faves</h2>
 
 @*<p>
     <a asp-action="Create">Create New</a>
@@ -56,8 +56,9 @@
             </td>
             
             <td>
-               <a href="@Url.Action("Delete", "Favorites")/@item.Id
-                  ">remove from faves</a>
+                <a href="@Url.Action("Delete", "Favorites")/@item.Id
+                  "><button class='googlenav'>remove from faves</button></a>
+                <a href="https://maps.google.com/?q= @Html.DisplayFor(modelItem => item.Name),@Html.DisplayFor(modelItem => item.Address)" target='_blank'><button class='googlenav'>directions</button></a>
             </td>
         </tr>
 }

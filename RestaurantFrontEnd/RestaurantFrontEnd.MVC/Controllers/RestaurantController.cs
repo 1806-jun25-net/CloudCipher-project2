@@ -25,6 +25,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
             //blacklist check
             var request1 = CreateRequestService(HttpMethod.Get, "api/blacklist/");
 
+
+          
+
             var response1 = await HttpClient.SendAsync(request1);
             if (!response1.IsSuccessStatusCode)
             {
@@ -188,6 +191,11 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
         }
 
+   
+        
+
+        //////////////
+
         // GET: Restaurant/Details/5
         public async Task<ActionResult> Details(string id)
         {
@@ -195,6 +203,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 return View("Error");
             var request = CreateRequestService(HttpMethod.Get, $"api/restaurant/{id}");
 
+           
             try
             {
                 var response = await HttpClient.SendAsync(request);
@@ -288,6 +297,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
         {
             HttpRequestMessage request;
 
+           
             if (string.IsNullOrEmpty(search))
             {
                 request = CreateRequestService(HttpMethod.Get, "api/restaurant");

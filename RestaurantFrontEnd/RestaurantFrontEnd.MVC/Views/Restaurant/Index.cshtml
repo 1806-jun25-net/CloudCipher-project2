@@ -44,7 +44,7 @@
     //string faveresult = (string)ViewData["addedfave"];
 }
 @{
-    string[] blacklist1 = (string[])TempData.Peek("blacklistcheck1");
+    string[] blacklist1 = (string[])TempData["blacklistcheck1"];
     string longid = "";
     List<string> blacklist2 = blacklist1.ToList();
 }
@@ -52,6 +52,7 @@
 
 
 @section query_string {
+    
     
     <script type="text/javascript">
         var query = '@query';
@@ -76,9 +77,6 @@
 <script async deferer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
 </script>
-
-
-
 
 
 @{

@@ -28,8 +28,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
         {
             var request = CreateRequestService(HttpMethod.Get, "api/user");
 
+            
+
             //var uri = apiserviceuri + "user/";
-            if(search != null && search != "")
+            if (search != null && search != "")
             {
                 //var search_uri = apiserviceuri + "user/" + search;
                 request = CreateRequestService(HttpMethod.Get, "api/user/"+search);
@@ -95,7 +97,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
             if (username == null)
                 return View("Error");
             var request = CreateRequestService(HttpMethod.Get, $"api/user/{username}");
-            
+
+
+          
+
             try
             {
                 var response = await HttpClient.SendAsync(request);
@@ -119,6 +124,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
         // GET: User/Create
         public ActionResult Create()
         {
+
+           
+
             return View(@"..\User\Create");
         }
 
@@ -132,6 +140,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 return View(@"..\User\Create",user);
             }
 
+           
             try
             {
                 string jsonString = JsonConvert.SerializeObject(user);
@@ -160,6 +169,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
         public async Task<ActionResult> Edit(string username)
         {
             var request = CreateRequestService(HttpMethod.Get, $"api/user/{username}");
+
+         
+
             try
             {
                 var response = await HttpClient.SendAsync(request);
@@ -185,6 +197,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(User user)
         {
+
+       
+
             if (!ModelState.IsValid)
             {
                 return View(@"..\User\Edit\"+$"{user.Username}", user);

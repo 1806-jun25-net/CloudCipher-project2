@@ -26,6 +26,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
             var response = await HttpClient.SendAsync(request);
 
+
             if (!response.IsSuccessStatusCode)
             {
                 return View("Error");
@@ -57,6 +58,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 var request = CreateRequestService(HttpMethod.Get, "api/favorites/"+id);
                 request.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                 var response = await HttpClient.SendAsync(request);
+
+
+                
+
                 if (!response.IsSuccessStatusCode)
                 {
                     ViewData["addedfave"] = "Error in check faves response";
@@ -157,7 +162,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 return View("Error");
             var request = CreateRequestService(HttpMethod.Delete, $"api/favorites/{id}");
 
+
             try
+
             {
                 var response = await HttpClient.SendAsync(request);
 

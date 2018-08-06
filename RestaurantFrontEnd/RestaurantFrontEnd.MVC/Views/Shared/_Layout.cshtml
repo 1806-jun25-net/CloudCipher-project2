@@ -4,17 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RestaurantFrontEnd.MVC</title>
-   
+
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-       
+
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    </environment>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        @RenderSection("query_string", false)
+        @RenderSection("blacklistCheck", false)
+        @*Adding following line to see if it fixes error in views w/ scripts*@
+        @RenderSection("Scripts", required: false)
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @*<script async deferer
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
+            </script>*@
+
     </environment>
 </head>
 <body>
@@ -30,23 +45,18 @@
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand "><b>TasteMaker</b></a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" id="logincheck">
+                    <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Index" id="loggedin1">User-Index</a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Register" id="loggedout0"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Login" id="loggedout1"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Create" id="loggedin2"></a></li>
+                    <li class="hoover"><a href="https://restaurantrecommendationsangular.azurewebsites.net" id="loggedinbrowse"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Details" id="loggedin3" asp-route-Username="@TempData.Peek("Username")"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Logout" id="loggedin4"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="Favorites" asp-action="Index" id="loggedin5"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="Blacklist" asp-action="Index" id="loggedin6"></a></li>
+                    <li class="hoover"><a asp-area="" asp-controller="Restaurant" asp-action="Index" id="loggedin7"></a></li>
 
-                    <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Index">User-Index</a></li>
-                    @if (TempData.Peek("Username") == null)
-                    {
-                        <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-                        <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
-                    }
-                    else
-                    {
-                        <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Create">User-Create</a></li>
-                        <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Details" asp-route-Username="@TempData.Peek("Username")">@TempData.Peek("Username")</a></li>
-                        <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
-                        <li class="hoover"><a asp-area="" asp-controller="Favorites" asp-action="Index">Faves</a></li>
-                        <li class="hoover"><a asp-area="" asp-controller="Blacklist" asp-action="Index">Blacklist</a></li>
-                        <li class="hoover"><a asp-area="" asp-controller="Restaurant" asp-action="Index">Find A Restaurant</a></li>
-                    }
                 </ul>
             </div>
         </div>
@@ -56,36 +66,26 @@
 
     <div class="container body-content">
         @RenderBody()
+
         <hr />
         <footer>
             <p>&copy; 2018 - RestaurantFrontEnd.MVC</p>
         </footer>
     </div>
-    @*@{ 
-        string faveresult = (string)ViewData["addedfave"]
-    }
-   @section favealerts{
-    <script type="text/javascript">
+    @*@{
+             string faveresult = (string)ViewData["addedfave"]
+         }
+        @section favealerts{
+         <script type="text/javascript">
 
-        var favealert = '@faveresult';
+             var favealert = '@faveresult';
 
-    </script>
+         </script>
 
-   }*@
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        @RenderSection("query_string", false)
-        @RenderSection("blacklistCheck",false)
-        @*Adding following line to see if it fixes error in views w/ scripts*@
-        @RenderSection("Scripts", required: false)
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @*<script async deferer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCji7qavH8NTarPPbIyYNCtw7TJnmZHKr0&callback=initMap">
-        </script>*@
+        }*@
 
-    </environment>
+
+
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"

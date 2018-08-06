@@ -104,6 +104,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
         {
             HttpRequestMessage apiRequest = CreateRequestService(HttpMethod.Post, "api/Account/Login", account);
 
+           
             HttpResponseMessage apiResponse;
             try
             {
@@ -124,7 +125,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             }
 
             PassCookiesToClient(apiResponse);
-            TempData.Add("Username", account.Username);
+            TempData["Username"]=account.Username;
 
             if (account.Username == "admin.2")
             {
@@ -145,6 +146,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 return View("Error");
 
             }
+
+
+           
             HttpRequestMessage apiRequest = CreateRequestService(HttpMethod.Post, "api/Account/Logout");
 
             HttpResponseMessage apiResponse;

@@ -1,11 +1,16 @@
-<a routerLink="/browse">
+
+
+  <!-- <a routerLink="/browse">
   Browse Restaurants
-</a>
-<div *ngIf="!getAccountKey()">
-  <a routerLink="/login">
-    Login
+</a> -->
+
+
+  <a *ngIf="!getAccountKey()" routerLink="/login">
+    <button>Login</button>
   </a>
-</div>
-<div *ngIf="getAccountKey()">
-    <button (click)="logout()">Logout</button>
-</div>
+
+<a href="https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net"><button>Make A New Search</button></a>
+
+    <button *ngIf="getAccountKey()" (click)="logout()">Logout</button>
+
+
