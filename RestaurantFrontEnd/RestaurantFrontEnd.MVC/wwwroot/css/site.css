@@ -22,7 +22,8 @@ button, .btn {
     border: none;
 }
 .googlenav {
-    background-color: #9d9d9d;
+    background-color: #8c101f;
+    margin-bottom:5px;
 }
 .googlenav:hover{
     background-color:black;

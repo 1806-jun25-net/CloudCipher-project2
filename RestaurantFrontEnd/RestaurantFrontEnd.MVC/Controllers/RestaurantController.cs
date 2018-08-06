@@ -21,12 +21,32 @@ namespace RestaurantFrontEnd.MVC.Controllers
         // GET: Restaurant
         public async Task<ActionResult> Index([FromQuery] string search = "")
         {
-            //var requestg = CreateRequestService(HttpMethod.Get, "api/Restaurant");
-          
+
+            //blacklist check
+            var request1 = CreateRequestService(HttpMethod.Get, "api/blacklist/");
+
+            var response1 = await HttpClient.SendAsync(request1);
+            if (!response1.IsSuccessStatusCode)
+            {
+                return View("Error");
+            }
+            string jsonString1 = await response1.Content.ReadAsStringAsync();
+            List<Restaurant> user1 = JsonConvert.DeserializeObject<List<Restaurant>>(jsonString1);
+            ViewBag.blist = user1;
+            List<string> blistIdString = new List<string>();
+            foreach (var n in user1)
+            {
+                blistIdString.Add(n.Id);
+            }
+            string[] newblist = blistIdString.ToArray();
+            TempData["blacklistcheck1"] = newblist;
+            ////////
+
             //change to Query once you have authorization set up
 
             if (search == null || search == "")
             {
+
                 string cookieValue = Request.Cookies[s_CookieName];
 
                 //RETURNING SUGGESTIONS FOR
@@ -34,9 +54,10 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 {
                     if (TempData.Peek("Username") != null)
                     {
-
+                       
+                        //QueryResult Check
                         var request = CreateRequestService(HttpMethod.Get, "api/QueryResult/");
-
+                        
                         try
                         {
                             var response = await HttpClient.SendAsync(request);
@@ -48,25 +69,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
                             string jsonString = await response.Content.ReadAsStringAsync();
                             List<QueryResult> user = JsonConvert.DeserializeObject<List<QueryResult>>(jsonString);
-
-                            //IEnumerable<Restaurant> GetUserRests()
-                            //{
-
-                            //    // IEnumerable<Restaurant> user_rests = new List<Restaurant>();
-                            //    List<Restaurant> user_rests = new List<Restaurant>();
-                            //    foreach (var m in user)
-                            //    {
-                            //        if (m.QueryObject.Username == (string)TempData.Peek("Username"))
-                            //        {
-                            //            foreach (var l in m.Restaurants)
-                            //            {
-                            //                user_rests.Add(l);
-                            //            }
-                            //        }
-                            //    }
-                            //    IEnumerable<Restaurant> userRests = user_rests;
-                            //    return userRests;
-                            //}
+                            
                             if (user.Count()== 0)
                             {
                                 return View(@"..\Restaurant\Index");
@@ -91,15 +94,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 {
                     return View(@"..\Restaurant\Index");
                 }
-                /////request = CreateRequestService(HttpMethod.Get, "api/restaurant")
-                ////SAVE ABOVE FOR LATER//WIll be sending this request to Query
-                ////controller in the form of a list
-
-                //DONT FORGET THIS: IF NEW TO APP THIS SHOULD BE RETURNED
-                //MAYBE ABOVE SUGGESTIONS PROCESS CAN STILL FUNCITON AS LONG AS IT DOESNT RETURN
-                //ERROR PAGE IF NO RESULTS RETURNED...SHOULD CONTINUE ON TO EMPTY VIEW
-
-                //return View(@"..\Restaurant\Index");
+                
 
                 ///////////
             }
@@ -140,6 +135,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             foreach(var k in restobj)
             {
                 k.Keywords = kw;
+                
             }
 
 

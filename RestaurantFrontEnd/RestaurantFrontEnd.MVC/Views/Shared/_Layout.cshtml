@@ -44,6 +44,7 @@
                         <li class="hoover"><a asp-area="" asp-controller="User" asp-action="Details" asp-route-Username="@TempData.Peek("Username")">@TempData.Peek("Username")</a></li>
                         <li class="hoover"><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                         <li class="hoover"><a asp-area="" asp-controller="Favorites" asp-action="Index">Faves</a></li>
+                        <li class="hoover"><a asp-area="" asp-controller="Blacklist" asp-action="Index">Blacklist</a></li>
                         <li class="hoover"><a asp-area="" asp-controller="Restaurant" asp-action="Index">Find A Restaurant</a></li>
                     }
                 </ul>
@@ -60,12 +61,23 @@
             <p>&copy; 2018 - RestaurantFrontEnd.MVC</p>
         </footer>
     </div>
-   
+    @*@{ 
+        string faveresult = (string)ViewData["addedfave"]
+    }
+   @section favealerts{
+    <script type="text/javascript">
+
+        var favealert = '@faveresult';
+
+    </script>
+
+   }*@
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         @RenderSection("query_string", false)
+        @RenderSection("blacklistCheck",false)
         @*Adding following line to see if it fixes error in views w/ scripts*@
         @RenderSection("Scripts", required: false)
         <script src="~/js/site.js" asp-append-version="true"></script>

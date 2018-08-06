@@ -47,8 +47,9 @@ namespace RestaurantFrontEnd.MVC.Controllers
         //}
 
         // GET: Favorites/Create
-        public async Task<ActionResult> Create(string id)//ADD REST TO FAVES 
+        public async Task<string> Create(string id)//ADD REST TO FAVES 
         {
+            
             //check if rest already in faves before trying to add
             try
             {
@@ -58,7 +59,8 @@ namespace RestaurantFrontEnd.MVC.Controllers
                 var response = await HttpClient.SendAsync(request);
                 if (!response.IsSuccessStatusCode)
                 {
-                    return View("Error");
+                    ViewData["addedfave"] = "Error in check faves response";
+                    return (string)ViewData["addedfave"];
                 }
                 string jsonString2 = await response.Content.ReadAsStringAsync();
                 bool user = JsonConvert.DeserializeObject<bool>(jsonString2);
@@ -71,7 +73,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
            
 
            //if new rest fave,then add
-            if(!(bool)TempData.Peek("restfavecheck"))
+            if((bool)TempData["restfavecheck"]==false)
             {
                 try
                 {
@@ -86,21 +88,24 @@ namespace RestaurantFrontEnd.MVC.Controllers
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        return View("Error");
+                        ViewData["errorfave"] = "Error in adding fave to db";
+                        return (string)ViewData["errorfave"];
                     }
-                    TempData["Message"] = "Added to Favorites";
+                    ViewData["Message"] = "Added to Favorites";
                     
                 }
                 catch
                 {
                     TempData["Message"] = "Sorry, something went wrong";
                 }
-                return Redirect(Url.Action("Index", "Favorites"));//EVENTUALLY CHANGE TO A SIMPLE ALERT/NOTIFICATION
+                ViewData["addedfave"] ="added to faves";
+                return (string)ViewData["addedfave"]; ;//EVENTUALLY CHANGE TO A SIMPLE ALERT/NOTIFICATION
 
             }
             else
             {
-                return Redirect(Url.Action("Index", "Favorites"));
+                TempData["alreadyfave"] = "restaurant already in your faves";
+                return (string)TempData["alreadyfave"];
             }
         }
 
