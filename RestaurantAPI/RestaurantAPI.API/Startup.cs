@@ -67,6 +67,7 @@ namespace RestaurantAPI.API
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "Project2Auth";
+                options.Cookie.HttpOnly = false;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
                 {
@@ -84,7 +85,9 @@ namespace RestaurantAPI.API
             });
 
             services.AddAuthentication();
+
             services.AddCors();
+
             services.AddMvc()
                 .AddXmlSerializerFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -109,15 +112,16 @@ namespace RestaurantAPI.API
 
             //Part of Identity and Swagger Implementation
             app.UseAuthentication();
+
             app.UseCors(builder => builder
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin() //Could put just angular url here
-                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/", "http://localhost:4200")
-                .AllowCredentials()
-                );
+                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net", "http://localhost:4200")
+                .AllowCredentials());
 
+            
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
