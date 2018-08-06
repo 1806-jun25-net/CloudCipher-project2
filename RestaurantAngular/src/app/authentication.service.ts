@@ -24,11 +24,10 @@ export class AuthenticationService {
   //   })
   // };
 
-  httpOptions = {
-    headers: new HttpHeaders()
-    .set('Access-Control-Allow-Origin','http://localhost:4200, https://restaurantrecommendationsangular.azurewebsites.net')
-    .set('withCredentials','true')
-      };
+  // httpOptions = {
+  //   headers: new HttpHeaders()
+  //   .set('withCredentials','true')
+  //     };
 
   login(
     client: Account,

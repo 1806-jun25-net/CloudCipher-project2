@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-const httpOptions = {
-  headers: new HttpHeaders()
-    .set('Access-Control-Allow-Origin','http://localhost:4200, https://restaurantrecommendationsangular.azurewebsites.net')
-    .set('withCredentials','true')
-};
+// const httpOptions = {
+//   headers: new HttpHeaders()
+//     .set('withCredentials','true')
+// };
 
 @Injectable({
   providedIn: 'root'
