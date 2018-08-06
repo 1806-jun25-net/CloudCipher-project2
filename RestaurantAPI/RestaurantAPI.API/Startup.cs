@@ -68,7 +68,7 @@ namespace RestaurantAPI.API
             {
                 options.Cookie.Name = "Project2Auth";
                 options.Cookie.HttpOnly = false;
-                options.ExpireTimeSpan = TimeSpan.FromDays(3);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = ctx =>
