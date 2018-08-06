@@ -59,6 +59,7 @@ export class RestaurantDetailComponent implements OnInit {
         console.log("successfully checked if favorited");
         console.log(JSON.stringify(result));
         this.isFav = result;
+        this.setFavStatus();
       },
       (result) => console.log("failure to check if favorited")
     )
@@ -67,11 +68,11 @@ export class RestaurantDetailComponent implements OnInit {
         console.log("successfully checked if blacklisted");
         console.log(JSON.stringify(result));
         this.isBlack = result;
+        this.setBlackStatus();
       },
       (result) => console.log("failure to check if blacklisted")
     )
-    this.setBlackStatus();
-    this.setFavStatus();
+  
   }
 
   setBlackStatus()
@@ -147,7 +148,7 @@ export class RestaurantDetailComponent implements OnInit {
   removeFromBlack(): void {
     this.api.removeFromBlacklist(this.restaurant.id,
       (result) => {
-        this.isFav=false;
+        this.isBlack=false;
         console.log("successfully removed from blacklist");
         this.setBlackStatus();
       },

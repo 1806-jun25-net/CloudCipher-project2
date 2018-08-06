@@ -81,11 +81,11 @@ namespace RestaurantAPI.API.Controllers
         [ProducesResponseType(500)]
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateAsync([FromBody] string value)
+        public async Task<IActionResult> CreateAsync([FromBody] StringModel sm)
         {
             try
             {
-                await Arepo.AddRestaurantToFavoritesAsync(User.Identity.Name, value, (RestaurantRepo)Rrepo);
+                await Arepo.AddRestaurantToFavoritesAsync(User.Identity.Name, sm.Value, (RestaurantRepo)Rrepo);
             }
             catch (Exception e)
             {

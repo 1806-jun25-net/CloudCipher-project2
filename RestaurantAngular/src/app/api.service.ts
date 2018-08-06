@@ -40,7 +40,7 @@ export class ApiService {
     success,
     failure
   ) {
-    let request = this.httpClient.post(url, '\"'+value+'\"', { withCredentials: true});
+    let request = this.httpClient.post(url, value, { withCredentials: true});
     let promise = request.toPromise();
     promise.then(success,failure);
   }
@@ -132,7 +132,8 @@ export class ApiService {
     success,
     failure
   ) {
-    this.postRequestWithCredentials(this.apiUrl+"favorites", '\"'+rId+'\"', success, failure);
+    let ts = {"value": rId}
+    this.postRequestWithCredentials(this.apiUrl+"favorites", ts , success, failure);
   }
 
   addToBlacklist(
@@ -140,8 +141,8 @@ export class ApiService {
     success,
     failure
   ) {
-    console.log('\"'+rId+'\"');
-    this.postRequestWithCredentials(this.apiUrl+"blacklist", rId, success, failure);
+    let ts = {"value": rId}
+    this.postRequestWithCredentials(this.apiUrl+"blacklist", ts, success, failure);
   }
 
   removeFromFavorites(
