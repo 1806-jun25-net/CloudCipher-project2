@@ -85,13 +85,9 @@ namespace RestaurantAPI.API
             });
 
             services.AddAuthentication();
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
-                builder.WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net", "http://localhost:4200")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
-            }));
+
+            services.AddCors();
+
             services.AddMvc()
                 .AddXmlSerializerFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -114,12 +110,18 @@ namespace RestaurantAPI.API
                 app.UseDeveloperExceptionPage();
             }
 
-
-            app.UseCors("MyPolicy");
             //Part of Identity and Swagger Implementation
             app.UseAuthentication();
 
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net", "http://localhost:4200")
+                .AllowCredentials());
+
+            
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");

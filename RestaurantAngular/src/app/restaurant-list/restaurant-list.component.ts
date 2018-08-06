@@ -31,32 +31,32 @@ export class RestaurantListComponent implements OnInit {
     this.currentResultsPage = 1;
     this.start = 0;
     this.fixedText = this.searchText;
-    if (this.searchText === "") {
-      this.api.getRestaurants(
-        (result) => {
-          console.log("successfully retrieved all restaurants");
-          this.restaurants = result;
-          this.produceRestaurantsSubset();
-          this.maxPages = Math.ceil(this.restaurants.length/4);
-          this.emptyResults = true;
-        },
-        (result) => console.log("failure")
-      );
-    } else if (!this.searchText) {
-      // do nothing
+    if (!this.searchText)
+    {
       this.emptyResults = false;
-    } else {
-      this.api.searchRestaurants(this.searchText,
-        (result) => {
-          console.log("successfully retrieved restaurants by keyword");
-          this.restaurants = result;
-          this.produceRestaurantsSubset();
-          this.maxPages = Math.ceil(this.restaurants.length/4);
-          this.emptyResults = true;
-        },
-        (result) => console.log("failure")
-      );
     }
+    else
+    {
+      var fn= (result) => {
+        console.log("successfully retrieved");
+            this.restaurants = result;
+            this.produceRestaurantsSubset();
+            this.maxPages = Math.ceil(this.restaurants.length/4);
+            this.emptyResults = true;
+      };
+      if (this.searchText === "") {
+        this.api.getRestaurants(
+          fn,
+          (result) => console.log("failure")
+        );
+      } else {
+        this.api.searchRestaurants(this.searchText,
+          fn,
+          (result) => console.log("failure")
+        );
+      }
+    }
+    
   }
 
   produceRestaurantsSubset(): void {

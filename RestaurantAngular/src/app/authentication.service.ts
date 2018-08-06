@@ -10,24 +10,12 @@ import { Account } from './models/account';
 
 export class AuthenticationService {
   //apiUrl: string = "https://cors-anywhere.herokuapp.com/https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
-  //apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
-  apiUrl: string = "http://localhost:58756/api/";
+  apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
+  //apiUrl: string = "http://localhost:58756/api/";
   mvcUrl: string = "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/";
 
 
   constructor(private http: HttpClient) { }
-
-  // httpOptions = {
-  //   headers: new HttpHeaders({ 
-  //     'Access-Control-Allow-Origin':'*',
-  //     'withCredentials' : 'true'
-  //   })
-  // };
-
-  // httpOptions = {
-  //   headers: new HttpHeaders()
-  //   .set('withCredentials','true')
-  //     };
 
   login(
     client: Account,
