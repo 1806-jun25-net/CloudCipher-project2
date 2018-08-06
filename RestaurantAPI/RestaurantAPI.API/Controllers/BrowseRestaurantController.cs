@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ namespace RestaurantAPI.API.Controllers
             return new string[] { "value1", "value2" };
         }
 
+        
         // GET: api/BrowseRestaurant/5
         [HttpGet("{search}", Name = "SearchTerm")]
         public ActionResult<List<RestaurantModel>> Get(string search)

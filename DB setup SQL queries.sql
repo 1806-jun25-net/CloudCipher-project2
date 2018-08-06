@@ -113,6 +113,8 @@ SELECT * FROM RestaurantSite.QueryRestaurantJunction;
 
 SELECT * FROM RestaurantSite.Blacklist WHERE (Username = 'admin.2') Order By RestaurantID;
 
+SELECT * FROM RestaurantSite.Blacklist;
+
 SELECT * FROM RestaurantSite.Favorite;
 /*
 DELETE FROM RestaurantSite.QueryKeywordJunction;

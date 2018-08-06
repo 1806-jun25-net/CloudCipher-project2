@@ -5,18 +5,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApiService {
-  //apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
-  apiUrl: string = "http://localhost:58756/api/";
+  apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
+  //apiUrl: string = "http://localhost:58756/api/";
 
   //Create an HttpClient property equal to parameter taken in
   constructor(private httpClient: HttpClient) { }
-
-  httpOptions = {
-    headers: new HttpHeaders({ 
-      'Access-Control-Allow-Origin':'*',
-      'withCredentials' : 'true'
-    })
-  };
 
    //get all restaurants in db
   getRestaurants(
@@ -55,7 +48,8 @@ export class ApiService {
     console.log(sessionStorage.getItem("AccountKey"));
     let url = this.apiUrl+"BrowseRestaurant/"+searchText;
     //let request = this.httpClient.get(url);
-    let request = this.httpClient.get(url, this.httpOptions);
+    //let request = this.httpClient.get(url, this.httpOptions);
+    let request = this.httpClient.get(url,{ withCredentials: true});
     let promise = request.toPromise();
 
     promise.then(success, failure);
