@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Restaurant } from '../models/restaurant';
 import { ApiService} from '../api.service'
 
@@ -19,10 +20,14 @@ export class RestaurantListComponent implements OnInit {
   emptyResults: boolean = false;
 
   //take in parameter and store in property
-  constructor(private api: ApiService) { }
+  constructor(
+    private api: ApiService,
+    private route: ActivatedRoute
+  ) { }
 
   //user for view setup
   ngOnInit() {
+    let searchText = this.route.snapshot.paramMap.get("searchText");
     this.searchRestaurants();
   }
 

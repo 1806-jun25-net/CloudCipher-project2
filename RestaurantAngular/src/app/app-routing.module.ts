@@ -5,10 +5,13 @@ import { Routes, RouterModule } from "@angular/router";
 import { RestaurantListComponent } from './restaurant-list/restaurant-list.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
 import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/browse', pathMatch: 'full' },
+  { path: '', redirectTo:'home', pathMatch: 'full' },
+  { path: "home", component: HomeComponent },
   { path: "browse", component: RestaurantListComponent },
+  { path: "browse/:searchText", component: RestaurantListComponent },
   { path: "details/:id", component: RestaurantDetailComponent },
   { path: "login", component: LoginComponent}
 ];

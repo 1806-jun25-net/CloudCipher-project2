@@ -117,7 +117,8 @@ namespace RestaurantAPI.API
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .WithOrigins("https://restaurantrecommendationsangular.azurewebsites.net", "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net", "http://localhost:4200")
-                .AllowCredentials());
+                .AllowCredentials()
+                );
 
             
             app.UseSwagger();

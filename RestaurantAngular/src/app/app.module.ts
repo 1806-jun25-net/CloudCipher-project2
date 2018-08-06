@@ -10,6 +10,8 @@ import { AppRoutingModule } from './/app-routing.module';
 import { RouterModule } from '../../node_modules/@angular/router';
 import { LoginComponent } from './login/login.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { HomeComponent } from './home/home.component';
+import { StatsComponent } from './stats/stats.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { NavbarComponent } from './navbar/navbar.component';
     RestaurantListComponent,
     RestaurantDetailComponent,
     LoginComponent,
-    NavbarComponent
+    NavbarComponent,
+    HomeComponent,
+    StatsComponent
   ],
   imports: [
     BrowserModule,

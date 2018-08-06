@@ -1,20 +1,10 @@
-
-
-  <!-- <a routerLink="/browse">
-  Browse Restaurants
-</a> -->
-
-
-  <a *ngIf="!getAccountKey()" routerLink="/login">
-    <button>Login</button>
-  </a>
-
-<a href="https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net"><button>Make A New Search</button></a>
-
-    <button *ngIf="getAccountKey()" (click)="logout()">Logout</button>
-
-    <div>
-        {{getAccountKey()}}
-        Making sure Angular is updating on Azure v0.7
-    </div>
-
+<ul class="nav navbar-nav">
+  <li><a routerLink=""><b>TasteMaker-ng!</b></a></li>
+  <li><a routerLink="/browse">Browse Restaurants</a></li>
+  <div *ngIf="!getAccountKey()">
+    <li><a routerLink="/login">Login</a></li>
+  </div>
+  <div *ngIf="getAccountKey()">
+      <li><button (click)="logout()">Logout</button></li>
+  </div>
+</ul>
