@@ -57,7 +57,7 @@ export class ApiService {
     let url = this.apiUrl+"BrowseRestaurant/"+searchText;
     //let request = this.httpClient.get(url);
     //let request = this.httpClient.get(url, this.httpOptions);
-    let request = this.httpClient.get(url,{ withCredentials: true});
+    let request = this.httpClient.get(url, { withCredentials: true});
     let promise = request.toPromise();
 
     promise.then(success, failure);
