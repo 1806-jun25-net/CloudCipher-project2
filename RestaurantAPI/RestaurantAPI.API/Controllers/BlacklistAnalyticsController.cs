@@ -47,7 +47,7 @@ namespace RestaurantAPI.API.Controllers
                 {
                     Obj = Mapper.Map(r),
                     Frequency = r.Blacklist.Count()
-                }).OrderByDescending(k => k.Frequency).ToList();
+                }).ToList().OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
             {
