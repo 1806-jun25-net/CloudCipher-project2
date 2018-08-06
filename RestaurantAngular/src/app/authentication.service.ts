@@ -10,9 +10,9 @@ import { Account } from './models/account';
 
 export class AuthenticationService {
   //apiUrl: string = "https://cors-anywhere.herokuapp.com/https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
-  //apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
+  apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
   //apiUrl: string= "https://restaurantrecommendationsapi.azurewebsites.net/api/";
-  apiUrl: string = "http://localhost:58756/api/";
+  //apiUrl: string = "http://localhost:58756/api/";
   mvcUrl: string = "https://cloudcipher-restaurantrecommendationsfrontend.azurewebsites.net/";
 
 
