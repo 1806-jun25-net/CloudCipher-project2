@@ -73,12 +73,9 @@ namespace RestaurantAPI.API.Controllers
                     //output each restaurant from each list that matches what was searched
                     if (User.Identity.IsAuthenticated)
                     {
-                       if (!Arepo.GetBlacklistForUser(User.Identity.Name).Any(c => c.Id.Equals(restaurant.Id)) )
+                       if (!Arepo.GetBlacklistForUser(User.Identity.Name).Any(c => c.Id.Equals(restaurant.Id)) && !results.Contains(restaurant))
                        {
-                            if (!results.Contains(restaurant))
-                            {
-                                results.Add(restaurant);
-                            }
+                            results.Add(restaurant);
                        }
 
                     }
@@ -97,22 +94,5 @@ namespace RestaurantAPI.API.Controllers
             return results;
         }
 
-        // POST: api/BrowseRestaurant
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT: api/BrowseRestaurant/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

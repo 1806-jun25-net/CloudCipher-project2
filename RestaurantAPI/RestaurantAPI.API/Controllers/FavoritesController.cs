@@ -54,7 +54,6 @@ namespace RestaurantAPI.API.Controllers
         }
 
         //Given a restaurantID, returns bool of whether restaurant is in user's favorites
-        //TODO: this
         // GET: api/Favorites/5
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]

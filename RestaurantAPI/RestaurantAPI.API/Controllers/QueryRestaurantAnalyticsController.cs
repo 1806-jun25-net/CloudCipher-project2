@@ -46,7 +46,7 @@ namespace RestaurantAPI.API.Controllers
                 return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
                 {
                     Obj = Mapper.Map(r),
-                    Frequency = r.QueryRestaurantJunction.Count()
+                    Frequency = r.QueryRestaurantJunction.Count
                 }).ToList().OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)
@@ -77,7 +77,7 @@ namespace RestaurantAPI.API.Controllers
                 return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
                 {
                     Obj = Mapper.Map(r),
-                    Frequency = r.QueryRestaurantJunction.Where(q => q.Query.Username.Equals(username)).Count()
+                    Frequency = r.QueryRestaurantJunction.Count(q => q.Query.Username.Equals(username))
                 }).OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)

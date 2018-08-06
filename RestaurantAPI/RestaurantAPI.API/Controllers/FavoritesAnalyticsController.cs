@@ -46,7 +46,7 @@ namespace RestaurantAPI.API.Controllers
                 return Rrepo.GetRestaurants(true).Select(r => new FrequencyWrapper<RestaurantModel>()
                 {
                     Obj = Mapper.Map(r),
-                    Frequency = r.Favorite.Count()
+                    Frequency = r.Favorite.Count
                 }).ToList().OrderByDescending(k => k.Frequency).ToList();
             }
             catch (Exception e)

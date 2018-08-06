@@ -106,12 +106,5 @@ namespace RestaurantAPI.API.Controllers
             return CreatedAtRoute("GetRestaurant", new { Id = value.Id }, value);
         }
 
-        //TODO: Implement this method or delete
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        [Authorize]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
     }
 }
