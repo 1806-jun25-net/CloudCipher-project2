@@ -1,16 +1,31 @@
+# all mvc containser can see angular service
+# at the URL "http://api"
 version: "1"
 services:
   mvc:
     image: bjkirk94/restaurant-mvc:0.1
+    ports:
+      - "5000:80"
     networks:
       - net
+    deploy:
+      replicas: 2
   api:
     image: bjkirk94/restaurant-api:0.1
+    ports:
+      - "5002:80"
     networks:
       - net
+    env_file: secrets.env
+    deploy:
+      replicas: 2
   angular:
     image: bjkirk/restaurant-ng:0.1
+    ports:
+      - "5001:80"
     networks:
       - net
+    deploy:
+      replicas: 2
 networks:
   net:
