@@ -556,3 +556,5 @@ $RECYCLE.BIN/
 
 
 # End of https://www.gitignore.io/api/macos,csharp,windows,visualstudio,visualstudiocode
+/RestaurantAngular/src/app/nginx-custom.conf
+/RestaurantAngular/DockerFile
