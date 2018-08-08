@@ -1,0 +1,22 @@
+FROM microsoft/dotnet:2.1-sdk AS build
+WORKDIR /app
+
+# copy csproj and restore as distinct layers
+COPY *.sln .
+# COPY JCMVCTest.Data/*.csproj ./JCMVCTest.Data/
+COPY RestaurantFrontEnd.Library/*.csproj ./RestaurantFrontEnd.Library/
+COPY RestaurantFrontEnd.MVC/*.csproj ./RestaurantFrontEnd.MVC/
+COPY RestaurantFrontEnd.Testing/*.csproj ./RestaurantFrontEnd.Testing/
+
+RUN dotnet restore
+
+# copy everything else and build app
+COPY . ./
+WORKDIR /app/RestaurantFrontEnd.MVC
+RUN dotnet publish -c Release -o out
+
+
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS runtime
+WORKDIR /app
+COPY --from=build /app/RestaurantFrontEnd.MVC/out ./
+ENTRYPOINT ["dotnet", "RestaurantFrontEnd.MVC.dll"]

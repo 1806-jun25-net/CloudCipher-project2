@@ -44,7 +44,7 @@ namespace RestaurantFrontEnd.MVC.Controllers
             string[] newblist = blistIdString.ToArray();
             TempData["blacklistcheck1"] = newblist;
             ////////
-
+     
             //change to Query once you have authorization set up
 
             if (search == null || search == "")
