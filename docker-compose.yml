@@ -1,0 +1,16 @@
+version: "1"
+services:
+  mvc:
+    image: bjkirk94/restaurant-mvc:0.1
+    networks:
+      - net
+  api:
+    image: bjkirk94/restaurant-api:0.1
+    networks:
+      - net
+  angular:
+    image: bjkirk/restaurant-ng:0.1
+    networks:
+      - net
+networks:
+  net:
