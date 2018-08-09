@@ -6,10 +6,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApiService {
-  //apiUrl: string = "https://cors-anywhere.herokuapp.com/https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
   //apiUrl: string = "https://cloudcipher-restrauntrecommendations.azurewebsites.net/api/";
   //apiUrl: string= "https://restaurantrecommendationsapi.azurewebsites.net/api/";
-  apiUrl: string = "http://localhost:58756/api/";
+  //apiUrl: string = "http://localhost:58756/api/";
+  apiUrl: string = "http://api/"
 
   //Create an HttpClient property equal to parameter taken in
   constructor(private httpClient: HttpClient) { }

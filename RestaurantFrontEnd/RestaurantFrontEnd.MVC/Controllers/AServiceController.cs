@@ -13,10 +13,11 @@ namespace RestaurantFrontEnd.MVC.Controllers
 {
     public abstract class AServiceController : Controller
     {
-        private static readonly Uri s_LocalServiceUri = new Uri("http://localhost:58756/");
-        private static readonly Uri s_AzureServiceUri = new Uri("https://cloudcipher-restrauntrecommendations.azurewebsites.net/");
+        private static readonly Uri s_LocalServiceUri = new Uri("http://localhost:58756/"); //1
+        private static readonly Uri s_AzureServiceUri = new Uri("https://cloudcipher-restrauntrecommendations.azurewebsites.net/"); //2
+        private static readonly Uri s_DockerUri = new Uri("https://api/"); //3
         protected static readonly string s_CookieName = "Project2Auth"; 
-        protected static readonly bool useAzureApi = true; //Use this to switch between Azure and local Api
+        protected static readonly int connectionToUse = 3; //Use this to switch between Azure and local Api
 
         protected HttpClient HttpClient { get; }
 
@@ -28,14 +29,22 @@ namespace RestaurantFrontEnd.MVC.Controllers
         protected HttpRequestMessage CreateRequestService(HttpMethod method,string uri, object body = null)
         {
             HttpRequestMessage apiRequest;
-            if (useAzureApi)  //use AzureApi
+            switch (connectionToUse)
             {
-                apiRequest = new HttpRequestMessage(method, new Uri(s_AzureServiceUri, uri));
+                case 1:
+                    apiRequest = new HttpRequestMessage(method, new Uri(s_LocalServiceUri, uri));
+                    break;
+                case 2:
+                    apiRequest = new HttpRequestMessage(method, new Uri(s_AzureServiceUri, uri));
+                    break;
+                case 3:
+                    apiRequest = new HttpRequestMessage(method, new Uri(s_DockerUri, uri));
+                    break;
+                default:
+                    apiRequest = new HttpRequestMessage(method, new Uri(s_LocalServiceUri, uri));
+                    break;
             }
-            else  //use localhostApi
-            {
-                apiRequest = new HttpRequestMessage(method, new Uri(s_LocalServiceUri, uri));
-            }
+            
 
             if(body != null)
             {

@@ -554,7 +554,8 @@ $RECYCLE.BIN/
 # should be stored in the .pubxml.user file.
 *.pubxml.user
 
+# ignoring docker secrets file
+secrets.env
 
 # End of https://www.gitignore.io/api/macos,csharp,windows,visualstudio,visualstudiocode
 /RestaurantAngular/src/app/nginx-custom.conf
-/RestaurantAngular/DockerFile
